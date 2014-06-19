@@ -1,0 +1,24 @@
+{
+  "name": "apigeetool",
+  "version": "0.0.1",
+  "description": "A CLI for Apigee Edge",
+  "main": "lib/main.js",
+  "bin": "lib/cli.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "Apigee",
+    "CLI"
+  ],
+  "author": "Greg Brail <greg@apigee.com>",
+  "license": "MIT",
+  "dependencies": {
+    "request": "2.x.x"
+  },
+  "devDependencies": {
+    "async": "0.x.x",
+    "connect": "2.x.x",
+    "express": "4.x.x"
+  }
+}
