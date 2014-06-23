@@ -19,6 +19,9 @@
   "devDependencies": {
     "async": "0.x.x",
     "connect": "2.x.x",
-    "express": "4.x.x"
+    "express": "4.x.x",
+    "node-zip": "1.x.x",
+    "underscore": "1.x.x",
+    "mustache": "x.x.x"
   }
 }
