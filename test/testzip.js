@@ -10,4 +10,14 @@ describe('ZIP Utilities Test', function() {
     assert(data.length > 0);
     fs.writeFileSync('./test.zip', buf);
   });
+
+  it('ZIP whole directory', function(done) {
+    this.timeout(60000);
+    ziputils.zipDirectory('./test/fixtures', function(err, result) {
+      assert(!err);
+      assert(result.length > 0);
+      fs.writeFileSync('./testdir.zip', result);
+      done();
+    });
+  });
 });
