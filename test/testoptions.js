@@ -107,4 +107,14 @@ describe('Options parsing test', function(done) {
     var help = options.getHelp(desc);
     //console.log('Help is:' + help);
   });
+  it('Test command-line toggle', function() {
+    var desc = {
+      foo: {},
+      toggle: { shortOption: 't', toggle: true }
+    };
+    var argv = [ '--foo', 'bar', '--toggle' ];
+    var opts = options.getopts(argv, 0, desc);
+    assert.equal(opts.foo, 'bar');
+    assert.equal(opts.toggle, true);
+  });
 });
