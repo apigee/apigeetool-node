@@ -1,9 +1,11 @@
 {
   "name": "apigeetool",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A CLI for Apigee Edge",
   "main": "lib/main.js",
-  "bin": "lib/cli.js",
+  "bin": {
+    "apigeetool": "./lib/cli.js"
+  },
   "scripts": {
     "test": "mocha"
   },
