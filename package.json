@@ -1,6 +1,6 @@
 {
   "name": "apigeetool",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "A CLI for Apigee Edge",
   "main": "lib/main.js",
   "bin": {
@@ -16,14 +16,14 @@
   "author": "Greg Brail <greg@apigee.com>",
   "license": "MIT",
   "dependencies": {
-    "request": "2.x.x"
+    "async": "0.x.x",
+    "request": "2.x.x",
+    "mustache": "x.x.x",
+    "node-zip": "1.x.x",
+    "underscore": "1.x.x"
   },
   "devDependencies": {
-    "async": "0.x.x",
     "connect": "2.x.x",
-    "express": "4.x.x",
-    "node-zip": "1.x.x",
-    "underscore": "1.x.x",
-    "mustache": "x.x.x"
+    "express": "4.x.x"
   }
 }
