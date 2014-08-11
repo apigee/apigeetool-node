@@ -1,4 +1,5 @@
 var assert = require('assert');
+var util = require('util');
 
 var options = require('../lib/options');
 
@@ -116,5 +117,12 @@ describe('Options parsing test', function(done) {
     var opts = options.getopts(argv, 0, desc);
     assert.equal(opts.foo, 'bar');
     assert.equal(opts.toggle, true);
+  });
+  it('Test secure value', function() {
+    var sv = new options.SecureValue('foobar');
+    assert.notEqual(util.format('%s', sv), 'foobar');
+    assert.notDeepEqual(util.format('%s', sv), 'foobar');
+    assert.equal(sv.getValue(), 'foobar');
+    assert(sv instanceof options.SecureValue);
   });
 });
