@@ -1,6 +1,6 @@
 {
   "name": "apigeetool",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A CLI for Apigee Edge",
   "main": "lib/main.js",
   "bin": {
@@ -18,7 +18,7 @@
   "dependencies": {
     "async": "0.x.x",
     "read": "1.x.x",
-    "request": "2.x.x",
+    "request": "2.40.0",
     "mustache": "x.x.x",
     "node-zip": "1.x.x",
     "underscore": "1.x.x"
