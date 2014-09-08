@@ -9,7 +9,7 @@ var _ = require('underscore');
 
 var config = require('./testconfig');
 
-var REASONABLE_TIMEOUT = 60000;
+var REASONABLE_TIMEOUT = 120000;
 var APIGEE_PROXY_NAME = 'apigee-cli-apigee-test';
 var NODE_PROXY_NAME = 'apigee-cli-node-test';
 
@@ -195,6 +195,54 @@ describe('Remote Tests', function() {
     });
   });
 
+  it('Deploy Apigee Proxy with base path and run NPM remotely', function(done) {
+    var opts = baseOpts();
+    opts.api = APIGEE_PROXY_NAME;
+    opts.directory = path.join(__dirname, '../test/fixtures/employees');
+    opts['resolve-modules'] = true;
+    opts['base-path'] = '/testbase';
+
+    apigeetool.deployProxy(opts, function(err, result) {
+      if (verbose) {
+        console.log('Deploy result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(result.name, APIGEE_PROXY_NAME);
+          assert.equal(result.environment, config.environment);
+          assert.equal(result.state, 'deployed');
+          assert.equal(result.uris.length, 1);
+          assert(typeof result.revision === 'number');
+          deployedRevision = result.revision;
+          deployedUri = result.uris[0];
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
+  it('Verify deployed URI', function(done) {
+    if (verbose) {
+      console.log('Testing %s', deployedUri);
+    }
+    request(deployedUri, function(err, resp) {
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(resp.statusCode, 200);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
   it('Undeploy Apigee Proxy With Revision', function(done) {
     var opts = baseOpts();
     opts.api = APIGEE_PROXY_NAME;
@@ -224,6 +272,55 @@ describe('Remote Tests', function() {
     opts.api = NODE_PROXY_NAME;
     opts.directory = path.join(__dirname, '../test/fixtures/employeesnode');
     opts.main = 'server.js';
+    opts['base-path'] = '/apigee-cli-node-test';
+
+    apigeetool.deployNodeApp(opts, function(err, result) {
+      if (verbose) {
+        console.log('Deploy result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(result.name, NODE_PROXY_NAME);
+          assert.equal(result.environment, config.environment);
+          assert.equal(result.state, 'deployed');
+          assert.equal(result.uris.length, 1);
+          assert(typeof result.revision === 'number');
+          deployedRevision = result.revision;
+          deployedUri = result.uris[0];
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
+  it('Verify deployed URI', function(done) {
+    if (verbose) {
+      console.log('Testing %s', deployedUri);
+    }
+    request(deployedUri, function(err, resp) {
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(resp.statusCode, 200);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
+  it('Deploy Node.js App and run NPM remotely', function(done) {
+    var opts = baseOpts();
+    opts.api = NODE_PROXY_NAME;
+    opts.directory = path.join(__dirname, '../test/fixtures/employeesnode');
+    opts.main = 'server.js';
+    opts['resolve-modules'] = true;
     opts['base-path'] = '/apigee-cli-node-test';
 
     apigeetool.deployNodeApp(opts, function(err, result) {
