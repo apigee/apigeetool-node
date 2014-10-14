@@ -43,11 +43,11 @@ Deploys a Node.js app to Apigee Edge as an API proxy. With your Node.js app depl
 
 Deploys a Node.js app to Apigee Edge. 
 
-    apigeetool deploynodeapp -u sdoe@apigee.com -p Lenovo235 -o sdoe -e test -n 'Test Node App 2' -d . -m app.js -b /node2
+    apigeetool deploynodeapp -u sdoe@apigee.com -p password -o sdoe -e test -n 'Test Node App 2' -d . -m app.js -b /node2
 
 Deploys a Node.js app to both the default (HTTP) and secure (HTTPS) virtual hosts. 
 
-    apigeetool deploynodeapp -u sdoe@apigee.com -p Lenovo235 -o sdoe -e test -n 'Test Node App 2' -d . -m app.js -b /node2 -v default,secure
+    apigeetool deploynodeapp -u sdoe@apigee.com -p password -o sdoe -e test -n 'Test Node App 2' -d . -m app.js -b /node2 -v default,secure
 
 
 #### Required parameters
