@@ -21,8 +21,9 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 
 * deploying an API proxy to Edge,
 * undeploying an API proxy from Edge,
-* deploying Node.js apps to Edge, and
-* listing deployed API proxies on Edge.
+* deploying Node.js apps to Edge,
+* listing deployed API proxies on Edge, and
+* retrieving deployed proxies and apps from Edge.
 
 You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments.
 
@@ -34,6 +35,7 @@ For more information, refer to the [Apigee Edge docs](http://apigee.com/docs/).
 * [deployproxy](#deployproxy)
 * [undeploy](#undeploy)
 * [listdeployments](#listdeployments)
+* [fetchproxy](#fetchproxy)
 
 ## <a name="deploynodeapp"></a>deploynodeapp
 
@@ -43,11 +45,11 @@ Deploys a Node.js app to Apigee Edge as an API proxy. With your Node.js app depl
 
 Deploys a Node.js app to Apigee Edge.
 
-    apigeetool deploynodeapp -u sdoe@apigee.com -p password -o sdoe -e test -n 'Test Node App 2' -d . -m app.js -b /node2
+    apigeetool deploynodeapp -u sdoe@apigee.com -o sdoe -e test -n 'Test Node App 2' -d . -m app.js -b /node2
 
 Deploys a Node.js app to both the default (HTTP) and secure (HTTPS) virtual hosts.
 
-    apigeetool deploynodeapp -u sdoe@apigee.com -p password -o sdoe -e test -n 'Test Node App 2' -d . -m app.js -b /node2 -v default,secure
+    apigeetool deploynodeapp -u sdoe@apigee.com -o sdoe -e test -n 'Test Node App 2' -d . -m app.js -b /node2 -v default,secure
 
 #### Required parameters
 
@@ -120,7 +122,7 @@ Deploys an API proxy to Apigee Edge. If the proxy is currently deployed, it will
 
 Deploys an API proxy called example-proxy to Apigee Edge. Per the `-d` flag, the command is executed in the root directory of the proxy bundle.
 
-    apigeetool deployproxy  -u sdoe@example.com -p password -o sdoe  -e test -n example-proxy -d .
+    apigeetool deployproxy  -u sdoe@example.com -o sdoe  -e test -n example-proxy -d .
 
 #### Required parameters
 
@@ -184,7 +186,7 @@ Undeploys a named API proxy or Node.js app deployed on Apigee Edge.
 
 Undeploy the proxy named "example-proxy".
 
-    apigeetool undeploy -u sdoe@example.com -p password -o sdoe  -n example-proxy -e test -D
+    apigeetool undeploy -u sdoe@example.com -o sdoe  -n example-proxy -e test -D
 
 #### Required parameters
 
@@ -236,11 +238,11 @@ Lists the API proxies deployed on Apigee Edge for the specified organization. Le
 
 List all API proxies in an organization:
 
-    `$ apigeetool listdeployments -u sdoe@example.com -p password -o sdoe -e test`
+    $ apigeetool listdeployments -u sdoe@example.com -o sdoe -e test`
 
 List API proxies named "example-proxy":
 
-    $ apigeetool listdeployments -u sdoe@example.com -p password -o sdoe -n example-proxy
+    $ apigeetool listdeployments -u sdoe@example.com -o sdoe -n example-proxy
 
 #### Required parameters
 
@@ -284,7 +286,67 @@ including the URL to use as the base path for each one.
 (optional) Returns the result in JSON format.
 
 `--revision  -r`
-(optional) Filters the list by the specified revision number.  
+(optional) Filters the list by the specified revision number.
+
+## <a name="fetchproxy"></a>fetchproxy
+
+Fetches a deployed API proxy or Node.js application from Apigee Edge. The
+result will be a ZIP file that contains the contents of the entire
+proxy.
+
+Regardless of whether "deployproxy" or "deploynodeapp" is used to deploy the
+proxy or app, the result of "fetchproxy" will always be a ZIP file that
+represents an API proxy. The resulting proxy may be "unzipped" and
+re-deployed using "deployproxy."
+
+#### Example
+
+Fetch the deployed proxy named "example-proxy".
+
+    apigeetool fetchproxy -u sdoe@example.com -o sdoe -n example-proxy -r 1
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+`--username  -u`  
+(required) Your Apigee account username.
+
+`--password  -p`  
+(required) Your Apigee account password.
+
+`--api  -n`  
+(required) The name of the API proxy or app to undeploy.
+
+`--revision  -r`
+(optional) Specifies the revision to retrieve.
+
+`--organization  -o`
+(required) The name of the organization where the API proxy or app is deployed.
+
+#### Optional parameters
+
+`--file -f`
+(optional) The name of the file to write as the result. If not specified,
+then the file name will be the same as the name passed to the "name"
+parameter.
+
+`--help  -h`  
+(optional) Displays help on this command.
+
+`--baseuri   -L`  
+(optional) The base URL for you organization on Apigee Edge. The default is the base URL for Apigee cloud deployments is `api.enterprise.apigee.com`. For on premise deployments, the base URL may be different.
+
+`--debug -D`  
+(optional) Prints additional information about the command, including router and message processor IDs.
+
+`--verbose   -V`  
+(optional) Prints additional information as the  command proceeds.  
+
+`--json  -j`  
+(optional) Returns results in JSON format.
 
 # <a name="original"></a>Original Tool
 
