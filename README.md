@@ -19,14 +19,14 @@ This is a tool for deploying API proxies and Node.js applications to the Apigee 
 
 You must have an account on Apigee Edge to perform any `apigeetool` functions. These functions include:
 
-* deploying an API proxy to Edge, 
-* undeploying an API proxy from Edge, 
-* deploying Node.js apps to Edge, and 
+* deploying an API proxy to Edge,
+* undeploying an API proxy from Edge,
+* deploying Node.js apps to Edge, and
 * listing deployed API proxies on Edge.
 
-You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments. 
+You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments.
 
-For more information, refer to the [Apigee Edge docs](http://apigee.com/docs/). 
+For more information, refer to the [Apigee Edge docs](http://apigee.com/docs/).
 
 # <a name="reference"></a>Command reference and examples
 
@@ -37,20 +37,26 @@ For more information, refer to the [Apigee Edge docs](http://apigee.com/docs/).
 
 ## <a name="deploynodeapp"></a>deploynodeapp
 
-Deploys a Node.js app to Apigee Edge as an API proxy. With your Node.js app deployed to Edge, you can take advantage of Edge features like security, quotas, caching, analytics, trace tool, and more. 
+Deploys a Node.js app to Apigee Edge as an API proxy. With your Node.js app deployed to Edge, you can take advantage of Edge features like security, quotas, caching, analytics, trace tool, and more.
 
 #### Examples
 
-Deploys a Node.js app to Apigee Edge. 
+Deploys a Node.js app to Apigee Edge.
 
     apigeetool deploynodeapp -u sdoe@apigee.com -p password -o sdoe -e test -n 'Test Node App 2' -d . -m app.js -b /node2
 
-Deploys a Node.js app to both the default (HTTP) and secure (HTTPS) virtual hosts. 
+Deploys a Node.js app to both the default (HTTP) and secure (HTTPS) virtual hosts.
 
     apigeetool deploynodeapp -u sdoe@apigee.com -p password -o sdoe -e test -n 'Test Node App 2' -d . -m app.js -b /node2 -v default,secure
 
-
 #### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+For example, if you do not specify a password using "-p", apigeetool will
+prompt for the password on the command line.
 
 `--username  -u`  
 (required) Your Apigee account username.
@@ -68,10 +74,10 @@ Deploys a Node.js app to both the default (HTTP) and secure (HTTPS) virtual host
 (required) The name of the environment to deploy to.  
 
 `--directory -d`  
-(required) The path to the root directory of the API proxy on your local system. 
+(required) The path to the root directory of the API proxy on your local system.
 
 `--main  -m`  
-(required) The Node.js file you want to be the main file. 
+(required) The Node.js file you want to be the main file.
 
 #### Optional parameters
 
@@ -79,31 +85,31 @@ Deploys a Node.js app to both the default (HTTP) and secure (HTTPS) virtual host
 (optional) Displays help on this command.
 
 `--baseuri   -L`  
-(optional) The base URI for you organization on Apigee Edge. The default is the base URI for Apigee cloud deployments is `api.enterprise.apigee.com`. For on-premise deployments, the base URL may be different. 
+(optional) The base URI for you organization on Apigee Edge. The default is the base URI for Apigee cloud deployments is `api.enterprise.apigee.com`. For on-premise deployments, the base URL may be different.
+
+`--virtualhosts  -v`  
+(optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deploynodeapp` uses only the `default` virtual host. Note that on the Apigee Edge cloud platform, all new proxies are assigned two virtual hosts: `default` and `secure`. If you want your deployed Node.js app to use both HTTP and HTTPS, specify `-v default,secure`.
+
+`--base-path -b`  
+(optional) The base path of the API proxy. For example, for this API proxy, the base path is `/example-proxy`: `http://myorg-test.apigee.net/example-proxy/resource1`.
+
+`--import-only   -i`  
+(optional) Imports the API proxy to Apigee Edge but does not deploy it.
+
+`--resolve-modules   -R`  
+(optional) If the API proxy includes Node.js modules (e.g., in a `node_modules` directory), this option updates them on Apigee Edge without uploading them from your system. Basically, it's like running "npm install" on Apigee Edge in the root directory of the API proxy bundle.  
+
+`--upload-modules    -U`  
+(optional) If specified, uploads Node.js modules from your system to Apigee Edge rather than resolving the modules directly on Apigee Edge. This is the default.
 
 `--debug -D`  
-(optional) Prints additional information about the deployment, including router and message processor IDs. 
+(optional) Prints additional information about the deployment, including router and message processor IDs.
 
 `--verbose   -V`  
 (optional) Prints additional information as the deployment proceeds.
 
 `--json  -j`  
 (optional) Formats the command's response as a JSON object.
-
-`--virtualhosts  -v`  
-(optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deploynodeapp` uses only the `default` virtual host. Note that on the Apigee Edge cloud platform, all new proxies are assigned two virtual hosts: `default` and `secure`. If you want your deployed Node.js app to use both HTTP and HTTPS, specify `-v default,secure`. 
-
-`--base-path -b`  
-(optional) The base path of the API proxy. For example, for this API proxy, the base path is `/example-proxy`: `http://myorg-test.apigee.net/example-proxy/resource1`. 
-
-`--import-only   -i`  
-(optional) Imports the API proxy to Apigee Edge but does not deploy it. 
-
-`--resolve-modules   -R`  
-(optional) If the API proxy includes Node.js modules (e.g., in a `node_modules` directory), this option updates them on Apigee Edge without uploading them from your system. Basically, it's like running npm on Apigee Edge in the root directory of the API proxy bundle.  
-
-`--upload-modules    -U`  
-(optional) If specified, uploads Node.js modules from your system to Apigee Edge rather than resolving the modules directly on Apigee Edge.
 
 
 ## <a name="deployproxy"></a>deployproxy
@@ -118,7 +124,11 @@ Deploys an API proxy called example-proxy to Apigee Edge. Per the `-d` flag, the
 
 #### Required parameters
 
-`--username  -u` 
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+`--username  -u`
 (required) Your Apigee account username.
 
 `--password  -p`  
@@ -134,7 +144,7 @@ Deploys an API proxy called example-proxy to Apigee Edge. Per the `-d` flag, the
 (required) The name of the environment to deploy to.  
 
 `--directory -d`  
-(required) The path to the root directory of the API proxy on your local system. 
+(required) The path to the root directory of the API proxy on your local system.
 
 #### Optional parameters
 
@@ -142,10 +152,10 @@ Deploys an API proxy called example-proxy to Apigee Edge. Per the `-d` flag, the
 (optional) Displays help on this command.
 
 `--baseuri   -L`  
-(optional) The base URL for you organization on Apigee Edge. The default is the base URL for Apigee cloud deployments is `api.enterprise.apigee.com`. For on premise deployments, the base URL may be different. 
+(optional) The base URL for you organization on Apigee Edge. The default is the base URL for Apigee cloud deployments is `api.enterprise.apigee.com`. For on premise deployments, the base URL may be different.
 
 `--debug -D`  
-(optional) Prints additional information about the deployment, including router and message processor IDs. 
+(optional) Prints additional information about the deployment, including router and message processor IDs.
 
 `--verbose   -V`  
 (optional) Prints additional information as the deployment proceeds.
@@ -154,21 +164,21 @@ Deploys an API proxy called example-proxy to Apigee Edge. Per the `-d` flag, the
 (optional) Formats the command's response as a JSON object.
 
 `--base-path -b`  
-(optional) The base path of the API proxy. For example, for this API proxy, the base path is /example-proxy: http://myorg-test.apigee.net/example-proxy/resource1. 
+(optional) The base path of the API proxy. For example, for this API proxy, the base path is /example-proxy: http://myorg-test.apigee.net/example-proxy/resource1.
 
 `--import-only   -i`  
-(optional) Imports the API proxy to Apigee Edge but does not deploy it. 
+(optional) Imports the API proxy to Apigee Edge but does not deploy it.
 
 `--resolve-modules   -R`  
 (optional) If the API proxy includes Node.js modules (e.g., in a `node_modules` directory), this option updates them on Apigee Edge without uploading them from your system. Basically, it's like running npm on Apigee Edge in the root directory of the API proxy bundle.  
 
 `--upload-modules    -U`  
-(optional) If specified, uploads Node.js modules from your system to Apigee Edge. 
+(optional) If specified, uploads Node.js modules from your system to Apigee Edge.
 
 
 ## <a name="undeploy"></a>undeploy
 
-Undeploys a named API proxy deployed on Apigee Edge.
+Undeploys a named API proxy or Node.js app deployed on Apigee Edge.
 
 #### Example
 
@@ -178,6 +188,10 @@ Undeploy the proxy named "example-proxy".
 
 #### Required parameters
 
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
 `--username  -u`  
 (required) Your Apigee account username.
 
@@ -185,13 +199,13 @@ Undeploy the proxy named "example-proxy".
 (required) Your Apigee account password.
 
 `--api   -n`  
-(required) The name of the API proxy to undeploy.
+(required) The name of the API proxy or app to undeploy.
 
 `--environment   -e`  
-(required) The environment on Apigee Edge where the API proxy is currently deployed. 
+(required) The environment on Apigee Edge where the API proxy or app is currently deployed.
 
-`--organization  -o` 
-(required) The name of the organization where the API proxy is deployed.
+`--organization  -o`
+(required) The name of the organization where the API proxy or app is deployed.
 
 #### Optional parameters
 
@@ -199,10 +213,10 @@ Undeploy the proxy named "example-proxy".
 (optional) Displays help on this command.
 
 `--baseuri   -L`  
-(optional) The base URL for you organization on Apigee Edge. The default is the base URL for Apigee cloud deployments is `api.enterprise.apigee.com`. For on premise deployments, the base URL may be different. 
+(optional) The base URL for you organization on Apigee Edge. The default is the base URL for Apigee cloud deployments is `api.enterprise.apigee.com`. For on premise deployments, the base URL may be different.
 
 `--debug -D`  
-(optional) Prints additional information about the undeployment, including router and message processor IDs. 
+(optional) Prints additional information about the undeployment, including router and message processor IDs.
 
 `--verbose   -V`  
 (optional) Prints additional information as the undeploy proceeds.  
@@ -211,7 +225,7 @@ Undeploy the proxy named "example-proxy".
 (optional) Returns results in JSON format.
 
 `--revision  -r`  
-(optional) Specify the revision number of the API proxy to undeploy. 
+(optional) Specify the revision number of the API proxy to undeploy.
 
 
 ## <a name="listdeployments"></a>listdeployments
@@ -230,18 +244,22 @@ List API proxies named "example-proxy":
 
 #### Required parameters
 
-`--username  -u`     
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+`--username  -u`
 (required) Your Apigee account username.
 
-`--password  -p`      
-(required) Your Apigee account password. 
+`--password  -p`
+(required) Your Apigee account password.
 
 `--organization  -o`  
 (required) The name of the organization you wish to query.
 
 #### Required, mutually exclusive parameters
 
-`--api   -n`          
+`--api   -n`
 (You must specify either `api` or `environment` in this command) The name of the API proxy to list.
 
 `--environment   -e`  
@@ -249,24 +267,24 @@ List API proxies named "example-proxy":
 
 #### Optional parameters
 
+`--long  -l`
+(optional) Returns additional information about the API proxy or Node.js app,
+including the URL to use as the base path for each one.
+
 `--baseuri   -L`  
 (optional) The base URL for you organization on Apigee Edge. The default is the base URL for Apigee cloud deployments is `api.enterprise.apigee.com`. For on premise deployments, the base URL may be different.
 
-`--debug -D`          
-(optional) Returns additional information about the API proxy deployments including router and message processor IDs. 
+`--debug -D`
+(optional) Returns additional information about the API proxy deployments including router and message processor IDs.
 
-`--verbose   -V`      
+`--verbose   -V`
 (optional) Prints additional information about the operation.  
 
-`--json  -j`          
+`--json  -j`
 (optional) Returns the result in JSON format.
 
-`--revision  -r`      
+`--revision  -r`
 (optional) Filters the list by the specified revision number.  
-
-`--long  -l`          
-(optional) Returns additional information about the API proxy.
-
 
 # <a name="original"></a>Original Tool
 
@@ -274,4 +292,3 @@ This module replaces the original "apigeetool," which was written in Python.
 It is also called "apigeetool" and resides here:
 
 https://github.com/apigee/api-platform-tools
-
