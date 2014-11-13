@@ -3,3 +3,5 @@ tmp
 remotetests
 test.zip
 testdir.zip
+.idea
+*.iml
