@@ -7,7 +7,8 @@
     "apigeetool": "./lib/cli.js"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha -R spec",
+    "remotetest": "mocha -R spec remotetests"
   },
   "keywords": [
     "Apigee",

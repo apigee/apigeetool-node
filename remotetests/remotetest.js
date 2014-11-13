@@ -5,6 +5,7 @@ var assert = require('assert');
 var path = require('path');
 var request = require('request');
 var util = require('util');
+var stream = require('stream');
 var _ = require('underscore');
 
 var config = require('./testconfig');
@@ -312,6 +313,32 @@ describe('Remote Tests', function() {
           done(e);
         }
       }
+    });
+  });
+
+  it('Check logs from deployed URI', function(done) {
+    var opts = baseOpts();
+    opts.api = NODE_PROXY_NAME;
+
+    var logStream = new stream.PassThrough();
+    logStream.setEncoding('utf8');
+    opts.stream = logStream;
+
+    apigeetool.getLogs(opts, function(err) {
+      assert(!err);
+
+      var allLogs = '';
+      logStream.on('data', function(chunk) {
+        allLogs += chunk;
+      });
+      logStream.on('end', function() {
+        try {
+          assert(/Listening on port/.test(allLogs));
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
     });
   });
 

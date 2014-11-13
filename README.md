@@ -13,7 +13,7 @@ This is a tool for deploying API proxies and Node.js applications to the Apigee 
 
 `npm install -g apigeetool`
 
-> NOTE: The `-g` option places the apigeetool command in your PATH. On *nix-based machines, `sudo` may be required with the `-g` option. If you do not use `-g`, then you need to add the apigeetool command to your PATH manually. Typically, the `-g` option places modules in: `/usr/local/lib/node_modules/apigee-127` on *nix-based machines.
+*NOTE*: The `-g` option places the apigeetool command in your PATH. On "\*nix"-based machines, `sudo` may be required with the `-g` option. If you do not use `-g`, then you need to add the apigeetool command to your PATH manually. Typically, the `-g` option places modules in: `/usr/local/lib/node_modules/apigee-127` on *nix-based machines.
 
 # <a name="whatyouneed"></a>What you need to know about apigeetool
 
@@ -22,8 +22,9 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 * deploying an API proxy to Edge,
 * undeploying an API proxy from Edge,
 * deploying Node.js apps to Edge,
-* listing deployed API proxies on Edge, and
-* retrieving deployed proxies and apps from Edge.
+* listing deployed API proxies on Edge,
+* retrieving deployed proxies and apps from Edge, and
+* retreiving log messages from Node.js apps deployed to Edge.
 
 You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments.
 
@@ -36,6 +37,7 @@ For more information, refer to the [Apigee Edge docs](http://apigee.com/docs/).
 * [undeploy](#undeploy)
 * [listdeployments](#listdeployments)
 * [fetchproxy](#fetchproxy)
+* [getlogs](#getlogs)
 
 ## <a name="deploynodeapp"></a>deploynodeapp
 
@@ -347,6 +349,77 @@ parameter.
 
 `--json  -j`  
 (optional) Returns results in JSON format.
+
+## <a name="getlogs"></a>getlogs
+
+Retrieve the last set of log records from a Node.js application deployed to Apigee Edge.
+
+The resulting log files will be written directly to standard output. Each is prefixed with:
+
+* A timestamp, in UTC by default
+* An indication of whether the log record came from standard output or standard error
+* A unique identifier of the server where the log was generated.
+
+Since Apigee Edge, by default, deploys each Node.js application on at least two
+different servers, most applications will see at least two sets of logs. These are
+sorted in time stamp order.
+
+The log records from this command come from a cache inside Apigee Edge that retains
+the last 500 lines of log output from each server. The cache is a circular buffer,
+so older messages will be discarded when it fills up.
+
+By default, the last set of log records will be pulled and written to standard output. However, if the
+"-f" option is used, then "apigeetool" will poll Edge for new log records and append them to standard
+output, in the manner of "tail -f". (By default, the tool polls every
+five seconds).
+
+For example, a set of log records might look like this:
+
+<pre>
+[2014-11-05T01:30:01.530Z nodejs/stderr svr.362] *** Starting script
+[2014-11-05T01:30:09.182Z nodejs/stderr svr.362] 2014-11-05T01:30:09.181Z - debug: 1/4. this is a debug log
+[2014-11-05T01:30:09.186Z nodejs/stdout svr.362] 2014-11-05T01:30:09.186Z - info: 2/4. this is an info log
+[2014-11-05T01:30:09.187Z nodejs/stdout svr.362] 2014-11-05T01:30:09.187Z - warn: 3/4. this is a warning log
+[2014-11-05T01:30:09.188Z nodejs/stderr svr.362] 2014-11-05T01:30:09.188Z - error: 4/4. this is an error log
+[2014-11-05T01:48:21.419Z nodejs/stderr svr.828] *** Starting script
+[2014-11-05T01:48:28.637Z nodejs/stderr svr.828] js-bson: Failed to load c++ bson extension, using pure JS version
+[2014-11-05T01:48:29.801Z nodejs/stderr svr.828] 2014-11-05T01:48:29.800Z - debug: 1/4. this is a debug log
+[2014-11-05T01:48:29.804Z nodejs/stdout svr.828] 2014-11-05T01:48:29.804Z - info: 2/4. this is an info log
+[2014-11-05T01:48:29.805Z nodejs/stdout svr.828] 2014-11-05T01:48:29.805Z - warn: 3/4. this is a warning log
+[2014-11-05T01:48:29.806Z nodejs/stderr svr.828] 2014-11-05T01:48:29.806Z - error: 4/4. this is an error log
+</pre>
+
+#### Required Parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+`--username  -u`  
+(required) Your Apigee account username.
+
+`--password  -p`  
+(required) Your Apigee account password.
+
+`--api  -n`  
+(required) The name of the deployed app to get logs from.
+
+`--environment   -e`  
+(required) The environment on Apigee Edge where the app is currently deployed.
+
+`--organization  -o`  
+(required) The name of the organization to deploy to.
+
+#### Optional Parameters
+
+`--streaming  -f`
+(optional) If specified, do not exit, but instead poll Apigee Edge for new log
+records and write them to standard output in the manner of "tail -f."
+
+`--timezone  -z`
+(optional) If specified, use the time zone to format the timestamps on the
+log records. If not specified, then the default is UTC. The timestamp name
+should be a name such as "PST."
 
 # <a name="original"></a>Original Tool
 
