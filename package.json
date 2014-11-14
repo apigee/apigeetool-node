@@ -14,7 +14,10 @@
     "Apigee",
     "CLI"
   ],
-  "author": "Greg Brail <greg@apigee.com>",
+  "authors": [
+    "Greg Brail <greg@apigee.com>",
+    "Scott Ganyo <sganyo@apigee.com>"
+  ],
   "license": "MIT",
   "dependencies": {
     "async": "0.x.x",
