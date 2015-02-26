@@ -21,10 +21,11 @@
   "license": "MIT",
   "dependencies": {
     "async": "0.x.x",
-    "read": "1.x.x",
-    "request": "2.40.0",
+    "cli-table": "0.3.x",
     "mustache": "x.x.x",
     "node-zip": "1.x.x",
+    "read": "1.x.x",
+    "request": "2.40.0",
     "underscore": "1.x.x"
   },
   "devDependencies": {
