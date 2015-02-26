@@ -23,12 +23,52 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 * undeploying an API proxy from Edge,
 * deploying Node.js apps to Edge,
 * listing deployed API proxies on Edge,
-* retrieving deployed proxies and apps from Edge, and
+* retrieving deployed proxies and apps from Edge,
+* deleting proxy definitions from Edge, and
 * retreiving log messages from Node.js apps deployed to Edge.
 
 You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments.
 
 For more information, refer to the [Apigee Edge docs](http://apigee.com/docs/).
+
+# <a name="commonargs"></a>Common Parameters
+
+The following parameters are available on all of the commands supported by
+this tool:
+
+`--username  -u`  
+(required) Your Apigee account username.
+
+`--password  -p`  
+(required) Your Apigee account password.
+
+`--organization  -o`  
+(required) The name of the organization to deploy to.
+
+`--help  -h`  
+(optional) Displays help on this command.
+
+`--baseuri   -L`  
+(optional) The base URI for you organization on Apigee Edge. The default is the base URI for Apigee cloud deployments is `api.enterprise.apigee.com`. For on-premise deployments, the base URL may be different.
+
+`--debug -D`  
+(optional) Prints additional information about the deployment, including router and message processor IDs.
+
+`--verbose   -V`  
+(optional) Prints additional information as the deployment proceeds.
+
+`--json  -j`  
+(optional) Formats the command's response as a JSON object.
+
+`--cafile -c`
+(optional) The names of one of more PEM files that represent trusted certificate authorities.
+Multiple file names may be comma-separated. Use this to communicate with an installation
+of Apigee Edge that uses a custom certificate for API calls.
+
+`--insecure -k`
+(optional) Do not validate the TLS certificate of the HTTPS target for API calls.
+Use this to communicate with an installation of Apigee Edge that does not use a
+trusted TLS certificate.
 
 # <a name="reference"></a>Command reference and examples
 
@@ -38,6 +78,7 @@ For more information, refer to the [Apigee Edge docs](http://apigee.com/docs/).
 * [listdeployments](#listdeployments)
 * [fetchproxy](#fetchproxy)
 * [getlogs](#getlogs)
+* [delete](#delete)
 
 ## <a name="deploynodeapp"></a>deploynodeapp
 
@@ -62,14 +103,9 @@ then apigeetool will prompt for them.
 For example, if you do not specify a password using "-p", apigeetool will
 prompt for the password on the command line.
 
-`--username  -u`  
-(required) Your Apigee account username.
-
-`--password  -p`  
-(required) Your Apigee account password.
-
-`--organization  -o`  
-(required) The name of the organization to deploy to.
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
 
 `--api   -n`  
 (required) The name of the API proxy. The name of the API proxy must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `A-Z0-9._\-$ %`.
@@ -85,12 +121,6 @@ prompt for the password on the command line.
 
 #### Optional parameters
 
-`--help  -h`  
-(optional) Displays help on this command.
-
-`--baseuri   -L`  
-(optional) The base URI for you organization on Apigee Edge. The default is the base URI for Apigee cloud deployments is `api.enterprise.apigee.com`. For on-premise deployments, the base URL may be different.
-
 `--virtualhosts  -v`  
 (optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deploynodeapp` uses only the `default` virtual host. Note that on the Apigee Edge cloud platform, all new proxies are assigned two virtual hosts: `default` and `secure`. If you want your deployed Node.js app to use both HTTP and HTTPS, specify `-v default,secure`.
 
@@ -105,16 +135,6 @@ prompt for the password on the command line.
 
 `--upload-modules    -U`  
 (optional) If specified, uploads Node.js modules from your system to Apigee Edge rather than resolving the modules directly on Apigee Edge. This is the default.
-
-`--debug -D`  
-(optional) Prints additional information about the deployment, including router and message processor IDs.
-
-`--verbose   -V`  
-(optional) Prints additional information as the deployment proceeds.
-
-`--json  -j`  
-(optional) Formats the command's response as a JSON object.
-
 
 ## <a name="deployproxy"></a>deployproxy
 
@@ -132,14 +152,9 @@ The following parameters are required. However, if any are left unspecified
 on the command line, and if apigeetool is running in an interactive shell,
 then apigeetool will prompt for them.
 
-`--username  -u`
-(required) Your Apigee account username.
-
-`--password  -p`  
-(required) Your Apigee account password.
-
-`--organization  -o`  
-(required) The name of the organization to deploy to.
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
 
 `--api   -n`  
 (required) The name of the API proxy. Note: The name of the API proxy must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `A-Z0-9._\-$ %`.
@@ -152,21 +167,6 @@ then apigeetool will prompt for them.
 
 #### Optional parameters
 
-`--help  -h`  
-(optional) Displays help on this command.
-
-`--baseuri   -L`  
-(optional) The base URL for you organization on Apigee Edge. The default is the base URL for Apigee cloud deployments is `api.enterprise.apigee.com`. For on premise deployments, the base URL may be different.
-
-`--debug -D`  
-(optional) Prints additional information about the deployment, including router and message processor IDs.
-
-`--verbose   -V`  
-(optional) Prints additional information as the deployment proceeds.
-
-`--json  -j`  
-(optional) Formats the command's response as a JSON object.
-
 `--base-path -b`  
 (optional) The base path of the API proxy. For example, for this API proxy, the base path is /example-proxy: http://myorg-test.apigee.net/example-proxy/resource1.
 
@@ -178,7 +178,6 @@ then apigeetool will prompt for them.
 
 `--upload-modules    -U`  
 (optional) If specified, uploads Node.js modules from your system to Apigee Edge.
-
 
 ## <a name="undeploy"></a>undeploy
 
@@ -196,11 +195,9 @@ The following parameters are required. However, if any are left unspecified
 on the command line, and if apigeetool is running in an interactive shell,
 then apigeetool will prompt for them.
 
-`--username  -u`  
-(required) Your Apigee account username.
-
-`--password  -p`  
-(required) Your Apigee account password.
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
 
 `--api   -n`  
 (required) The name of the API proxy or app to undeploy.
@@ -208,29 +205,10 @@ then apigeetool will prompt for them.
 `--environment   -e`  
 (required) The environment on Apigee Edge where the API proxy or app is currently deployed.
 
-`--organization  -o`
-(required) The name of the organization where the API proxy or app is deployed.
-
 #### Optional parameters
-
-`--help  -h`  
-(optional) Displays help on this command.
-
-`--baseuri   -L`  
-(optional) The base URL for you organization on Apigee Edge. The default is the base URL for Apigee cloud deployments is `api.enterprise.apigee.com`. For on premise deployments, the base URL may be different.
-
-`--debug -D`  
-(optional) Prints additional information about the undeployment, including router and message processor IDs.
-
-`--verbose   -V`  
-(optional) Prints additional information as the undeploy proceeds.  
-
-`--json  -j`  
-(optional) Returns results in JSON format.
 
 `--revision  -r`  
 (optional) Specify the revision number of the API proxy to undeploy.
-
 
 ## <a name="listdeployments"></a>listdeployments
 
@@ -248,18 +226,9 @@ List API proxies named "example-proxy":
 
 #### Required parameters
 
-The following parameters are required. However, if any are left unspecified
-on the command line, and if apigeetool is running in an interactive shell,
-then apigeetool will prompt for them.
-
-`--username  -u`
-(required) Your Apigee account username.
-
-`--password  -p`
-(required) Your Apigee account password.
-
-`--organization  -o`  
-(required) The name of the organization you wish to query.
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
 
 #### Required, mutually exclusive parameters
 
@@ -274,18 +243,6 @@ then apigeetool will prompt for them.
 `--long  -l`
 (optional) Returns additional information about the API proxy or Node.js app,
 including the URL to use as the base path for each one.
-
-`--baseuri   -L`  
-(optional) The base URL for you organization on Apigee Edge. The default is the base URL for Apigee cloud deployments is `api.enterprise.apigee.com`. For on premise deployments, the base URL may be different.
-
-`--debug -D`
-(optional) Returns additional information about the API proxy deployments including router and message processor IDs.
-
-`--verbose   -V`
-(optional) Prints additional information about the operation.  
-
-`--json  -j`
-(optional) Returns the result in JSON format.
 
 `--revision  -r`
 (optional) Filters the list by the specified revision number.
@@ -313,20 +270,15 @@ The following parameters are required. However, if any are left unspecified
 on the command line, and if apigeetool is running in an interactive shell,
 then apigeetool will prompt for them.
 
-`--username  -u`  
-(required) Your Apigee account username.
-
-`--password  -p`  
-(required) Your Apigee account password.
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
 
 `--api  -n`  
 (required) The name of the API proxy or app to undeploy.
 
 `--revision  -r`
 (optional) Specifies the revision to retrieve.
-
-`--organization  -o`
-(required) The name of the organization where the API proxy or app is deployed.
 
 #### Optional parameters
 
@@ -335,20 +287,31 @@ then apigeetool will prompt for them.
 then the file name will be the same as the name passed to the "name"
 parameter.
 
-`--help  -h`  
-(optional) Displays help on this command.
+## <a name="delete"></a>delete
 
-`--baseuri   -L`  
-(optional) The base URL for you organization on Apigee Edge. The default is the base URL for Apigee cloud deployments is `api.enterprise.apigee.com`. For on premise deployments, the base URL may be different.
+Delete all revisions of a proxy from Apigee Edge.
 
-`--debug -D`  
-(optional) Prints additional information about the command, including router and message processor IDs.
+It is an error to delete a proxy that still has deployed revisions. Revisions
+must be undeployed using "undeploy" before this command may be used.
 
-`--verbose   -V`  
-(optional) Prints additional information as the  command proceeds.  
+#### Example
 
-`--json  -j`  
-(optional) Returns results in JSON format.
+Delete the proxy named "example-proxy".
+
+    apigeetool delete -u sdoe@example.com -o sdoe -n example-proxy
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--api  -n`  
+(required) The name of the API proxy or app to undeploy.
 
 ## <a name="getlogs"></a>getlogs
 
@@ -395,20 +358,15 @@ The following parameters are required. However, if any are left unspecified
 on the command line, and if apigeetool is running in an interactive shell,
 then apigeetool will prompt for them.
 
-`--username  -u`  
-(required) Your Apigee account username.
-
-`--password  -p`  
-(required) Your Apigee account password.
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
 
 `--api  -n`  
 (required) The name of the deployed app to get logs from.
 
 `--environment   -e`  
 (required) The environment on Apigee Edge where the app is currently deployed.
-
-`--organization  -o`  
-(required) The name of the organization to deploy to.
 
 #### Optional Parameters
 
