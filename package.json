@@ -31,5 +31,9 @@
   "devDependencies": {
     "connect": "2.x.x",
     "express": "4.x.x"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apigee/apigeetool-node.git"
+    }
 }
