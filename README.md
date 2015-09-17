@@ -134,7 +134,7 @@ for organization name, all of which are required.
 (optional) If the API proxy includes Node.js modules (e.g., in a `node_modules` directory), this option updates them on Apigee Edge without uploading them from your system. Basically, it's like running "npm install" on Apigee Edge in the root directory of the API proxy bundle.  
 
 `--upload-modules    -U`  
-(optional) If specified, uploads Node.js modules from your system to Apigee Edge rather than resolving the modules directly on Apigee Edge. This is the default.
+(optional) If specified, uploads Node.js modules from your system to Apigee Edge rather than resolving the modules directly on Apigee Edge (the default behavior).
 
 ## <a name="deployproxy"></a>deployproxy
 
