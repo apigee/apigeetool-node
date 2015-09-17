@@ -122,7 +122,7 @@ for organization name, all of which are required.
 #### Optional parameters
 
 `--virtualhosts  -v`  
-(optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deploynodeapp` uses only the `default` virtual host. Note that on the Apigee Edge cloud platform, all new proxies are assigned two virtual hosts: `default` and `secure`. If you want your deployed Node.js app to use both HTTP and HTTPS, specify `-v default,secure`.
+(optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deploynodeapp` uses `default,secure`.
 
 `--base-path -b`  
 (optional) The base path of the API proxy. For example, for this API proxy, the base path is `/example-proxy`: `http://myorg-test.apigee.net/example-proxy/resource1`.
