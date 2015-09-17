@@ -107,19 +107,19 @@ See [Common Parameters](#commonargs) for a list of additional parameters, includ
 the "-u" and "-p" parameters for username and password, and the "-o" parameter
 for organization name, all of which are required.
 
-`--api   -n`  
-(required) The name of the API proxy. The name of the API proxy must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `A-Z0-9._\-$ %`.
-
 `--environment   -e`  
 (required) The name of the environment to deploy to.  
 
+#### Optional parameters
+
+`--api   -n`  
+(optional) The name of the API proxy. The name of the API proxy must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `A-Z0-9._\-$ %`. If not specified, will attempt to use name from package.json.
+
 `--directory -d`  
-(required) The path to the root directory of the API proxy on your local system.
+(optional) The path to the root directory of the API proxy on your local system. If not specified, will assume the current directory.
 
 `--main  -m`  
-(required) The Node.js file you want to be the main file.
-
-#### Optional parameters
+(optional) The Node.js file you want to be the main file. If not specified, will attempt to use main from package.json.
 
 `--virtualhosts  -v`  
 (optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deploynodeapp` uses `default,secure`.
