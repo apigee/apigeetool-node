@@ -37,13 +37,13 @@ The following parameters are available on all of the commands supported by
 this tool:
 
 `--username  -u`  
-(required) Your Apigee account username.
+(required) Your Apigee account username. May be set as an environment variable APIGEE_USERNAME.
 
 `--password  -p`  
-(required) Your Apigee account password.
+(required) Your Apigee account password. May be set as an environment variable APIGEE_PASSWORD.
 
 `--organization  -o`  
-(required) The name of the organization to deploy to.
+(required) The name of the organization to deploy to. May be set as an environment variable APIGEE_ORGANIZATION.
 
 `--help  -h`  
 (optional) Displays help on this command.
