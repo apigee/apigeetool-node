@@ -107,8 +107,8 @@ See [Common Parameters](#commonargs) for a list of additional parameters, includ
 the "-u" and "-p" parameters for username and password, and the "-o" parameter
 for organization name, all of which are required.
 
-`--environment   -e`  
-(required) The name of the environment to deploy to.  
+`--environments  -e`  
+(required) The name(s) of the environment(s) to deploy to (comma-delimited).  
 
 #### Optional parameters
 
@@ -159,8 +159,8 @@ for organization name, all of which are required.
 `--api   -n`  
 (required) The name of the API proxy. Note: The name of the API proxy must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `A-Z0-9._\-$ %`.
 
-`--environment   -e`  
-(required) The name of the environment to deploy to.  
+`--environments  -e`  
+(required) The name(s) of the environment(s) to deploy to (comma delimited).  
 
 `--directory -d`  
 (required) The path to the root directory of the API proxy on your local system.
