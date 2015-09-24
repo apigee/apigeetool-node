@@ -22,34 +22,39 @@ describe('ZIP Utilities Test', function() {
     });
   });
 
-  it('Enumerate node file list', function() {
-    var files = ziputils.enumerateNodeDirectory('./test/fixtures/employeesnode');
-    //console.log('%j', files);
+  it('Enumerate node file list', function(done) {
+    ziputils.enumerateNodeDirectory('./test/fixtures/employeesnode', false, function(err, files) {
+      if (err) { return done(err); }
 
-    // Should contain README.md
-    var readme = _.find(files, function(f) {
-      return (f.fileName === 'test/fixtures/employeesnode/README.md');
-    });
-    assert(readme);
-    assert.equal(readme.fileName, 'test/fixtures/employeesnode/README.md');
-    assert.equal(readme.resourceName, 'README.md');
-    assert.equal(readme.resourceType, 'node');
-    assert(!readme.directory);
+      //console.log('%j', files);
 
-    // Should not contain "node_modules.zip"
-    var topModules = _.find(files, function(f) {
-      return (f.fileName === 'test/fixtures/employeesnode/node_modules');
-    });
-    assert(!topModules);
+      // Should contain README.md
+      var readme = _.find(files, function(f) {
+        return (f.fileName === 'test/fixtures/employeesnode/README.md');
+      });
+      assert(readme);
+      assert.equal(readme.fileName, 'test/fixtures/employeesnode/README.md');
+      assert.equal(readme.resourceName, 'README.md');
+      assert.equal(readme.resourceType, 'node');
+      assert(!readme.directory);
 
-    // Should contain "node_modules_express"
-    var express = _.find(files, function(f) {
-      return (f.fileName === 'test/fixtures/employeesnode/node_modules/express');
+      // Should not contain "node_modules.zip"
+      var topModules = _.find(files, function(f) {
+        return (f.fileName === 'test/fixtures/employeesnode/node_modules');
+      });
+      assert(!topModules);
+
+      // Should contain "node_modules_express"
+      var express = _.find(files, function(f) {
+        return (f.fileName === 'test/fixtures/employeesnode/node_modules/express');
+      });
+      assert(express);
+      assert.equal(express.fileName, 'test/fixtures/employeesnode/node_modules/express');
+      assert.equal(express.resourceName, 'node_modules_express.zip');
+      assert(express.directory);
+
+      done();
     });
-    assert(express);
-    assert.equal(express.fileName, 'test/fixtures/employeesnode/node_modules/express');
-    assert.equal(express.resourceName, 'node_modules_express.zip');
-    assert(express.directory);
   });
 
   it('Enumerate regular file list', function() {

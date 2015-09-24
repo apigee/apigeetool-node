@@ -36,39 +36,39 @@ For more information, refer to the [Apigee Edge docs](http://apigee.com/docs/).
 The following parameters are available on all of the commands supported by
 this tool:
 
-`--username  -u`  
-(required) Your Apigee account username. May be set as an environment variable APIGEE_USERNAME.
-
-`--password  -p`  
-(required) Your Apigee account password. May be set as an environment variable APIGEE_PASSWORD.
-
-`--organization  -o`  
-(required) The name of the organization to deploy to. May be set as an environment variable APIGEE_ORGANIZATION.
-
-`--help  -h`  
-(optional) Displays help on this command.
-
 `--baseuri   -L`  
 (optional) The base URI for you organization on Apigee Edge. The default is the base URI for Apigee cloud deployments is `api.enterprise.apigee.com`. For on-premise deployments, the base URL may be different.
-
-`--debug -D`  
-(optional) Prints additional information about the deployment, including router and message processor IDs.
-
-`--verbose   -V`  
-(optional) Prints additional information as the deployment proceeds.
-
-`--json  -j`  
-(optional) Formats the command's response as a JSON object.
 
 `--cafile -c`
 (optional) The names of one of more PEM files that represent trusted certificate authorities.
 Multiple file names may be comma-separated. Use this to communicate with an installation
 of Apigee Edge that uses a custom certificate for API calls.
 
+`--debug -D`  
+(optional) Prints additional information about the deployment, including router and message processor IDs.
+
+`--help  -h`  
+(optional) Displays help on this command.
+
 `--insecure -k`
 (optional) Do not validate the TLS certificate of the HTTPS target for API calls.
 Use this to communicate with an installation of Apigee Edge that does not use a
 trusted TLS certificate.
+
+`--json  -j`  
+(optional) Formats the command's response as a JSON object.
+
+`--organization  -o`  
+(required) The name of the organization to deploy to. May be set as an environment variable APIGEE_ORGANIZATION.
+
+`--password  -p`  
+(required) Your Apigee account password. May be set as an environment variable APIGEE_PASSWORD.
+
+`--username  -u`  
+(required) Your Apigee account username. May be set as an environment variable APIGEE_USERNAME.
+
+`--verbose   -V`  
+(optional) Prints additional information as the deployment proceeds.
 
 # <a name="reference"></a>Command reference and examples
 
@@ -115,26 +115,29 @@ for organization name, all of which are required.
 `--api   -n`  
 (optional) The name of the API proxy. The name of the API proxy must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `A-Z0-9._\-$ %`. If not specified, will attempt to use name from package.json.
 
+`--base-path -b`  
+(optional) The base path of the API proxy. For example, for this API proxy, the base path is `/example-proxy`: `http://myorg-test.apigee.net/example-proxy/resource1`.
+
 `--directory -d`  
-(optional) The path to the root directory of the API proxy on your local system. If not specified, will assume the current directory.
+(optional) The path to the root directory of the API proxy on your local system. Will attempt to use current directory is none is specified.
+
+`--import-only   -i`  
+(optional) Imports the API proxy to Apigee Edge but does not deploy it.
 
 `--main  -m`  
 (optional) The Node.js file you want to be the main file. If not specified, will attempt to use main from package.json.
 
-`--virtualhosts  -v`  
-(optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deploynodeapp` uses `default,secure`.
-
-`--base-path -b`  
-(optional) The base path of the API proxy. For example, for this API proxy, the base path is `/example-proxy`: `http://myorg-test.apigee.net/example-proxy/resource1`.
-
-`--import-only   -i`  
-(optional) Imports the API proxy to Apigee Edge but does not deploy it.
+`--preserve-policies -P`  
+(optional) If specified, the highest revision of the existing proxy will be downloaded and the node code in your directory will be overlayed upon it to create a resulting proxy that contains both any existing policies and the node code in the directory. If there is no existing revision, this option will have no effect. 
 
 `--resolve-modules   -R`  
 (optional) If the API proxy includes Node.js modules (e.g., in a `node_modules` directory), this option updates them on Apigee Edge without uploading them from your system. Basically, it's like running "npm install" on Apigee Edge in the root directory of the API proxy bundle.  
 
 `--upload-modules    -U`  
 (optional) If specified, uploads Node.js modules from your system to Apigee Edge rather than resolving the modules directly on Apigee Edge (the default behavior).
+
+`--virtualhosts  -v`  
+(optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deploynodeapp` uses `default,secure`.
 
 ## <a name="deployproxy"></a>deployproxy
 
@@ -162,13 +165,13 @@ for organization name, all of which are required.
 `--environments  -e`  
 (required) The name(s) of the environment(s) to deploy to (comma delimited).  
 
-`--directory -d`  
-(required) The path to the root directory of the API proxy on your local system.
-
 #### Optional parameters
 
 `--base-path -b`  
 (optional) The base path of the API proxy. For example, for this API proxy, the base path is /example-proxy: http://myorg-test.apigee.net/example-proxy/resource1.
+
+`--directory -d`  
+(optional) The path to the root directory of the API proxy on your local system. Will attempt to use current directory is none is specified.
 
 `--import-only   -i`  
 (optional) Imports the API proxy to Apigee Edge but does not deploy it.
