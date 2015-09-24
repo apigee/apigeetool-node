@@ -4,12 +4,13 @@
 
 var express = require('express');
 var connect = require('connect');
+var jsonParser = require('body-parser').json();
 
 var app = express();
 
 var PORT = process.env.PORT || 9000;
 
-app.use(connect.json());
+app.use(jsonParser);
 
 app.get('/v1/o', getOrganizations);
 app.get('/v1/organizations', getOrganizations);
