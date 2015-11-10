@@ -55,6 +55,10 @@ of Apigee Edge that uses a custom certificate for API calls.
 Use this to communicate with an installation of Apigee Edge that does not use a
 trusted TLS certificate.
 
+`--asynclimit -a`
+(optional) Limit for the maximum number of operations performed concurrently.
+Currently this only affects file uploads in the `deploynodeapp` command. Defaults to 4.
+
 `--json  -j`  
 (optional) Formats the command's response as a JSON object.
 
