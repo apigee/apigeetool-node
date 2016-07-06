@@ -71,7 +71,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 `--username  -u`  
 (required) Your Apigee account username. May be set as an environment variable APIGEE_USERNAME.
 
-`--netrc  -n`  
+`--netrc  -N`  
 (optional) Use this in lieu of -u / -p, to tell apigeetool to retrieve credentials from your .netrc file.
 
 `--verbose   -V`  
