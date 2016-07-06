@@ -71,7 +71,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 `--username  -u`  
 (required) Your Apigee account username. May be set as an environment variable APIGEE_USERNAME.
 
-`--netrc  -n`  
+`--netrc  -N`  
 (optional) Use this in lieu of -u / -p, to tell apigeetool to retrieve credentials from your .netrc file.
 
 `--verbose   -V`  
@@ -175,7 +175,7 @@ for organization name, all of which are required.
 #### Optional parameters
 
 `--base-path -b`  
-(optional) The base path of the API proxy. For example, for this API proxy, the base path is /example-proxy: http://myorg-test.apigee.net/example-proxy/resource1.
+(optional) The base path to use as a prefix for all proxy endpoints specified in the API proxy. For example, suppose you have an API Proxy with one ProxyEndpoint, and the BasePath for that ProxyEndpoint is /endpoint1.  If you then specify /test1/chris with this option, the ProxyEndpoint will be reachable at the effective path of /test1/chris/endpoint1.  The full URL for resource1 on that proxy endpoint might be http://myorg-test.apigee.net/test1/chris/endpoint1/resource1.
 
 `--directory -d`  
 (optional) The path to the root directory of the API proxy on your local system. Will attempt to use current directory is none is specified.
