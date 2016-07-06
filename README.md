@@ -187,7 +187,10 @@ for organization name, all of which are required.
 (optional) If the API proxy includes Node.js modules (e.g., in a `node_modules` directory), this option updates them on Apigee Edge without uploading them from your system. Basically, it's like running npm on Apigee Edge in the root directory of the API proxy bundle.  
 
 `--upload-modules    -U`  
-(optional) If specified, uploads Node.js modules from your system to Apigee Edge.
+(optional) If specified, uploads Node.js modules from your system to Apigee Edge. This is the default behavior.
+
+`--one-zip    -1`  
+(optional) If specified, imports the proxy bundle as one zip, rather than as several distinct zips. By default, not.
 
 ## <a name="undeploy"></a>undeploy
 
