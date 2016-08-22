@@ -65,11 +65,14 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 `--organization  -o`  
 (required) The name of the organization to deploy to. May be set as an environment variable APIGEE_ORGANIZATION.
 
-`--password  -p`  
-(required) Your Apigee account password. May be set as an environment variable APIGEE_PASSWORD.
+`--jwt -j`
+(optional) Your Apigee access token.
 
-`--username  -u`  
-(required) Your Apigee account username. May be set as an environment variable APIGEE_USERNAME.
+`--password  -p`
+(required if jwt not provided) Your Apigee account password. May be set as an environment variable APIGEE_PASSWORD.
+
+`--username  -u`
+(required if jwt not provided) Your Apigee account username. May be set as an environment variable APIGEE_USERNAME.
 
 `--netrc  -n`  
 (optional) Use this in lieu of -u / -p, to tell apigeetool to retrieve credentials from your .netrc file.
