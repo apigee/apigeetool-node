@@ -71,7 +71,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 `--username  -u`
 (required) Your Apigee account username. May be set as an environment variable APIGEE_USERNAME.
 
-`--jwt -t`
+`--token -t`
 (optional) Your Apigee access token. Use this in lieu of -u / -p/
 
 `--netrc  -n`  
