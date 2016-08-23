@@ -8,12 +8,13 @@ var util = require('util');
 var stream = require('stream');
 var _ = require('underscore');
 
-var config = require('./testconfig');
+var config = require('./testconfig-sample');
 
 var REASONABLE_TIMEOUT = 120000;
 var APIGEE_PROXY_NAME = 'apigee-cli-apigee-test';
 var NODE_PROXY_NAME = 'apigee-cli-node-test';
-
+var CACHE_RESOURCE_NAME='cache1';
+var PROXY_BASE_PATH = '/apigee-cli-test-employees'
 var verbose = false;
 
 describe('Remote Tests', function() {
@@ -25,9 +26,8 @@ describe('Remote Tests', function() {
   it('Deploy Apigee Proxy', function(done) {
     var opts = baseOpts();
     opts.api = APIGEE_PROXY_NAME;
-    opts.directory = path.join(__dirname, '../test/fixtures/employees');
-
-    apigeetool.deployProxy(opts, function(err, result) {
+    opts.directory = path.join(__dirname, '../test/fixtures/employees');    
+    apigeetool.deployProxy(opts, function(err, result) {      
       if (verbose) {
         console.log('Deploy result = %j', result);
       }
@@ -35,6 +35,9 @@ describe('Remote Tests', function() {
         done(err);
       } else {
         try {
+          if(Array.isArray(result)) {
+            result = result[0]
+          }
           assert.equal(result.name, APIGEE_PROXY_NAME);
           assert.equal(result.environment, config.environment);
           assert.equal(result.state, 'deployed');
@@ -153,7 +156,7 @@ describe('Remote Tests', function() {
     var opts = baseOpts();
     opts.api = APIGEE_PROXY_NAME;
     opts.directory = path.join(__dirname, '../test/fixtures/employees');
-    opts['base-path'] = '/testbase';
+    opts['base-path'] = PROXY_BASE_PATH;
 
     apigeetool.deployProxy(opts, function(err, result) {
       if (verbose) {
@@ -163,6 +166,7 @@ describe('Remote Tests', function() {
         done(err);
       } else {
         try {
+          if(Array.isArray(result)) result = result[0]
           assert.equal(result.name, APIGEE_PROXY_NAME);
           assert.equal(result.environment, config.environment);
           assert.equal(result.state, 'deployed');
@@ -201,7 +205,7 @@ describe('Remote Tests', function() {
     opts.api = APIGEE_PROXY_NAME;
     opts.directory = path.join(__dirname, '../test/fixtures/employees');
     opts['resolve-modules'] = true;
-    opts['base-path'] = '/testbase';
+    opts['base-path'] = PROXY_BASE_PATH;
 
     apigeetool.deployProxy(opts, function(err, result) {
       if (verbose) {
@@ -211,6 +215,7 @@ describe('Remote Tests', function() {
         done(err);
       } else {
         try {
+          if(Array.isArray(result)) result = result[0]            
           assert.equal(result.name, APIGEE_PROXY_NAME);
           assert.equal(result.environment, config.environment);
           assert.equal(result.state, 'deployed');
@@ -283,10 +288,12 @@ describe('Remote Tests', function() {
         done(err);
       } else {
         try {
+          if(Array.isArray(result)) result = result[0]
           assert.equal(result.name, NODE_PROXY_NAME);
           assert.equal(result.environment, config.environment);
           assert.equal(result.state, 'deployed');
-          assert.equal(result.uris.length, 1);
+          //it will be 2 for remote testing public cloud/ http & https
+          assert.equal(result.uris.length, 2);
           assert(typeof result.revision === 'number');
           deployedRevision = result.revision;
           deployedUri = result.uris[0];
@@ -358,10 +365,11 @@ describe('Remote Tests', function() {
         done(err);
       } else {
         try {
+          if(Array.isArray(result)) result=result[0]
           assert.equal(result.name, NODE_PROXY_NAME);
           assert.equal(result.environment, config.environment);
           assert.equal(result.state, 'deployed');
-          assert.equal(result.uris.length, 1);
+          assert.equal(result.uris.length, 2);
           assert(typeof result.revision === 'number');
           deployedRevision = result.revision;
           deployedUri = result.uris[0];
@@ -412,7 +420,7 @@ describe('Remote Tests', function() {
           assert.equal(deployment.environment, config.environment);
           assert.equal(deployment.state, 'deployed');
           assert.equal(deployment.revision, deployedRevision);
-          assert.equal(deployment.uris.length, 1);
+          assert.equal(deployment.uris.length, 2);
           assert.equal(deployment.uris[0], deployedUri);
           done();
         } catch (e) {
@@ -445,6 +453,35 @@ describe('Remote Tests', function() {
       }
     });
   });
+
+  it('Create an Cache Resource',function(done){
+    var opts = baseOpts();
+    opts.cache = CACHE_RESOURCE_NAME;
+    apigeetool.createcache(opts,function(err,result) {
+      if (verbose) {
+        console.log('Create Cache result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        done()
+      }
+    });
+  });
+   it('Delete Cache Resource',function(done){
+    var opts = baseOpts();
+    opts.cache = CACHE_RESOURCE_NAME;
+    apigeetool.deletecache(opts,function(err,result) {
+      if (verbose) {
+        console.log('Delete Cache result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        done()
+      }
+    });
+  });
 });
 
 function baseOpts() {
@@ -452,6 +489,9 @@ function baseOpts() {
     organization: config.organization,
     username: config.username,
     password: config.password,
+    environments: config.environment,
+    verbose: config.verbose,
+    debug: config.debug,
     environment: config.environment
   };
   if (config.baseuri) {
