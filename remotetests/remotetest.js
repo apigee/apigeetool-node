@@ -8,7 +8,7 @@ var util = require('util');
 var stream = require('stream');
 var _ = require('underscore');
 
-var config = require('./testconfig-sample');
+var config = require('./testconfig');
 
 var REASONABLE_TIMEOUT = 120000;
 var APIGEE_PROXY_NAME = 'apigee-cli-apigee-test';

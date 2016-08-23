@@ -399,4 +399,4 @@ https://github.com/apigee/api-platform-tools
 
 # <a name="contrib"></a>Contribution
 
-To run remotetests, provide your edge creds, org, env details in `remotetest/testconfig-sample.js`
+To run remotetests, provide your edge creds, org, env details in `remotetest/testconfig.js` similar to 'remotetest/testconfig-sample.js'
