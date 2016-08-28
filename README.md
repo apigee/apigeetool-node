@@ -6,6 +6,7 @@ This is a tool for deploying API proxies and Node.js applications to the Apigee 
 * [What you need to know about apigeetool](#whatyouneed)
 * [Command reference and examples](#reference)
 * [Original tool](#original)
+* [Contribution](#contrib)
 
 # <a name="installation"></a>Installation
 
@@ -65,11 +66,14 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 `--organization  -o`  
 (required) The name of the organization to deploy to. May be set as an environment variable APIGEE_ORGANIZATION.
 
-`--password  -p`  
+`--password  -p`
 (required) Your Apigee account password. May be set as an environment variable APIGEE_PASSWORD.
 
-`--username  -u`  
+`--username  -u`
 (required) Your Apigee account username. May be set as an environment variable APIGEE_USERNAME.
+
+`--token -t`
+(optional) Your Apigee access token. Use this in lieu of -u / -p/
 
 `--netrc  -n`  
 (optional) Use this in lieu of -u / -p, to tell apigeetool to retrieve credentials from your .netrc file.
@@ -395,3 +399,7 @@ This module replaces the original "apigeetool," which was written in Python.
 It is also called "apigeetool" and resides here:
 
 https://github.com/apigee/api-platform-tools
+
+# <a name="contrib"></a>Contribution
+
+To run remotetests, provide your edge creds, org, env details in `remotetest/testconfig.js` similar to 'remotetest/testconfig-sample.js'

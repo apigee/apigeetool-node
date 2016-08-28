@@ -8,7 +8,7 @@ var util = require('util');
 var stream = require('stream');
 var _ = require('underscore');
 
-var config = require('./testconfig-sample');
+var config = require('./testconfig');
 
 var REASONABLE_TIMEOUT = 120000;
 var APIGEE_PROXY_NAME = 'apigee-cli-apigee-test';
@@ -22,6 +22,38 @@ describe('Remote Tests', function() {
 
   var deployedRevision;
   var deployedUri;
+
+  it('Deploy Apigee Proxy with Promise SDK', function(done) {
+    var opts = baseOpts();
+    opts.api = APIGEE_PROXY_NAME;
+    opts.directory = path.join(__dirname, '../test/fixtures/employees');    
+
+    var sdk = apigeetool.getPromiseSDK()
+    console.log("SDK = " + JSON.stringify(sdk))
+
+      sdk.deployProxy(opts)
+      .then(function(result){
+        console.log('success')
+        try {
+          if(Array.isArray(result)) {
+            result = result[0]
+          }
+          assert.equal(result.name, APIGEE_PROXY_NAME);
+          assert.equal(result.environment, config.environment);
+          assert.equal(result.state, 'deployed');
+          assert.equal(result.uris.length, 1);
+          assert(typeof result.revision === 'number');
+          deployedRevision = result.revision;
+          deployedUri = result.uris[0];
+          done();
+        } catch (e) {
+          done(e);
+        }
+      },function(err){
+        console.log('err')
+        done(err);
+      })
+  });
 
   it('Deploy Apigee Proxy', function(done) {
     var opts = baseOpts();
@@ -492,7 +524,8 @@ function baseOpts() {
     environments: config.environment,
     verbose: config.verbose,
     debug: config.debug,
-    environment: config.environment
+    environment: config.environment,
+    token: config.token
   };
   if (config.baseuri) {
     o.baseuri = config.baseuri;
