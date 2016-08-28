@@ -14,4 +14,6 @@ module.exports = {
   // Uncomment for the management API URI of your local Apigee environment
   // Leave commented to test using the Apigee cloud.
   //baseuri: 'http://mgmt:8080'
+  // Uncomment if you want to use the Apigee access token instead of your username and password
+  //token: 'your-apigee-access-token'
 };
