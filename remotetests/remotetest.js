@@ -524,7 +524,8 @@ function baseOpts() {
     environments: config.environment,
     verbose: config.verbose,
     debug: config.debug,
-    environment: config.environment
+    environment: config.environment,
+    token: config.token
   };
   if (config.baseuri) {
     o.baseuri = config.baseuri;
