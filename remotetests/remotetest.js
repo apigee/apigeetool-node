@@ -15,6 +15,7 @@ var APIGEE_PROXY_NAME = 'apigee-cli-apigee-test';
 var NODE_PROXY_NAME = 'apigee-cli-node-test';
 var CACHE_RESOURCE_NAME='cache1';
 var PROXY_BASE_PATH = '/apigee-cli-test-employees'
+var APIGEE_PRODUCT_NAME = 'TESTPRODUCT'
 var verbose = false;
 
 describe('Remote Tests', function() {
@@ -22,6 +23,8 @@ describe('Remote Tests', function() {
 
   var deployedRevision;
   var deployedUri;
+
+  
 
   it('Deploy Apigee Proxy with Promise SDK', function(done) {
     var opts = baseOpts();
@@ -54,7 +57,42 @@ describe('Remote Tests', function() {
         done(err);
       })
   });
-
+  it('Create Product', function(done){
+    var opts = baseOpts() ;
+    opts.productName = APIGEE_PRODUCT_NAME
+    opts.productDesc = 'abc123'
+    opts.proxies = APIGEE_PROXY_NAME
+    opts.environments = 'test'
+    opts.quota = '1',
+    opts.quotaInterval = '1'
+    opts.quotaTimeUnit = 'minute'
+    
+    var sdk = apigeetool.getPromiseSDK()
+    
+    sdk.createProduct(opts)
+      .then(function(result){
+        console.log(result)
+        done()
+      },function(err){
+        console.log(err)
+        done(err)
+      }) ;               
+  })
+  it('Delete API Product',function(done){
+     var opts = baseOpts() ;
+    opts.productName = APIGEE_PRODUCT_NAME
+    
+    var sdk = apigeetool.getPromiseSDK()
+    
+    sdk.deleteProduct(opts)
+      .then(function(result){
+        console.log(result)
+        done()
+      },function(err){
+        console.log(err)
+        done(err)
+      }) ;  
+  })
   it('Deploy Apigee Proxy', function(done) {
     var opts = baseOpts();
     opts.api = APIGEE_PROXY_NAME;
