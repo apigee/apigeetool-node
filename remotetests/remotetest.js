@@ -16,6 +16,9 @@ var NODE_PROXY_NAME = 'apigee-cli-node-test';
 var CACHE_RESOURCE_NAME='cache1';
 var PROXY_BASE_PATH = '/apigee-cli-test-employees'
 var APIGEE_PRODUCT_NAME = 'TESTPRODUCT'
+var DEVELOPER_EMAIL = 'test123@apigee.com'
+var APP_NAME = 'test123test123'
+
 var verbose = false;
 
 describe('Remote Tests', function() {
@@ -78,6 +81,72 @@ describe('Remote Tests', function() {
         done(err)
       }) ;               
   })
+  
+  it('Create Developer' , function(done){
+      var opts = baseOpts()
+      opts.email = DEVELOPER_EMAIL
+      opts.firstName = 'Test'
+      opts.lastName = 'Test1'
+      opts.userName = 'runningFromTest123'
+
+      var sdk = apigeetool.getPromiseSDK()
+
+      sdk.createDeveloper(opts)
+      .then(function(result){
+        console.log(result)
+        done()
+      },function(err){
+        console.log(err)
+        done(err)
+      }) ; 
+  })
+
+  it('Create App' , function(done){
+      var opts = baseOpts()
+      opts.name = APP_NAME
+      opts.apiproducts = APIGEE_PRODUCT_NAME
+      opts.email = DEVELOPER_EMAIL
+      
+
+      var sdk = apigeetool.getPromiseSDK()
+
+      sdk.createApp(opts)
+      .then(function(result){
+        console.log(result)
+        done()
+      },function(err){
+        console.log(err)
+        done(err)
+      }) ; 
+  })
+  it('Delete App' , function(done){
+      var opts = baseOpts()
+      opts.email = DEVELOPER_EMAIL
+      opts.name = APP_NAME
+      var sdk = apigeetool.getPromiseSDK()
+      sdk.deleteApp(opts)
+      .then(function(result){
+        console.log(result)
+        done()
+      },function(err){
+        console.log(err)
+        done(err)
+      }) ; 
+  })
+  it('Delete Developer' , function(done){
+      var opts = baseOpts()
+      opts.email = DEVELOPER_EMAIL
+      var sdk = apigeetool.getPromiseSDK()
+      sdk.deleteDeveloper(opts)
+      .then(function(result){
+        console.log(result)
+        done()
+      },function(err){
+        console.log(err)
+        done(err)
+      }) ; 
+  })
+
   it('Delete API Product',function(done){
      var opts = baseOpts() ;
     opts.productName = APIGEE_PRODUCT_NAME
@@ -93,6 +162,7 @@ describe('Remote Tests', function() {
         done(err)
       }) ;  
   })
+
   it('Deploy Apigee Proxy', function(done) {
     var opts = baseOpts();
     opts.api = APIGEE_PROXY_NAME;
