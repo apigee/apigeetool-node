@@ -431,7 +431,7 @@ You could use apigeetool as an SDK to orchestrate tasks that you want to perform
 			//deploy failed	
 		})
 
-## <a name="createdeveloper"></a>createdeveloper
+## <a name="createdeveloper"></a>Create Developer
 
 Creates a new Developer in Edge
 
@@ -452,6 +452,116 @@ Create a developer.
         //developer creation failed
       }) ;
 
+
+## <a name="deletedeveloper"></a>Delete Developer
+
+Delete a Developer in Edge
+
+#### Example
+
+	//see above for other required options
+	opts.email = DEVELOPER_EMAIL
+
+    sdk.deleteDeveloper(opts)
+      .then(function(result){
+        //developer deleted
+      },function(err){
+        //developer delete failed
+      }) ;
+
+## <a name="createproduct"></a>Create Product
+
+Creates a new API Product in Edge
+
+#### Example
+
+    opts.productName = APIGEE_PRODUCT_NAME
+    opts.productDesc = 'description'
+    opts.proxies = APIGEE_PROXY_NAME
+    opts.environments = 'test' //apigee env
+    opts.quota = '1', //quota amount
+    opts.quotaInterval = '1' //interval 
+    opts.quotaTimeUnit = 'minute' //timeunit
+        
+    sdk.createProduct(opts)
+      .then(function(result){
+        //product created
+      },function(err){
+        //product creation failed
+      }) ;    
+
+## <a name="deleteproduct"></a>Delete Product
+
+Delete API Product in Edge
+
+#### Example
+    opts.productName = APIGEE_PRODUCT_NAME    
+    
+    sdk.deleteProduct(opts)
+      .then(function(result){
+        //delete success
+      },function(err){
+        //delete failed
+      }) ;  
+
+## <a name="createapp"></a>Create App
+
+Create App in Edge
+
+#### Example
+
+      opts.name = APP_NAME
+      opts.apiproducts = APIGEE_PRODUCT_NAME
+      opts.email = DEVELOPER_EMAIL
+
+      sdk.createApp(opts)
+      .then(function(result){
+        //create app done
+      },function(err){
+        //create app failed
+      }) ; 
+
+## <a name="deleteapp"></a>Delete App
+
+Delete App in Edge
+
+#### Example
+
+      opts.email = DEVELOPER_EMAIL
+      opts.name = APP_NAME
+
+      sdk.deleteApp(opts)
+      .then(function(result){
+        //delete app success
+      },function(err){
+        //delete app failed
+      }) ; 
+
+## <a name="createcache"></a>Create Cache
+
+Create Cache in Edge
+
+#### Example
+    opts.cache = CACHE_RESOURCE_NAME;
+    sdk.createcache(opts)
+    .then(function(result){
+        //cache create success
+      },function(err){
+        //cache create failed
+      }) ; 
+
+## <a name="deletecache"></a>Delete Cache
+
+Delete Cache in Edge
+
+#### Example
+    opts.cache = CACHE_RESOURCE_NAME;
+    sdk.deletecache(opts)
+    .then(function(result){
+        //delete create success
+      },function(err){
+        //delete create failed
+      }) ; 
 
 # <a name="original"></a>Original Tool
 
