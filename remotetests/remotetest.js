@@ -13,7 +13,7 @@ var config = require('./testconfig');
 var REASONABLE_TIMEOUT = 120000;
 var APIGEE_PROXY_NAME = 'apigee-cli-apigee-test';
 var NODE_PROXY_NAME = 'apigee-cli-node-test';
-var CACHE_RESOURCE_NAME='cache1';
+var CACHE_RESOURCE_NAME='apigee-cli-remotetests-cache1';
 var PROXY_BASE_PATH = '/apigee-cli-test-employees'
 var APIGEE_PRODUCT_NAME = 'TESTPRODUCT'
 var DEVELOPER_EMAIL = 'test123@apigee.com'
@@ -35,11 +35,9 @@ describe('Remote Tests', function() {
     opts.directory = path.join(__dirname, '../test/fixtures/employees');    
 
     var sdk = apigeetool.getPromiseSDK()
-    console.log("SDK = " + JSON.stringify(sdk))
 
       sdk.deployProxy(opts)
       .then(function(result){
-        console.log('success')
         try {
           if(Array.isArray(result)) {
             result = result[0]
@@ -56,7 +54,6 @@ describe('Remote Tests', function() {
           done(e);
         }
       },function(err){
-        console.log('err')
         done(err);
       })
   });
@@ -74,10 +71,8 @@ describe('Remote Tests', function() {
     
     sdk.createProduct(opts)
       .then(function(result){
-        console.log(result)
         done()
       },function(err){
-        console.log(err)
         done(err)
       }) ;               
   })
@@ -93,10 +88,8 @@ describe('Remote Tests', function() {
 
       sdk.createDeveloper(opts)
       .then(function(result){
-        console.log(result)
         done()
       },function(err){
-        console.log(err)
         done(err)
       }) ; 
   })
@@ -106,16 +99,13 @@ describe('Remote Tests', function() {
       opts.name = APP_NAME
       opts.apiproducts = APIGEE_PRODUCT_NAME
       opts.email = DEVELOPER_EMAIL
-      
 
       var sdk = apigeetool.getPromiseSDK()
 
       sdk.createApp(opts)
       .then(function(result){
-        console.log(result)
         done()
       },function(err){
-        console.log(err)
         done(err)
       }) ; 
   })
@@ -126,10 +116,8 @@ describe('Remote Tests', function() {
       var sdk = apigeetool.getPromiseSDK()
       sdk.deleteApp(opts)
       .then(function(result){
-        console.log(result)
         done()
       },function(err){
-        console.log(err)
         done(err)
       }) ; 
   })
@@ -139,10 +127,8 @@ describe('Remote Tests', function() {
       var sdk = apigeetool.getPromiseSDK()
       sdk.deleteDeveloper(opts)
       .then(function(result){
-        console.log(result)
         done()
       },function(err){
-        console.log(err)
         done(err)
       }) ; 
   })
@@ -155,10 +141,8 @@ describe('Remote Tests', function() {
     
     sdk.deleteProduct(opts)
       .then(function(result){
-        console.log(result)
         done()
       },function(err){
-        console.log(err)
         done(err)
       }) ;  
   })
