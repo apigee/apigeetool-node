@@ -28,8 +28,8 @@ describe('Options parsing test', function(done) {
   it('Test missing option', function(done) {
     var desc = {
       foo: {},
-      bar: { required: false },
-      baz: { required: true }
+      bar: { required: false, prompt: false },
+      baz: { required: true, prompt: true }
     };
     var opts = { foo: 1, bar: 'baz'};
     options.validate(opts, desc, function(err) {
@@ -41,8 +41,8 @@ describe('Options parsing test', function(done) {
   it('Test nothing and missing stuff', function(done) {
     var desc = {
       foo: {},
-      bar: { required: false },
-      baz: { required: true }
+      bar: { required: false, prompt: false },
+      baz: { required: true, prompt: true }
     };
     options.validate({}, desc, function(err) {
       assert(err);
