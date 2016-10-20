@@ -5,6 +5,7 @@ This is a tool for deploying API proxies and Node.js applications to the Apigee 
 * [Installation](#installation)
 * [What you need to know about apigeetool](#whatyouneed)
 * [Command reference and examples](#reference)
+* [SDK reference and examples](#sdkreference)
 * [Original tool](#original)
 * [Contribution](#contrib)
 
@@ -406,6 +407,30 @@ records and write them to standard output in the manner of "tail -f."
 log records. If not specified, then the default is UTC. The timestamp name
 should be a name such as "PST."
 
+# <a name="sdkreference"></a>SDK Reference
+
+You could use apigeetool as an SDK to orchestrate tasks that you want to perform with Edge, for eg, deploying an api proxy or running tests etc.
+
+#### Usage Example
+	
+	var apigeetool = require('apigeetool')
+	var sdk = apigeetool.getPromiseSDK()
+	var opts = {
+	    organization: 'edge-org',
+	    username: 'edge-user',
+	    password: 'password',
+	    environment: 'environment',	 
+  	}
+	opts.api = APIGEE_PROXY_NAME;
+    opts.directory = path.join(__dirname);    
+
+	sdk.deployProxy(opts)
+		.then(function(result){
+			//deploy success
+			},function(err){
+			//deploy failed	
+		})
+
 ## <a name="createdeveloper"></a>createdeveloper
 
 Creates a new Developer in Edge
@@ -413,27 +438,19 @@ Creates a new Developer in Edge
 #### Example
 
 Create a developer.
+	
+	//see above for other required options
+	opts.email = DEVELOPER_EMAIL
+    opts.firstName = 'Test'
+    opts.lastName = 'Test1'
+    opts.userName = 'runningFromTest123'
 
-    apigeetool createdeveloper --email dev@one.tld --firstName fname --lastName lname --userName username
-
-#### Required parameters
-
-The following parameters are required. However, if any are left unspecified
-on the command line, and if apigeetool is running in an interactive shell,
-then apigeetool will prompt for them.
-
-See [Common Parameters](#commonargs) for a list of additional parameters, including
-the "-u" and "-p" parameters for username and password, and the "-o" parameter
-for organization name, all of which are required.
-
-`--email`  (required) Developer Email
-
-`--firstName`  (required) Developer's Firstname
-
-`--lastName`  (required) Developer's Lastname
-
-`--userName`  (required) Username for Developer
-
+    sdk.createDeveloper(opts)
+      .then(function(result){
+        //developer created
+      },function(err){
+        //developer creation failed
+      }) ;
 
 
 # <a name="original"></a>Original Tool
