@@ -27,6 +27,10 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 * retrieving deployed proxies and apps from Edge,
 * deleting proxy definitions from Edge, and
 * retreiving log messages from Node.js apps deployed to Edge.
+* create or delete an API product in Edge
+* create or delete a Developer in Edge
+* create or delete a Developer Application in Edge
+* create or delete a Cache resource in Edge
 
 You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments.
 
@@ -90,6 +94,15 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [fetchproxy](#fetchproxy)
 * [getlogs](#getlogs)
 * [delete](#delete)
+* [createdeveloper](#createdeveloper)
+* [deletedeveloper](#deletedeveloper)
+* [createproduct](#createproduct)
+* [deleteproduct](#deleteproduct)
+* [createapp](#createapp)
+* [deleteapp](#deleteapp)
+* [createcache](#createcache)
+* [deletecache](#deletecache)
+
 
 ## <a name="deploynodeapp"></a>deploynodeapp
 
@@ -392,6 +405,36 @@ records and write them to standard output in the manner of "tail -f."
 (optional) If specified, use the time zone to format the timestamps on the
 log records. If not specified, then the default is UTC. The timestamp name
 should be a name such as "PST."
+
+## <a name="createdeveloper"></a>createdeveloper
+
+Creates a new Developer in Edge
+
+#### Example
+
+Create a developer.
+
+    apigeetool createdeveloper --email dev@one.tld --firstName fname --lastName lname --userName username
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--email`  (required) Developer Email
+
+`--firstName`  (required) Developer's Firstname
+
+`--lastName`  (required) Developer's Lastname
+
+`--userName`  (required) Username for Developer
+
+
 
 # <a name="original"></a>Original Tool
 
