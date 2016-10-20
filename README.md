@@ -5,6 +5,7 @@ This is a tool for deploying API proxies and Node.js applications to the Apigee 
 * [Installation](#installation)
 * [What you need to know about apigeetool](#whatyouneed)
 * [Command reference and examples](#reference)
+* [SDK reference and examples](#sdkreference)
 * [Original tool](#original)
 * [Contribution](#contrib)
 
@@ -27,6 +28,10 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 * retrieving deployed proxies and apps from Edge,
 * deleting proxy definitions from Edge, and
 * retreiving log messages from Node.js apps deployed to Edge.
+* create or delete an API product in Edge
+* create or delete a Developer in Edge
+* create or delete a Developer Application in Edge
+* create or delete a Cache resource in Edge
 
 You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments.
 
@@ -90,6 +95,15 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [fetchproxy](#fetchproxy)
 * [getlogs](#getlogs)
 * [delete](#delete)
+* [createdeveloper](#createdeveloper)
+* [deletedeveloper](#deletedeveloper)
+* [createproduct](#createproduct)
+* [deleteproduct](#deleteproduct)
+* [createapp](#createapp)
+* [deleteapp](#deleteapp)
+* [createcache](#createcache)
+* [deletecache](#deletecache)
+
 
 ## <a name="deploynodeapp"></a>deploynodeapp
 
@@ -392,6 +406,162 @@ records and write them to standard output in the manner of "tail -f."
 (optional) If specified, use the time zone to format the timestamps on the
 log records. If not specified, then the default is UTC. The timestamp name
 should be a name such as "PST."
+
+# <a name="sdkreference"></a>SDK Reference
+
+You could use apigeetool as an SDK to orchestrate tasks that you want to perform with Edge, for eg, deploying an api proxy or running tests etc.
+
+#### Usage Example
+	
+	var apigeetool = require('apigeetool')
+	var sdk = apigeetool.getPromiseSDK()
+	var opts = {
+	    organization: 'edge-org',
+	    username: 'edge-user',
+	    password: 'password',
+	    environment: 'environment',	 
+  	}
+	opts.api = APIGEE_PROXY_NAME;
+    opts.directory = path.join(__dirname);    
+
+	sdk.deployProxy(opts)
+		.then(function(result){
+			//deploy success
+			},function(err){
+			//deploy failed	
+		})
+
+## <a name="createdeveloper"></a>Create Developer
+
+Creates a new Developer in Edge
+
+#### Example
+
+Create a developer.
+	
+	//see above for other required options
+	opts.email = DEVELOPER_EMAIL
+    opts.firstName = 'Test'
+    opts.lastName = 'Test1'
+    opts.userName = 'runningFromTest123'
+
+    sdk.createDeveloper(opts)
+      .then(function(result){
+        //developer created
+      },function(err){
+        //developer creation failed
+      }) ;
+
+
+## <a name="deletedeveloper"></a>Delete Developer
+
+Delete a Developer in Edge
+
+#### Example
+
+	//see above for other required options
+	opts.email = DEVELOPER_EMAIL
+
+    sdk.deleteDeveloper(opts)
+      .then(function(result){
+        //developer deleted
+      },function(err){
+        //developer delete failed
+      }) ;
+
+## <a name="createproduct"></a>Create Product
+
+Creates a new API Product in Edge
+
+#### Example
+
+    opts.productName = APIGEE_PRODUCT_NAME
+    opts.productDesc = 'description'
+    opts.proxies = APIGEE_PROXY_NAME
+    opts.environments = 'test' //apigee env
+    opts.quota = '1', //quota amount
+    opts.quotaInterval = '1' //interval 
+    opts.quotaTimeUnit = 'minute' //timeunit
+        
+    sdk.createProduct(opts)
+      .then(function(result){
+        //product created
+      },function(err){
+        //product creation failed
+      }) ;    
+
+## <a name="deleteproduct"></a>Delete Product
+
+Delete API Product in Edge
+
+#### Example
+    opts.productName = APIGEE_PRODUCT_NAME    
+    
+    sdk.deleteProduct(opts)
+      .then(function(result){
+        //delete success
+      },function(err){
+        //delete failed
+      }) ;  
+
+## <a name="createapp"></a>Create App
+
+Create App in Edge
+
+#### Example
+
+      opts.name = APP_NAME
+      opts.apiproducts = APIGEE_PRODUCT_NAME
+      opts.email = DEVELOPER_EMAIL
+
+      sdk.createApp(opts)
+      .then(function(result){
+        //create app done
+      },function(err){
+        //create app failed
+      }) ; 
+
+## <a name="deleteapp"></a>Delete App
+
+Delete App in Edge
+
+#### Example
+
+      opts.email = DEVELOPER_EMAIL
+      opts.name = APP_NAME
+
+      sdk.deleteApp(opts)
+      .then(function(result){
+        //delete app success
+      },function(err){
+        //delete app failed
+      }) ; 
+
+## <a name="createcache"></a>Create Cache
+
+Create Cache in Edge
+
+#### Example
+    opts.cache = CACHE_RESOURCE_NAME;
+    sdk.createcache(opts)
+    .then(function(result){
+        //cache create success
+      },function(err){
+        //cache create failed
+      }) ; 
+
+## <a name="deletecache"></a>Delete Cache
+
+Delete Cache in Edge
+
+#### Example
+    opts.cache = CACHE_RESOURCE_NAME;
+    sdk.deletecache(opts)
+    .then(function(result){
+        //delete create success
+      },function(err){
+        //delete create failed
+      }) ; 
 
 # <a name="original"></a>Original Tool
 
