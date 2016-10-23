@@ -18,6 +18,8 @@ var PROXY_BASE_PATH = '/apigee-cli-test-employees'
 var APIGEE_PRODUCT_NAME = 'TESTPRODUCT'
 var DEVELOPER_EMAIL = 'test123@apigee.com'
 var APP_NAME = 'test123test123'
+var TARGET_SERVER_NAME = 'apigee-cli-test-servername'
+var MAP_NAME = 'apigee-cli-test-kvm'
 
 var verbose = false;
 
@@ -606,6 +608,81 @@ describe('Remote Tests', function() {
       }
     });
   });
+
+   it('Create Target Server',function(done){
+    var opts = baseOpts();
+    opts.targetServerName = TARGET_SERVER_NAME
+    opts.targetHost = 'localhost'
+    opts.targetEnabled = true
+    opts.targetPort = 443
+    opts.targetSSL=true
+    opts.environment = 'test'
+    apigeetool.getPromiseSDK()
+      .createTargetServer(opts)
+      .then(function(){done()},
+        function(err){
+          console.log(err)
+          done(err)})
+  })
+
+  it('Delete Target Server',function(done){
+    var opts = baseOpts();
+    opts.targetServerName = TARGET_SERVER_NAME
+    opts.environment = 'test'
+
+    apigeetool.deleteTargetServer(opts,function(err,result) {      
+      if (verbose) {
+        console.log('Delete TargetServer result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        done()
+      }
+    });
+  })
+
+  it('Create KVM',function(done){
+    var opts = baseOpts();
+    opts.mapName = MAP_NAME
+    opts.environment = 'test'
+    apigeetool.getPromiseSDK()
+      .createKVM(opts)
+      .then(function(){done()},
+        function(err){
+          console.log(err)
+          done(err)})
+  })
+   it('Add Entry to KVM',function(done){
+    var opts = baseOpts();
+    opts.mapName = MAP_NAME
+    opts.environment = 'test'
+    opts.entryName = 'test'
+    opts.entryValue = 'test1'
+    apigeetool.getPromiseSDK()
+      .addEntryToKVM(opts)
+      .then(function(){done()},
+        function(err){
+          console.log(err)
+          done(err)})
+  })
+   
+  it('Delete KVM',function(done){
+    var opts = baseOpts();
+    opts.mapName = MAP_NAME
+    opts.environment = 'test'
+    apigeetool.deleteKVM(opts,function(err,result) {      
+      if (verbose) {
+        console.log('Delete KVM result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        done()
+      }
+    });
+  })
+
 });
 
 function baseOpts() {
