@@ -1,6 +1,6 @@
 {
   "name": "apigeetool",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "A CLI for Apigee Edge",
   "main": "lib/main.js",
   "bin": {
