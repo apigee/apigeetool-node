@@ -4,13 +4,13 @@
  */
 module.exports = {
   // Your Apigee organization name
-  organization: 'amer-demo1',
+  organization: '<org>',
   // The environment to deploy to for testing -- 'test' is good
-  environment: 'test',
+  environment: '<env>',
   // The user name to authenticate with for the Apigee management API
-  username: 'mukundha@apigee.com',
+  username: '<edgeuser>',
   // The password for that user name
-  password: 'Apigee@123'
+  password: '<pass>'
 
   // comment the username and password and uncomment the following to use .netrc
   // netrc: true
