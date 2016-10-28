@@ -11,6 +11,10 @@ module.exports = {
   username: 'mukundha@apigee.com',
   // The password for that user name
   password: 'Apigee@123'
+
+  // comment the username and password and uncomment the following to use .netrc
+  // netrc: true
+
   // Uncomment for the management API URI of your local Apigee environment
   // Leave commented to test using the Apigee cloud.
   //baseuri: 'http://mgmt:8080'
