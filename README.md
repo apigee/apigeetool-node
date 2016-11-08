@@ -95,6 +95,11 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [fetchproxy](#fetchproxy)
 * [getlogs](#getlogs)
 * [delete](#delete)
+* [deploySharedflow](#deploySharedflow)
+* [undeploySharedflow](#undeploySharedflow)
+* [listSharedflowDeployments](#listSharedflowDeployments)
+* [fetchSharedflow](#fetchSharedflow)
+* [deleteSharedflow](#deleteSharedflow)
 * [createdeveloper](#createdeveloper)
 * [deletedeveloper](#deletedeveloper)
 * [createproduct](#createproduct)
@@ -406,6 +411,166 @@ records and write them to standard output in the manner of "tail -f."
 (optional) If specified, use the time zone to format the timestamps on the
 log records. If not specified, then the default is UTC. The timestamp name
 should be a name such as "PST."
+
+## <a name="deploySharedflow"></a>deploySharedflow
+
+Deploys a sharedFlow to Apigee Edge. If the sharedFlow is currently deployed, it will be undeployed first, and the newly deployed sharedflow's revision number is incremented.
+
+#### Example
+
+Deploys a SharedFlow called example-sf to Apigee Edge. Per the `-d` flag, the command is executed in the root directory of the sharedflow bundle.
+
+    apigeetool deploySharedflow  -u sdoe@example.com -o sdoe  -e test -n example-sf -d .
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--name   -n`  
+(required) The name of the SharedFlow. Note: The name of the SharedFlow must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `A-Z0-9._\-$ %`.
+
+`--environments  -e`  
+(required) The name(s) of the environment(s) to deploy to (comma delimited).  
+
+#### Optional parameters
+
+`--directory -d`
+(optional) The path to the root directory of the sharedflow on your local system. Will attempt to use current directory is none is specified.
+
+`--import-only   -i`
+(optional) Imports the sharedflow to Apigee Edge but does not deploy it.
+
+## <a name="undeploySharedflow"></a>undeploySharedflow
+
+Undeploys a named API proxy or Node.js app deployed on Apigee Edge.
+
+#### Example
+
+Undeploy the proxy named "example-sf".
+
+    apigeetool undeploySharedflow -u sdoe@example.com -o sdoe  -n example-sf -e test -D
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--name   -n`  
+(required) The name of the sharedflow to undeploy.
+
+`--environment   -e`  
+(required) The environment on Apigee Edge where the sharedflow is currently deployed.
+
+#### Optional parameters
+
+`--revision  -r`  
+(optional) Specify the revision number of the sharedflow to undeploy.
+
+## <a name="listSharedflowDeployments"></a>listSharedflowDeployments
+
+Lists the sharedflows deployed on Apigee Edge for the specified organization. Lets you filter the result by API proxy name or environment.
+
+#### Examples
+
+List all Sharedflows in an organization:
+
+    $ apigeetool listSharedflowDeployments -u sdoe@example.com -o sdoe -e test` #Won't work due to missing API
+
+List Sharedflows named "example-sf":
+
+    $ apigeetool listSharedflowDeployments -u sdoe@example.com -o sdoe -n example-sf
+
+#### Required parameters
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+#### Required, mutually exclusive parameters
+
+`--name   -n`
+(You must specify either `name` or `environment` in this command) The name of the Sharedflow to list.
+
+`--environment   -e`  
+(You must specify either `name` or `environment` in this command) The environment for which you want to list deployments. When `-e` is specified, the command lists all deployed proxies in the environment.
+
+#### Optional parameters
+
+`--revision  -r`
+(optional) Filters the list by the specified revision number.
+
+## <a name="fetchSharedflow"></a>fetchSharedFlow
+
+Fetches a sharedFlow from Apigee Edge. The
+result will be a ZIP file that contains the contents of the entire
+sharedflow.The resulting ZIP file may be "unzipped" and re-deployed using "deploySharedflow."
+
+#### Example
+
+Fetch the deployed proxy named "example-proxy".
+
+    apigeetool fetchSharedflow -u sdoe@example.com -o sdoe -n example-proxy -r 1
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--name  -n`  
+(required) The name of the sharedflow or app to undeploy.
+
+`--revision  -r`
+(required) Specifies the revision to retrieve.
+
+#### Optional parameters
+
+`--file -f`
+(optional) The name of the file to write as the result. If not specified,
+then the file name will be the same as the name passed to the "name"
+parameter.
+
+## <a name="deleteSharedflow"></a>deleteSharedflow
+
+Delete all revisions of a sharedflow from Apigee Edge.
+
+It is an error to delete a proxy that still has deployed revisions. Revisions
+must be undeployed using "undeploySharedflow" before this command may be used.
+
+#### Example
+
+Delete the proxy named "example-sf".
+
+    apigeetool deleteSharedflow -u sdoe@example.com -o sdoe -n example-sf
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--name  -n`  
+(required) The name of the API proxy or app to undeploy.
+
 
 # <a name="sdkreference"></a>SDK Reference
 
