@@ -197,9 +197,6 @@ for organization name, all of which are required.
 
 #### Optional parameters
 
-`--base-path -b`  
-(optional) The base path of the API proxy. For example, for this API proxy, the base path is /example-proxy: http://myorg-test.apigee.net/example-proxy/resource1.
-
 `--directory -d`  
 (optional) The path to the root directory of the API proxy on your local system. Will attempt to use current directory is none is specified.
 
