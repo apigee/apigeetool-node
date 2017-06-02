@@ -14,13 +14,13 @@ var REASONABLE_TIMEOUT = 120000;
 var APIGEE_PROXY_NAME = 'apigee-cli-apigee-test';
 var NODE_PROXY_NAME = 'apigee-cli-node-test';
 var CACHE_RESOURCE_NAME='apigee-cli-remotetests-cache1';
-var PROXY_BASE_PATH = '/apigee-cli-test-employees'
-var APIGEE_PRODUCT_NAME = 'TESTPRODUCT'
-var DEVELOPER_EMAIL = 'test123@apigee.com'
-var APP_NAME = 'test123test123'
-var TARGET_SERVER_NAME = 'apigee-cli-test-servername'
-var MAP_NAME = 'apigee-cli-test-kvm'
-
+var PROXY_BASE_PATH = '/apigee-cli-test-employees';
+var APIGEE_PRODUCT_NAME = 'TESTPRODUCT';
+var DEVELOPER_EMAIL = 'test123@apigee.com';
+var APP_NAME = 'test123test123';
+var TARGET_SERVER_NAME = 'apigee-cli-test-servername';
+var MAP_NAME = 'apigee-cli-test-kvm';
+var SHARED_FLOW_NAME = 'apigee-cli-sf';
 var verbose = false;
 
 describe('Remote Tests', function() {
@@ -29,8 +29,6 @@ describe('Remote Tests', function() {
   var deployedRevision;
   var deployedUri;
 
-
-
   it('Deploy Apigee Proxy with Promise SDK', function(done) {
     var opts = baseOpts();
     opts.api = APIGEE_PROXY_NAME;
@@ -38,7 +36,7 @@ describe('Remote Tests', function() {
 
     var sdk = apigeetool.getPromiseSDK()
 
-      sdk.deployProxy(opts)
+    sdk.deployProxy(opts)
       .then(function(result){
         try {
           if(Array.isArray(result)) {
@@ -59,15 +57,15 @@ describe('Remote Tests', function() {
         done(err);
       })
   });
+
   it('Create Product', function(done){
     var opts = baseOpts() ;
-    opts.productName = APIGEE_PRODUCT_NAME
-    opts.productDesc = 'abc123'
-    opts.proxies = APIGEE_PROXY_NAME
-    opts.environments = 'test'
-    opts.quota = '1',
-    opts.quotaInterval = '1'
-    opts.quotaTimeUnit = 'minute'
+    opts.productName = APIGEE_PRODUCT_NAME;
+    opts.productDesc = 'abc123';
+    opts.proxies = APIGEE_PROXY_NAME;
+    opts.quota = '1';
+    opts.quotaInterval = '1';
+    opts.quotaTimeUnit = 'minute';
 
     var sdk = apigeetool.getPromiseSDK()
 
@@ -77,66 +75,68 @@ describe('Remote Tests', function() {
       },function(err){
         done(err)
       }) ;
-  })
+  });
 
   it('Create Developer' , function(done){
-      var opts = baseOpts()
-      opts.email = DEVELOPER_EMAIL
-      opts.firstName = 'Test'
-      opts.lastName = 'Test1'
-      opts.userName = 'runningFromTest123'
+    var opts = baseOpts()
+    opts.email = DEVELOPER_EMAIL
+    opts.firstName = 'Test'
+    opts.lastName = 'Test1'
+    opts.userName = 'runningFromTest123'
 
-      var sdk = apigeetool.getPromiseSDK()
+    var sdk = apigeetool.getPromiseSDK()
 
-      sdk.createDeveloper(opts)
+    sdk.createDeveloper(opts)
       .then(function(result){
         done()
       },function(err){
         done(err)
       }) ;
-  })
+  });
 
   it('Create App' , function(done){
-      var opts = baseOpts()
-      opts.name = APP_NAME
-      opts.apiproducts = APIGEE_PRODUCT_NAME
-      opts.email = DEVELOPER_EMAIL
+    var opts = baseOpts()
+    opts.name = APP_NAME
+    opts.apiproducts = APIGEE_PRODUCT_NAME
+    opts.email = DEVELOPER_EMAIL
 
-      var sdk = apigeetool.getPromiseSDK()
+    var sdk = apigeetool.getPromiseSDK()
 
-      sdk.createApp(opts)
+    sdk.createApp(opts)
       .then(function(result){
         done()
       },function(err){
         done(err)
       }) ;
-  })
+  });
+
   it('Delete App' , function(done){
-      var opts = baseOpts()
-      opts.email = DEVELOPER_EMAIL
-      opts.name = APP_NAME
-      var sdk = apigeetool.getPromiseSDK()
-      sdk.deleteApp(opts)
+    var opts = baseOpts()
+    opts.email = DEVELOPER_EMAIL
+    opts.name = APP_NAME
+    var sdk = apigeetool.getPromiseSDK()
+    sdk.deleteApp(opts)
       .then(function(result){
         done()
       },function(err){
         done(err)
       }) ;
-  })
+  });
+
   it('Delete Developer' , function(done){
-      var opts = baseOpts()
-      opts.email = DEVELOPER_EMAIL
-      var sdk = apigeetool.getPromiseSDK()
-      sdk.deleteDeveloper(opts)
+    var opts = baseOpts()
+    opts.email = DEVELOPER_EMAIL
+    var sdk = apigeetool.getPromiseSDK()
+    sdk.deleteDeveloper(opts)
       .then(function(result){
         done()
       },function(err){
         done(err)
       }) ;
-  })
+  });
 
   it('Delete API Product',function(done){
-     var opts = baseOpts() ;
+    var opts = baseOpts() ;
     opts.productName = APIGEE_PRODUCT_NAME
 
     var sdk = apigeetool.getPromiseSDK()
@@ -147,7 +147,7 @@ describe('Remote Tests', function() {
       },function(err){
         done(err)
       }) ;
-  })
+  });
 
   it('Deploy Apigee Proxy', function(done) {
     var opts = baseOpts();
@@ -594,7 +594,8 @@ describe('Remote Tests', function() {
       }
     });
   });
-   it('Delete Cache Resource',function(done){
+
+  it('Delete Cache Resource',function(done){
     var opts = baseOpts();
     opts.cache = CACHE_RESOURCE_NAME;
     apigeetool.deletecache(opts,function(err,result) {
@@ -609,28 +610,28 @@ describe('Remote Tests', function() {
     });
   });
 
-   it('Create Target Server',function(done){
+  it('Create Target Server',function(done){
     var opts = baseOpts();
-    opts.targetServerName = TARGET_SERVER_NAME
-    opts.targetHost = 'localhost'
-    opts.targetEnabled = true
-    opts.targetPort = 443
-    opts.targetSSL=true
-    opts.environment = 'test'
+    opts.targetServerName = TARGET_SERVER_NAME;
+    opts.targetHost = 'localhost';
+    opts.targetEnabled = true;
+    opts.targetPort = 443;
+    opts.targetSSL=true;
+    opts.environment = config.environment;
     apigeetool.getPromiseSDK()
       .createTargetServer(opts)
       .then(function(){done()},
         function(err){
           console.log(err)
           done(err)})
-  })
+  });
 
   it('Delete Target Server',function(done){
     var opts = baseOpts();
-    opts.targetServerName = TARGET_SERVER_NAME
-    opts.environment = 'test'
+    opts.targetServerName = TARGET_SERVER_NAME;
+    opts.environment = config.environment;
 
-    apigeetool.deleteTargetServer(opts,function(err,result) {      
+    apigeetool.deleteTargetServer(opts,function(err,result) {
       if (verbose) {
         console.log('Delete TargetServer result = %j', result);
       }
@@ -640,38 +641,40 @@ describe('Remote Tests', function() {
         done()
       }
     });
-  })
+  });
 
   it('Create KVM',function(done){
     var opts = baseOpts();
-    opts.mapName = MAP_NAME
-    opts.environment = 'test'
+    opts.mapName = MAP_NAME;
+    opts.environment = config.environment;
     apigeetool.getPromiseSDK()
       .createKVM(opts)
       .then(function(){done()},
         function(err){
           console.log(err)
           done(err)})
-  })
-   it('Add Entry to KVM',function(done){
+  });
+
+  it('Add Entry to KVM',function(done){
+    // This will not work for non-cps orgs
     var opts = baseOpts();
-    opts.mapName = MAP_NAME
-    opts.environment = 'test'
-    opts.entryName = 'test'
-    opts.entryValue = 'test1'
+    opts.mapName = MAP_NAME;
+    opts.environment = config.environment;
+    opts.entryName = 'test';
+    opts.entryValue = 'test1';
     apigeetool.getPromiseSDK()
       .addEntryToKVM(opts)
       .then(function(){done()},
         function(err){
-          console.log(err)
+          console.log(err);
           done(err)})
-  })
-   
+  });
+
   it('Delete KVM',function(done){
     var opts = baseOpts();
-    opts.mapName = MAP_NAME
-    opts.environment = 'test'
-    apigeetool.deleteKVM(opts,function(err,result) {      
+    opts.mapName = MAP_NAME;
+    opts.environment = config.environment;
+    apigeetool.deleteKVM(opts,function(err,result) {
       if (verbose) {
         console.log('Delete KVM result = %j', result);
       }
@@ -681,7 +684,68 @@ describe('Remote Tests', function() {
         done()
       }
     });
-  })
+  });
+
+  it('Deploy SharedFlow', function (done) {
+    var opts = baseOpts();
+    opts.name = SHARED_FLOW_NAME;
+    opts.directory = path.join(__dirname, '../test/fixtures/employees-sf');
+    apigeetool.deploySharedflow(opts, function (err, result) {
+      if (verbose) {
+        console.log('Deploy result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        try {
+          if (Array.isArray(result)) {
+            result = result[0]
+          }
+          assert.equal(result.name, SHARED_FLOW_NAME);
+          assert.equal(result.environment, config.environment);
+          assert.equal(result.state, 'deployed');
+          // assert.equal(result.uris.length, 1);
+          assert(typeof result.revision === 'number');
+          deployedRevision = result.revision;
+          // deployedUri = result.uris[0];
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
+  it('listSharedflowDeployments'); // Until MGMT-3671 is merged, will not work
+
+  it('fetchSharedflow');
+
+  it('undeploySharedflow', function() {
+    var opts = baseOpts();
+    opts.name = SHARED_FLOW_NAME;
+
+    apigeetool.undeploySharedflow(opts, function(err, result) {
+      if (err) {
+        done(err);
+      } else { // If response is non-200 it throws an Error
+        done();
+      }
+    });
+  });
+
+  it('deleteSharedflow', function() {
+    var opts = baseOpts();
+    opts.name = SHARED_FLOW_NAME;
+
+    apigeetool.deleteSharedflow(opts, function(err, result) {
+      if (err) {
+        done(err);
+      } else {
+        assert(result.name === SHARED_FLOW_NAME);
+        done();
+      }
+    });
+  });
 
 });
 
