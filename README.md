@@ -311,7 +311,7 @@ for organization name, all of which are required.
 (required) The name of the API proxy or app to undeploy.
 
 `--revision  -r`
-(optional) Specifies the revision to retrieve.
+(required) Specifies the revision to retrieve.
 
 #### Optional parameters
 
