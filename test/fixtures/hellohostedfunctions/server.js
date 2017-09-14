@@ -1,6 +1,6 @@
 var http = require('http');
 
-console.log('node.js application starting.. 123.');
+console.log('node.js application starting...');
 console.log(process.env);
 
 var svr = http.createServer(function(req, resp) {
