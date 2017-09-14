@@ -178,11 +178,11 @@ Deploys a Hosted Function to Apigee Edge as an API proxy. With your Hosted Funct
 
 Deploys a Node.js app to Apigee Edge.
 
-    apigeetool deployhostedfunction -u sdoe@apigee.com -o sdoe -e test -n 'Test Node App 2' -b /node2
+    apigeetool deployhostedfunction -u sdoe@apigee.com -o sdoe -e test -n 'test-node-app-2' -b /node2
 
 Deploys a Node.js app to both the default (HTTP) and secure (HTTPS) virtual hosts.
 
-    apigeetool deployhostedfunction -u sdoe@apigee.com -o sdoe -e test -n 'Test Node App 2' -b /node2 -v default,secure
+    apigeetool deployhostedfunction -u sdoe@apigee.com -o sdoe -e test -n 'test-node-app-2' -b /node2 -v default,secure
 
 #### Required parameters
 
