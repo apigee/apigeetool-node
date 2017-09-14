@@ -215,10 +215,10 @@ The name of the API proxy. The name of the API proxy must be unique within an or
 (optional) Imports the API proxy to Apigee Edge but does not deploy it.
 
 `--preserve-policies -P`
-(optional) If specified, the highest revision of the existing proxy will be downloaded and the node code in your directory will be overlayed upon it to create a resulting proxy that contains both any existing policies and the node code in the directory. If there is no existing revision, this option will have no effect.
+(optional) If specified, the highest revision of the existing proxy will be downloaded and the source code in your directory will be overlayed upon it to create a resulting proxy that contains both any existing policies and the source code in the directory. If there is no existing revision, this option will have no effect.
 
 `--virtualhosts  -v`
-(optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deploynodeapp` uses `default,secure`.
+(optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deployhostedfunction` uses `default,secure`.
 
 ## <a name="deployproxy"></a>deployproxy
 
