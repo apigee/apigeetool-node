@@ -176,11 +176,11 @@ Deploys a Hosted Function to Apigee Edge as an API proxy. With your Hosted Funct
 
 #### Examples
 
-Deploys a Node.js app to Apigee Edge.
+Deploys a Node.js app as a Hosted Function to Apigee Edge.
 
     apigeetool deployhostedfunction -u sdoe@apigee.com -o sdoe -e test -n 'test-node-app-2' -b /node2
 
-Deploys a Node.js app to both the default (HTTP) and secure (HTTPS) virtual hosts.
+Deploys a Node.js app as a Hosted Function to both the default (HTTP) and secure (HTTPS) virtual hosts.
 
     apigeetool deployhostedfunction -u sdoe@apigee.com -o sdoe -e test -n 'test-node-app-2' -b /node2 -v default,secure
 
@@ -198,7 +198,7 @@ the "-u" and "-p" parameters for username and password, and the "-o" parameter
 for organization name, all of which are required.
 
 `--api   -n`
-(optional) The name of the API proxy. The name of the API proxy must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `A-Z0-9._\-$ %`. If not specified, will attempt to use name from package.json.
+The name of the API proxy. The name of the API proxy must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `a-z0-9._\-$ %`.
 
 `--environments  -e`
 (required) The name(s) of the environment(s) to deploy to (comma-delimited).
