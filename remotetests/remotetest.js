@@ -644,6 +644,59 @@ describe('Remote Tests', function() {
     });
   });
 
+  it('Check build logs from deployed URI', function(done) {
+    var opts = baseOpts();
+    opts['hosted-runtime'] = true;
+    opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
+
+    var logStream = new stream.PassThrough();
+    logStream.setEncoding('utf8');
+    opts.stream = logStream;
+    apigeetool.getLogs(opts, function(err) {
+      assert(!err);
+
+      var allLogs = '';
+      logStream.on('data', function(chunk) {
+        allLogs += chunk;
+      });
+      logStream.on('end', function() {
+        try {
+          console.log('build logs:\n' + allLogs);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+    });
+  });
+
+  it('Check runtime logs from deployed URI', function(done) {
+    var opts = baseOpts();
+    opts['hosted-build'] = true;
+    opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
+
+    var logStream = new stream.PassThrough();
+    logStream.setEncoding('utf8');
+    opts.stream = logStream;
+
+    apigeetool.getLogs(opts, function(err) {
+      assert(!err);
+
+      var allLogs = '';
+      logStream.on('data', function(chunk) {
+        allLogs += chunk;
+      });
+      logStream.on('end', function() {
+        try {
+          console.log('runtime logs:\n' + allLogs);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+    });
+  });
+
   it('Undeploy Hosted Functions App Without Revision', function(done) {
     var opts = baseOpts();
     opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
