@@ -661,7 +661,6 @@ describe('Remote Tests', function() {
       });
       logStream.on('end', function() {
         try {
-          console.log('build logs:\n' + allLogs);
           done();
         } catch (e) {
           done(e);
@@ -688,7 +687,6 @@ describe('Remote Tests', function() {
       });
       logStream.on('end', function() {
         try {
-          console.log('runtime logs:\n' + allLogs);
           done();
         } catch (e) {
           done(e);
