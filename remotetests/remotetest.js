@@ -13,7 +13,7 @@ var config = require('./testconfig');
 var REASONABLE_TIMEOUT = 120000;
 var APIGEE_PROXY_NAME = 'apigee-cli-apigee-test';
 var NODE_PROXY_NAME = 'apigee-cli-node-test';
-var HOSTED_FUNCTIONS_PROXY_NAME = 'apigee-cli-hosted-functions-test';
+var HOSTED_FUNCTIONS_PROXY_NAME = 'cli-hosted-functions-test';
 var CACHE_RESOURCE_NAME='apigee-cli-remotetests-cache1';
 var PROXY_BASE_PATH = '/apigee-cli-test-employees';
 var APIGEE_PRODUCT_NAME = 'TESTPRODUCT';
@@ -586,7 +586,7 @@ describe('Remote Tests', function() {
     opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
     opts.directory = path.join(__dirname, '../test/fixtures/hellohostedfunctions');
     opts.main = 'server.js';
-    opts['base-path'] = '/apigee-cli-hosted-functions-test';
+    opts['base-path'] = '/cli-hosted-functions-test';
 
     apigeetool.deployHostedFunction(opts, function(err, result) {
       if (verbose) {
@@ -641,6 +641,70 @@ describe('Remote Tests', function() {
           done(e);
         }
       }
+    });
+  });
+
+  it('Verify deployed URI', function(done) {
+    if (verbose) {
+      console.log('Testing %s', deployedUri);
+    }
+    request(deployedUri, function(err, resp) {
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(resp.statusCode, 200);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
+  it.only('Check build logs from deployed URI', function(done) {
+    var opts = baseOpts();
+    opts['hosted-build'] = true;
+    opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
+
+    var logStream = new stream.PassThrough();
+    logStream.setEncoding('utf8');
+    opts.stream = logStream;
+    apigeetool.getLogs(opts, function(err) {
+      assert.ifError(err);
+
+      var allLogs = '';
+      logStream.on('data', function(chunk) {
+        allLogs += chunk;
+      });
+      logStream.on('end', function() {
+        assert(/DONE/.test(allLogs));
+        done();
+      });
+    });
+  });
+
+  it.only('Check runtime logs from deployed URI', function(done) {
+    var opts = baseOpts();
+    opts['hosted-runtime'] = true;
+    opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
+
+    var logStream = new stream.PassThrough();
+    logStream.setEncoding('utf8');
+    opts.stream = logStream;
+
+    apigeetool.getLogs(opts, function(err) {
+      assert.ifError(err);
+
+      var allLogs = '';
+      logStream.on('data', function(chunk) {
+        allLogs += chunk;
+      });
+      logStream.on('end', function() {
+        //Validate runtime logs
+        assert(/Node HTTP server is listening/.test(allLogs));
+        done();
+      });
     });
   });
 
