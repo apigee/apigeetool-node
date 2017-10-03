@@ -169,6 +169,9 @@ for organization name, all of which are required.
 `--virtualhosts  -v`  
 (optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deploynodeapp` uses `default,secure`.
 
+`--wait-after-import  -W`  
+(optional) Number of seconds to delay before deploying node.js proxy.
+
 ## <a name="deployproxy"></a>deployproxy
 
 Deploys an API proxy to Apigee Edge. If the proxy is currently deployed, it will be undeployed first, and the newly deployed proxy's revision number is incremented.
@@ -211,6 +214,9 @@ for organization name, all of which are required.
 
 `--upload-modules    -U`  
 (optional) If specified, uploads Node.js modules from your system to Apigee Edge.
+
+`--wait-after-import  -W`  
+(optional) Number of seconds to delay before deploying node.js proxy.
 
 ## <a name="undeploy"></a>undeploy
 
