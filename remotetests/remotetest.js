@@ -662,7 +662,7 @@ describe('Remote Tests', function() {
     });
   });
 
-  it.only('Check build logs from deployed URI', function(done) {
+  it('Check build logs from deployed URI', function(done) {
     var opts = baseOpts();
     opts['hosted-build'] = true;
     opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
@@ -684,7 +684,7 @@ describe('Remote Tests', function() {
     });
   });
 
-  it.only('Check runtime logs from deployed URI', function(done) {
+  it('Check runtime logs from deployed URI', function(done) {
     var opts = baseOpts();
     opts['hosted-runtime'] = true;
     opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
