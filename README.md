@@ -163,6 +163,9 @@ for organization name, all of which are required.
 `--resolve-modules   -R`  
 (optional) If the API proxy includes Node.js modules (e.g., in a `node_modules` directory), this option updates them on Apigee Edge without uploading them from your system. Basically, it's like running "npm install" on Apigee Edge in the root directory of the API proxy bundle.  
 
+`--production`
+(optional) Indicates if Apigee Edge should use the `--production` flag during `npm install`. Defaults to `true`, example of disabling the flag would be `--production false`.
+
 `--upload-modules    -U`  
 (optional) If specified, uploads Node.js modules from your system to Apigee Edge rather than resolving the modules directly on Apigee Edge (the default behavior).
 
