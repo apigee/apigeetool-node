@@ -670,6 +670,56 @@ describe('Remote Tests', function() {
           done(err)})
   });
 
+  it('Get KVM Entry', function(done) {
+    var opts = baseOpts();
+    opts.mapName = MAP_NAME;
+    opts.environment = config.environment;
+    opts.entryName = 'test';
+    apigeetool.getPromiseSDK()
+      .getKVMentry(opts)
+      .then(function(body){
+        assert.equal(body.value, 'test1')
+        done()
+      },
+      function(err) {
+        console.log(err);
+        done(err);
+      })
+  })
+
+  it('Get KVM Map', function(done) {
+    var opts = baseOpts();
+    opts.mapName = MAP_NAME;
+    opts.environment = config.environment;
+    apigeetool.getPromiseSDK()
+      .getkvmmap(opts)
+      .then(function(body){
+        assert.equal(body.entry.length, 1)
+        done()
+      },
+      function(err) {
+        console.log(err);
+        done(err);
+      })
+  })
+
+  it('Delete KVM Entry', function(done) {
+    var opts = baseOpts();
+    opts.mapName = MAP_NAME;
+    opts.environment = config.environment;
+    opts.entryName = 'test';
+    apigeetool.getPromiseSDK()
+      .deleteKVMentry(opts)
+      .then(function(body){
+        assert.equal(body.value, 'test1')
+        done()
+      },
+      function(err) {
+        console.log(err);
+        done(err);
+      })
+  })
+
   it('Delete KVM',function(done){
     var opts = baseOpts();
     opts.mapName = MAP_NAME;
