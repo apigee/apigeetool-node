@@ -32,6 +32,8 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 * create or delete a Developer in Edge
 * create or delete a Developer Application in Edge
 * create or delete a Cache resource in Edge
+* create, retrieve or delete a KVM Map in Edge
+* create, retrieve or delete a KVM Entry in Edge
 
 You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments.
 
@@ -108,6 +110,12 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [deleteapp](#deleteapp)
 * [createcache](#createcache)
 * [deletecache](#deletecache)
+* [createkvmmap](#createkvmmap)
+* [addEntryToKVM](#addEntryToKVM)
+* [getkvmmap](#getkvmmap)
+* [getKVMentry](#getKVMentry)
+* [deletekvmmap](#deletekvmmap)
+* [deleteKVMentry](#deleteKVMentry)
 
 
 ## <a name="deploynodeapp"></a>deploynodeapp
@@ -580,6 +588,154 @@ for organization name, all of which are required.
 `--name  -n`  
 (required) The name of the API proxy or app to undeploy.
 
+## <a name="createkvmmap"></a>createkvmmap
+
+Creates an Environment-scoped map in the Apigee KVM with the given name.
+
+#### Example
+Create KVM map named "test-map"
+
+    apigeetool createkvmmap -u sdoe@example.com -o sdoe -e test --mapName test-map
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--mapName`
+(required) The name of the map to be created.
+
+## <a name="addEntryToKVM"></a>addEntryToKVM
+
+Adds an entry of name:value to the named map in the Environment-scoped Apigee KVM.
+
+#### Example
+
+Add entry to KVM with name "test1" and value "value1"
+
+    apigeetool addEntryToKVM -u sdoe@example.com -o sdoe -e test --mapName test-map --entryName test1 --entryValue value1
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--mapName`
+(required) The name of the map the entry will belong to.
+
+`--entryName`
+(required) The name of the entry to be created.
+
+`--entryValue`
+(required) The value of the entry to be created.
+
+## <a name="getkvmmap"></a>getkvmmap
+
+Retrieves an entire Environment-scoped KVM map with all of its entries, by name.
+
+#### Example
+
+Get map named "test-map".
+
+    apigeetool getkvmmap -u sdoe@example.com -o sdoe -e test --mapName test-map
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--mapName`
+(required) The name of the map to be retrieved.
+
+## <a name="getKVMentry"></a>getKVMentry
+
+Retrieve an unencrypted KVM entry from an Environment-scoped Apigee KVM map, by name.
+
+#### Example
+
+Retrieve the KVM entry named "test1" in the map "test-map".
+
+    apigeetool getKVMentry -u sdoe@example.com -o sdoe -e test --mapName test-map --entryName test1
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--mapName`
+(required) The name of the map that the entry belongs to.
+
+`--entryName`
+(required) The name of the entry to be retrieved.
+
+## <a name="deletekvmmap"></a>deletekvmmap
+
+Deletes an entire Environment-scoped map from the Apigee KVM along with all of its entries.
+
+#### Example
+
+Delete map named "test-map".
+
+    apigeetool deletekvmmap -u sdoe@example.com -o sdoe -e test --mapName test-map
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--mapName`
+(required) The name of the map to be deleted.
+
+## <a name="deleteKVMentry"></a>deleteKVMentry
+
+Deletes a single entry by name from an Environment-scoped Apigee KVM map.
+
+#### Example
+
+Delete entry named "test1" from the map named "test-map".
+
+    apigeetool deletekvmmap -u sdoe@example.com -o sdoe -e test --mapName test-map --entryName test1
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--mapName`
+(required) The name of the map that the entry belongs to.
+
+`--entryName`
+(required) The name of the entry to be deleted.
 
 # <a name="sdkreference"></a>SDK Reference
 
