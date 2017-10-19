@@ -221,6 +221,35 @@ for organization name, all of which are required.
 `--wait-after-import  -W`  
 (optional) Number of seconds to delay before deploying node.js proxy.
 
+## <a name="deployExistingRevision"></a>deployExistingRevision
+
+Deploys an existing API proxy revision to Apigee Edge. If a different revision is already deployed to the targeted environments, it will be undeployed and replaced with the requested revision.
+
+#### Example
+
+Deploys an existing API proxy revision called example-proxy to Apigee Edge.
+
+    apigeetool deployExistingRevision  -u sdoe@example.com -o sdoe  -e test -n example-proxy -r 1
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--api   -n`  
+(required) The name of the API proxy. Note: The name of the API proxy must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `A-Z0-9._\-$ %`.
+
+`--environments  -e`  
+(required) The name(s) of the environment(s) to deploy to (comma delimited).  
+
+`--revision -r`
+(required) The existing revision of the proxy to be deployed.
+
 ## <a name="undeploy"></a>undeploy
 
 Undeploys a named API proxy or Node.js app deployed on Apigee Edge.
