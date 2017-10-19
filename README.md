@@ -588,9 +588,19 @@ for organization name, all of which are required.
 `--name  -n`  
 (required) The name of the API proxy or app to undeploy.
 
-## <a name="createkvmmap"></a>createkvmmap
+## <a name="KVM Operations"></a>KVM Operations
 
-Creates an Environment-scoped map in the Apigee KVM with the given name.
+The following commands support the varying scoped of the Apigee KVM.
+
+When just the `--organization` option is present, the operation will correspond to the Organization-scoped KVM.
+
+When the `--organization` and `--environment` options are present, the operation will correspond to the Environment-scoped KVM.
+
+When the `--organization` and `--api` options are present, the operation will correspond to the API-scoped KVM.
+
+### <a name="createkvmmap"></a>createkvmmap
+
+Creates a map in the Apigee KVM with the given name.
 
 #### Example
 Create KVM map named "test-map"
@@ -610,9 +620,17 @@ for organization name, all of which are required.
 `--mapName`
 (required) The name of the map to be created.
 
-## <a name="addEntryToKVM"></a>addEntryToKVM
+#### Optional parameters
 
-Adds an entry of name:value to the named map in the Environment-scoped Apigee KVM.
+`--environment -e`
+(optional) The environment to target for an Environment-scoped KVM operation.
+
+`--api -n`
+(optional) The API to target for an API-scoped KVM operation.
+
+### <a name="addEntryToKVM"></a>addEntryToKVM
+
+Adds an entry of name:value to the named map in the Apigee KVM.
 
 #### Example
 
@@ -639,9 +657,17 @@ for organization name, all of which are required.
 `--entryValue`
 (required) The value of the entry to be created.
 
-## <a name="getkvmmap"></a>getkvmmap
+#### Optional parameters
 
-Retrieves an entire Environment-scoped KVM map with all of its entries, by name.
+`--environment -e`
+(optional) The environment to target for an Environment-scoped KVM operation.
+
+`--api -n`
+(optional) The API to target for an API-scoped KVM operation.
+
+### <a name="getkvmmap"></a>getkvmmap
+
+Retrieves an entire KVM map with all of its entries, by name.
 
 #### Example
 
@@ -662,9 +688,17 @@ for organization name, all of which are required.
 `--mapName`
 (required) The name of the map to be retrieved.
 
-## <a name="getKVMentry"></a>getKVMentry
+#### Optional parameters
 
-Retrieve an unencrypted KVM entry from an Environment-scoped Apigee KVM map, by name.
+`--environment -e`
+(optional) The environment to target for an Environment-scoped KVM operation.
+
+`--api -n`
+(optional) The API to target for an API-scoped KVM operation.
+
+### <a name="getKVMentry"></a>getKVMentry
+
+Retrieve an unencrypted KVM entry from an Apigee KVM map, by name.
 
 #### Example
 
@@ -688,9 +722,17 @@ for organization name, all of which are required.
 `--entryName`
 (required) The name of the entry to be retrieved.
 
-## <a name="deletekvmmap"></a>deletekvmmap
+#### Optional parameters
 
-Deletes an entire Environment-scoped map from the Apigee KVM along with all of its entries.
+`--environment -e`
+(optional) The environment to target for an Environment-scoped KVM operation.
+
+`--api -n`
+(optional) The API to target for an API-scoped KVM operation.
+
+### <a name="deletekvmmap"></a>deletekvmmap
+
+Deletes an entire map from the Apigee KVM along with all of its entries.
 
 #### Example
 
@@ -711,9 +753,17 @@ for organization name, all of which are required.
 `--mapName`
 (required) The name of the map to be deleted.
 
-## <a name="deleteKVMentry"></a>deleteKVMentry
+#### Optional parameters
 
-Deletes a single entry by name from an Environment-scoped Apigee KVM map.
+`--environment -e`
+(optional) The environment to target for an Environment-scoped KVM operation.
+
+`--api -n`
+(optional) The API to target for an API-scoped KVM operation.
+
+### <a name="deleteKVMentry"></a>deleteKVMentry
+
+Deletes a single entry by name from an Apigee KVM map.
 
 #### Example
 
@@ -736,6 +786,14 @@ for organization name, all of which are required.
 
 `--entryName`
 (required) The name of the entry to be deleted.
+
+#### Optional parameters
+
+`--environment -e`
+(optional) The environment to target for an Environment-scoped KVM operation.
+
+`--api -n`
+(optional) The API to target for an API-scoped KVM operation.
 
 # <a name="sdkreference"></a>SDK Reference
 
