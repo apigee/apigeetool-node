@@ -80,9 +80,9 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 (required) Your Apigee account username. May be set as an environment variable APIGEE_USERNAME.
 
 `--token -t`
-(optional) Your Apigee access token. Use this in lieu of -u / -p
+(optional) Your Apigee access token. Use this in lieu of -u / -p/
 
-`--netrc  -N`  
+`--netrc  -n`  
 (optional) Use this in lieu of -u / -p, to tell apigeetool to retrieve credentials from your .netrc file.
 
 `--verbose   -V`  
@@ -829,24 +829,24 @@ for organization name, all of which are required.
 You could use apigeetool as an SDK to orchestrate tasks that you want to perform with Edge, for eg, deploying an api proxy or running tests etc.
 
 #### Usage Example
-        
-        var apigeetool = require('apigeetool')
-        var sdk = apigeetool.getPromiseSDK()
-        var opts = {
-            organization: 'edge-org',
-            username: 'edge-user',
-            password: 'password',
-            environment: 'environment',  
-        }
-        opts.api = APIGEE_PROXY_NAME;
+	
+	var apigeetool = require('apigeetool')
+	var sdk = apigeetool.getPromiseSDK()
+	var opts = {
+	    organization: 'edge-org',
+	    username: 'edge-user',
+	    password: 'password',
+	    environment: 'environment',	 
+  	}
+	opts.api = APIGEE_PROXY_NAME;
     opts.directory = path.join(__dirname);    
 
-        sdk.deployProxy(opts)
-                .then(function(result){
-                        //deploy success
-                        },function(err){
-                        //deploy failed 
-                })
+	sdk.deployProxy(opts)
+		.then(function(result){
+			//deploy success
+			},function(err){
+			//deploy failed	
+		})
 
 ## <a name="createdeveloper"></a>Create Developer
 
@@ -855,9 +855,9 @@ Creates a new Developer in Edge
 #### Example
 
 Create a developer.
-        
-        //see above for other required options
-        opts.email = DEVELOPER_EMAIL
+	
+	//see above for other required options
+	opts.email = DEVELOPER_EMAIL
     opts.firstName = 'Test'
     opts.lastName = 'Test1'
     opts.userName = 'runningFromTest123'
@@ -876,8 +876,8 @@ Delete a Developer in Edge
 
 #### Example
 
-        //see above for other required options
-        opts.email = DEVELOPER_EMAIL
+	//see above for other required options
+	opts.email = DEVELOPER_EMAIL
 
     sdk.deleteDeveloper(opts)
       .then(function(result){
