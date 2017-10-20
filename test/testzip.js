@@ -25,7 +25,6 @@ describe('ZIP Utilities Test', function() {
   it('Enumerate node file list', function(done) {
     ziputils.enumerateNodeDirectory('./test/fixtures/employeesnode', false, function(err, files) {
       if (err) { return done(err); }
-
       //console.log('%j', files);
 
       // Should contain README.md
@@ -52,6 +51,14 @@ describe('ZIP Utilities Test', function() {
       assert.equal(express.fileName, 'test/fixtures/employeesnode/node_modules/express');
       assert.equal(express.resourceName, 'node_modules_express.zip');
       assert(express.directory);
+
+      // Should not contain "node_modules_mocha"
+      var mocha = _.find(files, function(f) {
+        return (f.fileName === 'test/fixtures/employeesnode/node_modules/mocha');
+      });
+      // console.log(files)
+      assert(!mocha);
+
 
       done();
     });
