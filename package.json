@@ -27,7 +27,7 @@
     "node-unzip-2": "^0.2.1",
     "node-zip": "^1.1.1",
     "read": "^1.0.7",
-    "request": "^2.63.0",
+    "request": "2.81.0",
     "tmp": "^0.0.27",
     "underscore": "^1.8.3",
     "netrc": "^0.1.3",
