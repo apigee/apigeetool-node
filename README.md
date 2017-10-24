@@ -170,6 +170,9 @@ for organization name, all of which are required.
 `--virtualhosts  -v`
 (optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deploynodeapp` uses `default,secure`.
 
+`--bundled-dependencies`
+(optional) If specified, the source code will be uploaded with its `bundledDependencies` as defined in the `package.json`.
+
 ## <a name="deployhostedfunction"></a>deployhostedfunction
 
 Deploys a Hosted Function to Apigee Edge as an API proxy. With your Hosted Function deployed to Edge, you can take advantage of Edge features like security, quotas, caching, analytics, trace tool, and more.
@@ -220,6 +223,9 @@ The name of the API proxy. The name of the API proxy must be unique within an or
 `--virtualhosts  -v`
 (optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deployhostedfunction` uses `default,secure`.
 
+`--bundled-dependencies`
+(optional) If specified, the source code will be uploaded with its `bundledDependencies` as defined in the `package.json`.
+
 ## <a name="deployproxy"></a>deployproxy
 
 Deploys an API proxy to Apigee Edge. If the proxy is currently deployed, it will be undeployed first, and the newly deployed proxy's revision number is incremented.
@@ -262,6 +268,9 @@ for organization name, all of which are required.
 
 `--upload-modules    -U`
 (optional) If specified, uploads Node.js modules from your system to Apigee Edge.
+
+`--bundled-dependencies`
+(optional) If specified, the `node` & `hosted` resources will be uploaded with their `bundledDependencies` as defined in their respective `package.json` files.
 
 ## <a name="undeploy"></a>undeploy
 

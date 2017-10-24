@@ -23,7 +23,7 @@ describe('ZIP Utilities Test', function() {
   });
 
   it('Enumerate node file list', function(done) {
-    ziputils.enumerateNodeDirectory('./test/fixtures/employeesnode', false, function(err, files) {
+    ziputils.enumerateDirectory('./test/fixtures/employeesnode', 'node', false, function(err, files) {
       if (err) { return done(err); }
 
       //console.log('%j', files);
