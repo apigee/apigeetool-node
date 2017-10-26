@@ -44,7 +44,7 @@ For more information, refer to the [Apigee Edge docs](http://apigee.com/docs/).
 The following parameters are available on all of the commands supported by
 this tool:
 
-`--baseuri   -L`  
+`--baseuri   -L`
 (optional) The base URI for you organization on Apigee Edge. The default is the base URI for Apigee cloud deployments is `api.enterprise.apigee.com`. For on-premise deployments, the base URL may be different.
 
 `--cafile -c`
@@ -52,10 +52,10 @@ this tool:
 Multiple file names may be comma-separated. Use this to communicate with an installation
 of Apigee Edge that uses a custom certificate for API calls.
 
-`--debug -D`  
+`--debug -D`
 (optional) Prints additional information about the deployment, including router and message processor IDs.
 
-`--help  -h`  
+`--help  -h`
 (optional) Displays help on this command.
 
 `--insecure -k`
@@ -67,10 +67,10 @@ trusted TLS certificate.
 (optional) Limit for the maximum number of operations performed concurrently.
 Currently this only affects file uploads in the `deploynodeapp` command. Defaults to 4.
 
-`--json  -j`  
+`--json  -j`
 (optional) Formats the command's response as a JSON object.
 
-`--organization  -o`  
+`--organization  -o`
 (required) The name of the organization to deploy to. May be set as an environment variable APIGEE_ORGANIZATION.
 
 `--password  -p`
@@ -82,15 +82,16 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 `--token -t`
 (optional) Your Apigee access token. Use this in lieu of -u / -p
 
-`--netrc  -N`  
+`--netrc  -N`
 (optional) Use this in lieu of -u / -p, to tell apigeetool to retrieve credentials from your .netrc file.
 
-`--verbose   -V`  
+`--verbose   -V`
 (optional) Prints additional information as the deployment proceeds.
 
 # <a name="reference"></a>Command reference and examples
 
 * [deploynodeapp](#deploynodeapp)
+* [deployhostedfunction](#deployhostedfunction)
 * [deployproxy](#deployproxy)
 * [undeploy](#undeploy)
 * [listdeployments](#listdeployments)
@@ -145,31 +146,31 @@ See [Common Parameters](#commonargs) for a list of additional parameters, includ
 the "-u" and "-p" parameters for username and password, and the "-o" parameter
 for organization name, all of which are required.
 
-`--environments  -e`  
-(required) The name(s) of the environment(s) to deploy to (comma-delimited).  
+`--environments  -e`
+(required) The name(s) of the environment(s) to deploy to (comma-delimited).
 
 #### Optional parameters
 
-`--api   -n`  
+`--api   -n`
 (optional) The name of the API proxy. The name of the API proxy must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `A-Z0-9._\-$ %`. If not specified, will attempt to use name from package.json.
 
-`--base-path -b`  
+`--base-path -b`
 (optional) The base path of the API proxy. For example, for this API proxy, the base path is `/example-proxy`: `http://myorg-test.apigee.net/example-proxy/resource1`.
 
-`--directory -d`  
+`--directory -d`
 (optional) The path to the root directory of the API proxy on your local system. Will attempt to use current directory is none is specified.
 
-`--import-only   -i`  
+`--import-only   -i`
 (optional) Imports the API proxy to Apigee Edge but does not deploy it.
 
-`--main  -m`  
+`--main  -m`
 (optional) The Node.js file you want to be the main file. If not specified, will attempt to use main from package.json.
 
-`--preserve-policies -P`  
-(optional) If specified, the highest revision of the existing proxy will be downloaded and the node code in your directory will be overlayed upon it to create a resulting proxy that contains both any existing policies and the node code in the directory. If there is no existing revision, this option will have no effect. 
+`--preserve-policies -P`
+(optional) If specified, the highest revision of the existing proxy will be downloaded and the node code in your directory will be overlayed upon it to create a resulting proxy that contains both any existing policies and the node code in the directory. If there is no existing revision, this option will have no effect.
 
-`--resolve-modules   -R`  
-(optional) If the API proxy includes Node.js modules (e.g., in a `node_modules` directory), this option updates them on Apigee Edge without uploading them from your system. Basically, it's like running "npm install" on Apigee Edge in the root directory of the API proxy bundle.  
+`--resolve-modules   -R`
+(optional) If the API proxy includes Node.js modules (e.g., in a `node_modules` directory), this option updates them on Apigee Edge without uploading them from your system. Basically, it's like running "npm install" on Apigee Edge in the root directory of the API proxy bundle.
 
 `--production`
 (optional) Indicates if Apigee Edge should use the `--production` flag during `npm install`. Defaults to `true`, example of disabling the flag would be `--production false`.
@@ -177,11 +178,67 @@ for organization name, all of which are required.
 `--upload-modules    -U`  
 (optional) If specified, uploads Node.js modules from your system to Apigee Edge rather than resolving the modules directly on Apigee Edge (the default behavior).
 
-`--virtualhosts  -v`  
+`--virtualhosts  -v`
 (optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deploynodeapp` uses `default,secure`.
+
+`--bundled-dependencies`
+(optional) If specified, the source code will be uploaded with its `bundledDependencies` as defined in the `package.json`.
 
 `--wait-after-import  -W`  
 (optional) Number of seconds to delay before deploying node.js proxy.
+
+## <a name="deployhostedfunction"></a>deployhostedfunction
+
+Deploys a Hosted Function to Apigee Edge as an API proxy. With your Hosted Function deployed to Edge, you can take advantage of Edge features like security, quotas, caching, analytics, trace tool, and more.
+
+#### Examples
+
+Deploys a Node.js app as a Hosted Function to Apigee Edge.
+
+    apigeetool deployhostedfunction -u sdoe@apigee.com -o sdoe -e test -n 'test-node-app-2' -b /node2
+
+Deploys a Node.js app as a Hosted Function to both the default (HTTP) and secure (HTTPS) virtual hosts.
+
+    apigeetool deployhostedfunction -u sdoe@apigee.com -o sdoe -e test -n 'test-node-app-2' -b /node2 -v default,secure
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+For example, if you do not specify a password using "-p", apigeetool will
+prompt for the password on the command line.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--api   -n`
+The name of the API proxy. The name of the API proxy must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `a-z0-9._\-$ %`.
+
+`--environments  -e`
+(required) The name(s) of the environment(s) to deploy to (comma-delimited).
+
+#### Optional parameters
+
+`--base-path -b`
+(optional) The base path of the API proxy. For example, for this API proxy, the base path is `/example-proxy`: `http://myorg-test.apigee.net/example-proxy/resource1`.
+
+`--directory -d`
+(optional) The path to the root directory of the API proxy on your local system. Will attempt to use current directory is none is specified.
+
+`--import-only   -i`
+(optional) Imports the API proxy to Apigee Edge but does not deploy it.
+
+`--preserve-policies -P`
+(optional) If specified, the highest revision of the existing proxy will be downloaded and the source code in your directory will be overlayed upon it to create a resulting proxy that contains both any existing policies and the source code in the directory. If there is no existing revision, this option will have no effect.
+
+`--virtualhosts  -v`
+(optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deployhostedfunction` uses `default,secure`.
+
+`--bundled-dependencies`
+(optional) If specified, the source code will be uploaded with its `bundledDependencies` as defined in the `package.json`.
 
 ## <a name="deployproxy"></a>deployproxy
 
@@ -203,28 +260,31 @@ See [Common Parameters](#commonargs) for a list of additional parameters, includ
 the "-u" and "-p" parameters for username and password, and the "-o" parameter
 for organization name, all of which are required.
 
-`--api   -n`  
+`--api   -n`
 (required) The name of the API proxy. Note: The name of the API proxy must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `A-Z0-9._\-$ %`.
 
-`--environments  -e`  
-(required) The name(s) of the environment(s) to deploy to (comma delimited).  
+`--environments  -e`
+(required) The name(s) of the environment(s) to deploy to (comma delimited).
 
 #### Optional parameters
 
-`--base-path -b`  
+`--base-path -b`
 (optional) The base path of the API proxy. For example, for this API proxy, the base path is /example-proxy: http://myorg-test.apigee.net/example-proxy/resource1.
 
-`--directory -d`  
+`--directory -d`
 (optional) The path to the root directory of the API proxy on your local system. Will attempt to use current directory is none is specified.
 
-`--import-only   -i`  
+`--import-only   -i`
 (optional) Imports the API proxy to Apigee Edge but does not deploy it.
 
-`--resolve-modules   -R`  
-(optional) If the API proxy includes Node.js modules (e.g., in a `node_modules` directory), this option updates them on Apigee Edge without uploading them from your system. Basically, it's like running npm on Apigee Edge in the root directory of the API proxy bundle.  
+`--resolve-modules   -R`
+(optional) If the API proxy includes Node.js modules (e.g., in a `node_modules` directory), this option updates them on Apigee Edge without uploading them from your system. Basically, it's like running npm on Apigee Edge in the root directory of the API proxy bundle.
 
-`--upload-modules    -U`  
+`--upload-modules    -U`
 (optional) If specified, uploads Node.js modules from your system to Apigee Edge.
+
+`--bundled-dependencies`
+(optional) If specified, the `node` & `hosted` resources will be uploaded with their `bundledDependencies` as defined in their respective `package.json` files.
 
 `--wait-after-import  -W`  
 (optional) Number of seconds to delay before deploying node.js proxy.
@@ -278,15 +338,15 @@ See [Common Parameters](#commonargs) for a list of additional parameters, includ
 the "-u" and "-p" parameters for username and password, and the "-o" parameter
 for organization name, all of which are required.
 
-`--api   -n`  
+`--api   -n`
 (required) The name of the API proxy or app to undeploy.
 
-`--environment   -e`  
+`--environment   -e`
 (required) The environment on Apigee Edge where the API proxy or app is currently deployed.
 
 #### Optional parameters
 
-`--revision  -r`  
+`--revision  -r`
 (optional) Specify the revision number of the API proxy to undeploy.
 
 ## <a name="listdeployments"></a>listdeployments
@@ -314,7 +374,7 @@ for organization name, all of which are required.
 `--api   -n`
 (You must specify either `api` or `environment` in this command) The name of the API proxy to list.
 
-`--environment   -e`  
+`--environment   -e`
 (You must specify either `api` or `environment` in this command) The environment for which you want to list deployments. When `-e` is specified, the command lists all deployed proxies in the environment.
 
 #### Optional parameters
@@ -353,7 +413,7 @@ See [Common Parameters](#commonargs) for a list of additional parameters, includ
 the "-u" and "-p" parameters for username and password, and the "-o" parameter
 for organization name, all of which are required.
 
-`--api  -n`  
+`--api  -n`
 (required) The name of the API proxy or app to undeploy.
 
 `--revision  -r`
@@ -389,12 +449,12 @@ See [Common Parameters](#commonargs) for a list of additional parameters, includ
 the "-u" and "-p" parameters for username and password, and the "-o" parameter
 for organization name, all of which are required.
 
-`--api  -n`  
+`--api  -n`
 (required) The name of the API proxy or app to undeploy.
 
 ## <a name="getlogs"></a>getlogs
 
-Retrieve the last set of log records from a Node.js application deployed to Apigee Edge.
+Retrieve the last set of log records from a Node.js application or Hosted Function deployed to Apigee Edge.
 
 The resulting log files will be written directly to standard output. Each is prefixed with:
 
@@ -441,10 +501,10 @@ See [Common Parameters](#commonargs) for a list of additional parameters, includ
 the "-u" and "-p" parameters for username and password, and the "-o" parameter
 for organization name, all of which are required.
 
-`--api  -n`  
+`--api  -n`
 (required) The name of the deployed app to get logs from.
 
-`--environment   -e`  
+`--environment   -e`
 (required) The environment on Apigee Edge where the app is currently deployed.
 
 #### Optional Parameters
@@ -457,6 +517,14 @@ records and write them to standard output in the manner of "tail -f."
 (optional) If specified, use the time zone to format the timestamps on the
 log records. If not specified, then the default is UTC. The timestamp name
 should be a name such as "PST."
+
+`--hosted-build`
+(optional) If specified will attempt to get the build logs for a deployed
+Hosted Function.
+
+`--hosted-runtime`
+(optional) If specified will attempt to get the runtime logs for a deployed
+Hosted Function.
 
 ## <a name="deploySharedflow"></a>deploySharedflow
 
@@ -478,11 +546,11 @@ See [Common Parameters](#commonargs) for a list of additional parameters, includ
 the "-u" and "-p" parameters for username and password, and the "-o" parameter
 for organization name, all of which are required.
 
-`--name   -n`  
+`--name   -n`
 (required) The name of the SharedFlow. Note: The name of the SharedFlow must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `A-Z0-9._\-$ %`.
 
-`--environments  -e`  
-(required) The name(s) of the environment(s) to deploy to (comma delimited).  
+`--environments  -e`
+(required) The name(s) of the environment(s) to deploy to (comma delimited).
 
 #### Optional parameters
 
@@ -512,15 +580,15 @@ See [Common Parameters](#commonargs) for a list of additional parameters, includ
 the "-u" and "-p" parameters for username and password, and the "-o" parameter
 for organization name, all of which are required.
 
-`--name   -n`  
+`--name   -n`
 (required) The name of the sharedflow to undeploy.
 
-`--environment   -e`  
+`--environment   -e`
 (required) The environment on Apigee Edge where the sharedflow is currently deployed.
 
 #### Optional parameters
 
-`--revision  -r`  
+`--revision  -r`
 (optional) Specify the revision number of the sharedflow to undeploy.
 
 ## <a name="listSharedflowDeployments"></a>listSharedflowDeployments
@@ -548,7 +616,7 @@ for organization name, all of which are required.
 `--name   -n`
 (You must specify either `name` or `environment` in this command) The name of the Sharedflow to list.
 
-`--environment   -e`  
+`--environment   -e`
 (You must specify either `name` or `environment` in this command) The environment for which you want to list deployments. When `-e` is specified, the command lists all deployed proxies in the environment.
 
 #### Optional parameters
@@ -578,7 +646,7 @@ See [Common Parameters](#commonargs) for a list of additional parameters, includ
 the "-u" and "-p" parameters for username and password, and the "-o" parameter
 for organization name, all of which are required.
 
-`--name  -n`  
+`--name  -n`
 (required) The name of the sharedflow or app to undeploy.
 
 `--revision  -r`
@@ -614,7 +682,7 @@ See [Common Parameters](#commonargs) for a list of additional parameters, includ
 the "-u" and "-p" parameters for username and password, and the "-o" parameter
 for organization name, all of which are required.
 
-`--name  -n`  
+`--name  -n`
 (required) The name of the API proxy or app to undeploy.
 
 ## <a name="KVM Operations"></a>KVM Operations
@@ -829,23 +897,23 @@ for organization name, all of which are required.
 You could use apigeetool as an SDK to orchestrate tasks that you want to perform with Edge, for eg, deploying an api proxy or running tests etc.
 
 #### Usage Example
-        
+
         var apigeetool = require('apigeetool')
         var sdk = apigeetool.getPromiseSDK()
         var opts = {
             organization: 'edge-org',
             username: 'edge-user',
             password: 'password',
-            environment: 'environment',  
+            environment: 'environment',
         }
         opts.api = APIGEE_PROXY_NAME;
-    opts.directory = path.join(__dirname);    
+    opts.directory = path.join(__dirname);
 
         sdk.deployProxy(opts)
                 .then(function(result){
                         //deploy success
                         },function(err){
-                        //deploy failed 
+                        //deploy failed
                 })
 
 ## <a name="createdeveloper"></a>Create Developer
@@ -855,7 +923,7 @@ Creates a new Developer in Edge
 #### Example
 
 Create a developer.
-        
+
         //see above for other required options
         opts.email = DEVELOPER_EMAIL
     opts.firstName = 'Test'
@@ -897,29 +965,29 @@ Creates a new API Product in Edge
     opts.proxies = APIGEE_PROXY_NAME
     opts.environments = 'test' //apigee env
     opts.quota = '1', //quota amount
-    opts.quotaInterval = '1' //interval 
+    opts.quotaInterval = '1' //interval
     opts.quotaTimeUnit = 'minute' //timeunit
-        
+
     sdk.createProduct(opts)
       .then(function(result){
         //product created
       },function(err){
         //product creation failed
-      }) ;    
+      }) ;
 
 ## <a name="deleteproduct"></a>Delete Product
 
 Delete API Product in Edge
 
 #### Example
-    opts.productName = APIGEE_PRODUCT_NAME    
-    
+    opts.productName = APIGEE_PRODUCT_NAME
+
     sdk.deleteProduct(opts)
       .then(function(result){
         //delete success
       },function(err){
         //delete failed
-      }) ;  
+      }) ;
 
 ## <a name="createapp"></a>Create App
 
@@ -936,7 +1004,7 @@ Create App in Edge
         //create app done
       },function(err){
         //create app failed
-      }) ; 
+      }) ;
 
 ## <a name="deleteapp"></a>Delete App
 
@@ -952,7 +1020,7 @@ Delete App in Edge
         //delete app success
       },function(err){
         //delete app failed
-      }) ; 
+      }) ;
 
 ## <a name="createcache"></a>Create Cache
 
@@ -965,7 +1033,7 @@ Create Cache in Edge
         //cache create success
       },function(err){
         //cache create failed
-      }) ; 
+      }) ;
 
 ## <a name="deletecache"></a>Delete Cache
 
@@ -978,7 +1046,7 @@ Delete Cache in Edge
         //delete create success
       },function(err){
         //delete create failed
-      }) ; 
+      }) ;
 
 # <a name="original"></a>Original Tool
 

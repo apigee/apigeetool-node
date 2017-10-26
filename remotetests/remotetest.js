@@ -13,6 +13,7 @@ var config = require('./testconfig');
 var REASONABLE_TIMEOUT = 120000;
 var APIGEE_PROXY_NAME = 'apigee-cli-apigee-test';
 var NODE_PROXY_NAME = 'apigee-cli-node-test';
+var HOSTED_FUNCTIONS_PROXY_NAME = 'cli-hosted-functions-test';
 var CACHE_RESOURCE_NAME='apigee-cli-remotetests-cache1';
 var PROXY_BASE_PATH = '/apigee-cli-test-employees';
 var APIGEE_PRODUCT_NAME = 'TESTPRODUCT';
@@ -569,6 +570,157 @@ describe('Remote Tests', function() {
       } else {
         try {
           assert.equal(result.name, NODE_PROXY_NAME);
+          assert.equal(result.environment, config.environment);
+          assert.equal(result.state, 'undeployed');
+          assert.equal(result.revision, deployedRevision);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
+  it('Deploy Hosted Functions App', function(done) {
+    var opts = baseOpts();
+    opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
+    opts.directory = path.join(__dirname, '../test/fixtures/hellohostedfunctions');
+    opts.main = 'server.js';
+    opts['base-path'] = '/cli-hosted-functions-test';
+
+    apigeetool.deployHostedFunction(opts, function(err, result) {
+      if (verbose) {
+        console.log('Deploy result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        try {
+          if(Array.isArray(result)) result = result[0]
+          assert.equal(result.name, HOSTED_FUNCTIONS_PROXY_NAME);
+          assert.equal(result.environment, config.environment);
+          assert.equal(result.state, 'deployed');
+          //it will be 2 for remote testing public cloud/ http & https
+          assert.equal(result.uris.length, 2);
+          assert(typeof result.revision === 'number');
+          deployedRevision = result.revision;
+          deployedUri = result.uris[0];
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
+  it('List Deployments by app', function(done) {
+    var opts = baseOpts();
+    delete opts.environment;
+    opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
+    opts.long = true;
+
+    apigeetool.listDeployments(opts, function(err, result) {
+      if (verbose) {
+        console.log('List result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        var deployment = _.find(result.deployments, function(d) {
+          return (d.name === HOSTED_FUNCTIONS_PROXY_NAME);
+        });
+        try {
+          assert.equal(deployment.name, HOSTED_FUNCTIONS_PROXY_NAME);
+          assert.equal(deployment.environment, config.environment);
+          assert.equal(deployment.state, 'deployed');
+          assert.equal(deployment.revision, deployedRevision);
+          assert.equal(deployment.uris.length, 2);
+          assert.equal(deployment.uris[0], deployedUri);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
+  it('Verify deployed URI', function(done) {
+    if (verbose) {
+      console.log('Testing %s', deployedUri);
+    }
+    request(deployedUri, function(err, resp) {
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(resp.statusCode, 200);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
+  it('Check build logs from deployed URI', function(done) {
+    var opts = baseOpts();
+    opts['hosted-build'] = true;
+    opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
+
+    var logStream = new stream.PassThrough();
+    logStream.setEncoding('utf8');
+    opts.stream = logStream;
+    apigeetool.getLogs(opts, function(err) {
+      assert.ifError(err);
+
+      var allLogs = '';
+      logStream.on('data', function(chunk) {
+        allLogs += chunk;
+      });
+      logStream.on('end', function() {
+        assert(/DONE/.test(allLogs));
+        done();
+      });
+    });
+  });
+
+  it('Check runtime logs from deployed URI', function(done) {
+    var opts = baseOpts();
+    opts['hosted-runtime'] = true;
+    opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
+
+    var logStream = new stream.PassThrough();
+    logStream.setEncoding('utf8');
+    opts.stream = logStream;
+
+    apigeetool.getLogs(opts, function(err) {
+      assert.ifError(err);
+
+      var allLogs = '';
+      logStream.on('data', function(chunk) {
+        allLogs += chunk;
+      });
+      logStream.on('end', function() {
+        //Validate runtime logs
+        assert(/Node HTTP server is listening/.test(allLogs));
+        done();
+      });
+    });
+  });
+
+  it('Undeploy Hosted Functions App Without Revision', function(done) {
+    var opts = baseOpts();
+    opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
+
+    apigeetool.undeploy(opts, function(err, result) {
+      if (verbose) {
+        console.log('Undeploy result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(result.name, HOSTED_FUNCTIONS_PROXY_NAME);
           assert.equal(result.environment, config.environment);
           assert.equal(result.state, 'undeployed');
           assert.equal(result.revision, deployedRevision);
