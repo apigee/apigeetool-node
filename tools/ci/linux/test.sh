@@ -1,8 +1,11 @@
 #!/bin/sh
 
+npm -v
+node -v
+
 BUILDROOT=${BUILDROOT:-github/apigeetool-node}
 
-(cd $BUILDROOT; npm test)
+(cd $BUILDROOT; npm install && npm test)
 testStatus=$?
 
 if [ -d ./sponge-logs ]
