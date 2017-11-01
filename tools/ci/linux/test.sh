@@ -1,8 +1,19 @@
 #!/bin/sh
 
-BUILDROOT=${BUILDROOT:-github/apigeetool-node}
+npm -v
+node -v
 
-(cd $BUILDROOT; npm test)
+
+BUILDROOT=${BUILDROOT:-github/apigeetool-node}
+CREDENTIAL_FILE="$KOKORO_KEYSTORE_DIR/72809_apigeetool_ci_testconfig"
+
+if [ -f $CREDENTIAL_FILE ]; then
+    cp $CREDENTIAL_FILE $BUILDROOT/remotetests/testconfig.js
+fi
+
+ls -l $BUILDROOT/remotetests
+
+(cd $BUILDROOT; npm install && npm test && npm run remotetest)
 testStatus=$?
 
 if [ -d ./sponge-logs ]
