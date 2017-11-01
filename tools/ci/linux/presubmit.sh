@@ -1,6 +1,8 @@
 
 #!/bin/sh
 
+echo "Starting"
+
 npm -v
 node -v
 
