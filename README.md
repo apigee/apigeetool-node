@@ -663,6 +663,9 @@ for organization name, all of which are required.
 `--api -n`
 (optional) The API to target for an API-scoped KVM operation.
 
+`--encrypted`
+(optional) Create a encrypted KVM Map.
+
 ### <a name="addEntryToKVM"></a>addEntryToKVM
 
 Adds an entry of name:value to the named map in the Apigee KVM.
