@@ -21,6 +21,7 @@ var DEVELOPER_EMAIL = 'test123@apigee.com';
 var APP_NAME = 'test123test123';
 var TARGET_SERVER_NAME = 'apigee-cli-test-servername';
 var MAP_NAME = 'apigee-cli-test-kvm';
+var MAP_NAME_ENCRYPTED = 'apigee-cli-test-kvm-encrypted';
 var SHARED_FLOW_NAME = 'apigee-cli-sf';
 var verbose = false;
 
@@ -30,6 +31,23 @@ describe('Remote Tests', function() {
   var deployedRevision;
   var deployedUri;
 
+  after(function(done) {
+    // cleanup encrypted kvm
+    var opts = baseOpts();
+    opts.mapName = MAP_NAME_ENCRYPTED;
+    opts.environment = config.environment;
+    apigeetool.deleteKVM(opts,function(err,result) {
+      if (verbose) {
+        console.log('Delete KVM result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        done()
+      }
+    });
+  });
+  
   it('Deploy Apigee Proxy with Promise SDK', function(done) {
     var opts = baseOpts();
     opts.api = APIGEE_PROXY_NAME;
@@ -805,6 +823,24 @@ describe('Remote Tests', function() {
         function(err){
           console.log(err)
           done(err)})
+  });
+
+  it('Create Encrypted KVM',function(done){
+    var opts = baseOpts();
+    opts.mapName = MAP_NAME_ENCRYPTED;
+    opts.environment = config.environment;
+    opts.encrypted = true;
+    apigeetool.getPromiseSDK()
+      .createKVM(opts)
+      .then(function(res){
+        if (!res.encrypted) {
+          return done(new Error('Map was not encrypted'));
+        }
+        done();
+      }, function(err){
+        console.log(err)
+        done(err)
+      })
   });
 
   it('Add Entry to KVM',function(done){
