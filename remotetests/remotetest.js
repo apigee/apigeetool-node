@@ -599,7 +599,7 @@ describe('Remote Tests', function() {
     });
   });
 
-  it.skip('Deploy Hosted Functions App', function(done) {
+  it('Deploy Hosted Functions App', function(done) {
     var opts = baseOpts();
     opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
     opts.directory = path.join(__dirname, '../test/fixtures/hellohostedfunctions');
@@ -631,7 +631,7 @@ describe('Remote Tests', function() {
     });
   });
 
-  it.skip('List Deployments by app', function(done) {
+  it('List Deployments by app', function(done) {
     var opts = baseOpts();
     delete opts.environment;
     opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
@@ -680,7 +680,7 @@ describe('Remote Tests', function() {
     });
   });
 
-  it.skip('Check build logs from deployed URI', function(done) {
+  it('Check build logs from deployed URI', function(done) {
     var opts = baseOpts();
     opts['hosted-build'] = true;
     opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
@@ -702,7 +702,7 @@ describe('Remote Tests', function() {
     });
   });
 
-  it.skip('Check runtime logs from deployed URI', function(done) {
+  it('Check runtime logs from deployed URI', function(done) {
     var opts = baseOpts();
     opts['hosted-runtime'] = true;
     opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
@@ -726,7 +726,7 @@ describe('Remote Tests', function() {
     });
   });
 
-  it.skip('Undeploy Hosted Functions App Without Revision', function(done) {
+  it('Undeploy Hosted Functions App Without Revision', function(done) {
     var opts = baseOpts();
     opts.api = HOSTED_FUNCTIONS_PROXY_NAME;
 
