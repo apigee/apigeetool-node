@@ -833,6 +833,33 @@ for organization name, all of which are required.
 `--api -n`
 (optional) The API to target for an API-scoped KVM operation.
 
+## <a name="Cache Operations"></a>Cache Operations
+
+### <a name="createcache"></a>createcache
+
+Creates a Cache with the given name.
+
+#### Example
+Create Cache map named "test-cache"
+
+    apigeetool createcache -u sdoe@example.com -o sdoe -e test -z test-cache
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`-z`
+(required) The name of the cache to be created.
+
+`--environment -e`
+(required) The environment to target.
+
 # <a name="sdkreference"></a>SDK Reference
 
 You could use apigeetool as an SDK to orchestrate tasks that you want to perform with Edge, for eg, deploying an api proxy or running tests etc.
