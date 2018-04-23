@@ -47,6 +47,9 @@ this tool:
 `--baseuri   -L`
 (optional) The base URI for you organization on Apigee Edge. The default is the base URI for Apigee cloud deployments is `api.enterprise.apigee.com`. For on-premise deployments, the base URL may be different.
 
+`--header   -H`
+(optional) Adds a header to the API call.  Format is header:value.  This option may be used multiple times if more than one header is needed.
+
 `--cafile -c`
 (optional) The names of one of more PEM files that represent trusted certificate authorities.
 Multiple file names may be comma-separated. Use this to communicate with an installation

@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "program": "${workspaceFolder}\\lib\\cli.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Test -help option",
+            "program": "${workspaceFolder}\\lib\\cli.js",
+            "args": [
+                "fetchproxy",
+                "-help"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Test -H option",
+            "program": "${workspaceFolder}\\lib\\cli.js",
+            "args": [
+                "fetchproxy",
+                "-H",
+                "X-NW-Authorization:Basic c2dTT0FTT0w6UGFzc3dvcmQx",
+                "-H",
+                "X-NW-SomeOtherHeader:WhateverDataMakesSense",
+                "-L",
+                "https://intdpmpg-dev.nwie.net/utility/apiAdministration_Apigee",
+                "-k",
+                "-n",
+                "Example-best-practices",
+                "-r",
+                "43",
+                "-D"
+            ]
+        }
+    ]
+}
