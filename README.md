@@ -91,6 +91,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 # <a name="reference"></a>Command reference and examples
 
 * [deploynodeapp](#deploynodeapp)
+* [deployhostedfunction](#deployhostedfunction)
 * [deployproxy](#deployproxy)
 * [undeploy](#undeploy)
 * [listdeployments](#listdeployments)
@@ -186,6 +187,59 @@ for organization name, all of which are required.
 `--wait-after-import  -W`  
 (optional) Number of seconds to delay before deploying node.js proxy.
 
+## <a name="deployhostedfunction"></a>deployhostedfunction
+
+Deploys a Hosted Function to Apigee Edge as an API proxy. With your Hosted Function deployed to Edge, you can take advantage of Edge features like security, quotas, caching, analytics, trace tool, and more.
+
+#### Examples
+
+Deploys a Node.js app as a Hosted Function to Apigee Edge.
+
+    apigeetool deployhostedfunction -u sdoe@apigee.com -o sdoe -e test -n 'test-node-app-2' -b /node2
+
+Deploys a Node.js app as a Hosted Function to both the default (HTTP) and secure (HTTPS) virtual hosts.
+
+    apigeetool deployhostedfunction -u sdoe@apigee.com -o sdoe -e test -n 'test-node-app-2' -b /node2 -v default,secure
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+For example, if you do not specify a password using "-p", apigeetool will
+prompt for the password on the command line.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--api   -n`
+The name of the API proxy. The name of the API proxy must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `a-z0-9._\-$ %`.
+
+`--environments  -e`
+(required) The name(s) of the environment(s) to deploy to (comma-delimited).
+
+#### Optional parameters
+
+`--base-path -b`
+(optional) The base path of the API proxy. For example, for this API proxy, the base path is `/example-proxy`: `http://myorg-test.apigee.net/example-proxy/resource1`.
+
+`--directory -d`
+(optional) The path to the root directory of the API proxy on your local system. Will attempt to use current directory is none is specified.
+
+`--import-only   -i`
+(optional) Imports the API proxy to Apigee Edge but does not deploy it.
+
+`--preserve-policies -P`
+(optional) If specified, the highest revision of the existing proxy will be downloaded and the source code in your directory will be overlayed upon it to create a resulting proxy that contains both any existing policies and the source code in the directory. If there is no existing revision, this option will have no effect.
+
+`--virtualhosts  -v`
+(optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deployhostedfunction` uses `default,secure`.
+
+`--bundled-dependencies`
+(optional) If specified, the source code will be uploaded with its `bundledDependencies` as defined in the `package.json`.
+
 ## <a name="deployproxy"></a>deployproxy
 
 Deploys an API proxy to Apigee Edge. If the proxy is currently deployed, it will be undeployed first, and the newly deployed proxy's revision number is incremented.
@@ -230,7 +284,7 @@ for organization name, all of which are required.
 (optional) If specified, uploads Node.js modules from your system to Apigee Edge.
 
 `--bundled-dependencies`
-(optional) If specified, the `node` resources will be uploaded with their `bundledDependencies` as defined in their respective `package.json` files.
+(optional) If specified, the `node` & `hosted` resources will be uploaded with their `bundledDependencies` as defined in their respective `package.json` files.
 
 `--wait-after-import  -W`  
 (optional) Number of seconds to delay before deploying node.js proxy.
@@ -400,7 +454,7 @@ for organization name, all of which are required.
 
 ## <a name="getlogs"></a>getlogs
 
-Retrieve the last set of log records from a Node.js application deployed to Apigee Edge.
+Retrieve the last set of log records from a Node.js application or Hosted Function deployed to Apigee Edge.
 
 The resulting log files will be written directly to standard output. Each is prefixed with:
 
@@ -463,6 +517,14 @@ records and write them to standard output in the manner of "tail -f."
 (optional) If specified, use the time zone to format the timestamps on the
 log records. If not specified, then the default is UTC. The timestamp name
 should be a name such as "PST."
+
+`--hosted-build`
+(optional) If specified will attempt to get the build logs for a deployed
+Hosted Function.
+
+`--hosted-runtime`
+(optional) If specified will attempt to get the runtime logs for a deployed
+Hosted Function.
 
 ## <a name="deploySharedflow"></a>deploySharedflow
 
