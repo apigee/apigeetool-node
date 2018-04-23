@@ -73,95 +73,98 @@ describe('Remote Tests', function() {
       })
   });
 
-  it('Create Product', function(done){
-    var opts = baseOpts() ;
-    opts.productName = APIGEE_PRODUCT_NAME;
-    opts.productDesc = 'abc123';
-    opts.proxies = APIGEE_PROXY_NAME;
-    opts.quota = '1';
-    opts.quotaInterval = '1';
-    opts.quotaTimeUnit = 'minute';
+  describe('Products / Developers', function() {
 
-    var sdk = apigeetool.getPromiseSDK()
+    it('Create Product', function(done){
+      var opts = baseOpts() ;
+      opts.productName = APIGEE_PRODUCT_NAME;
+      opts.productDesc = 'abc123';
+      opts.proxies = APIGEE_PROXY_NAME;
+      opts.quota = '1';
+      opts.quotaInterval = '1';
+      opts.quotaTimeUnit = 'minute';
 
-    sdk.createProduct(opts)
-      .then(function(result){
-        done()
-      },function(err){
-        done(err)
-      }) ;
-  });
+      var sdk = apigeetool.getPromiseSDK()
 
-  it('Create Developer' , function(done){
-    var opts = baseOpts()
-    opts.email = DEVELOPER_EMAIL
-    opts.firstName = 'Test'
-    opts.lastName = 'Test1'
-    opts.userName = 'runningFromTest123'
+      sdk.createProduct(opts)
+        .then(function(result){
+          done()
+        },function(err){
+          done(err)
+        }) ;
+    });
 
-    var sdk = apigeetool.getPromiseSDK()
+    it('Create Developer' , function(done){
+      var opts = baseOpts()
+      opts.email = DEVELOPER_EMAIL
+      opts.firstName = 'Test'
+      opts.lastName = 'Test1'
+      opts.userName = 'runningFromTest123'
 
-    sdk.createDeveloper(opts)
-      .then(function(result){
-        done()
-      },function(err){
-        done(err)
-      }) ;
-  });
+      var sdk = apigeetool.getPromiseSDK()
 
-  it('Create App' , function(done){
-    var opts = baseOpts()
-    opts.name = APP_NAME
-    opts.apiproducts = APIGEE_PRODUCT_NAME
-    opts.email = DEVELOPER_EMAIL
+      sdk.createDeveloper(opts)
+        .then(function(result){
+          done()
+        },function(err){
+          done(err)
+        }) ;
+    });
 
-    var sdk = apigeetool.getPromiseSDK()
+    it('Create App' , function(done){
+      var opts = baseOpts()
+      opts.name = APP_NAME
+      opts.apiproducts = APIGEE_PRODUCT_NAME
+      opts.email = DEVELOPER_EMAIL
 
-    sdk.createApp(opts)
-      .then(function(result){
-        done()
-      },function(err){
-        done(err)
-      }) ;
-  });
+      var sdk = apigeetool.getPromiseSDK()
 
-  it('Delete App' , function(done){
-    var opts = baseOpts()
-    opts.email = DEVELOPER_EMAIL
-    opts.name = APP_NAME
-    var sdk = apigeetool.getPromiseSDK()
-    sdk.deleteApp(opts)
-      .then(function(result){
-        done()
-      },function(err){
-        done(err)
-      }) ;
-  });
+      sdk.createApp(opts)
+        .then(function(result){
+          done()
+        },function(err){
+          done(err)
+        }) ;
+    });
 
-  it('Delete Developer' , function(done){
-    var opts = baseOpts()
-    opts.email = DEVELOPER_EMAIL
-    var sdk = apigeetool.getPromiseSDK()
-    sdk.deleteDeveloper(opts)
-      .then(function(result){
-        done()
-      },function(err){
-        done(err)
-      }) ;
-  });
+    it('Delete App' , function(done){
+      var opts = baseOpts()
+      opts.email = DEVELOPER_EMAIL
+      opts.name = APP_NAME
+      var sdk = apigeetool.getPromiseSDK()
+      sdk.deleteApp(opts)
+        .then(function(result){
+          done()
+        },function(err){
+          done(err)
+        }) ;
+    });
 
-  it('Delete API Product',function(done){
-    var opts = baseOpts() ;
-    opts.productName = APIGEE_PRODUCT_NAME
+    it('Delete Developer' , function(done){
+      var opts = baseOpts()
+      opts.email = DEVELOPER_EMAIL
+      var sdk = apigeetool.getPromiseSDK()
+      sdk.deleteDeveloper(opts)
+        .then(function(result){
+          done()
+        },function(err){
+          done(err)
+        }) ;
+    });
 
-    var sdk = apigeetool.getPromiseSDK()
-
-    sdk.deleteProduct(opts)
-      .then(function(result){
-        done()
-      },function(err){
-        done(err)
-      }) ;
+    it('Delete API Product',function(done){
+      var opts = baseOpts() ;
+      opts.productName = APIGEE_PRODUCT_NAME
+  
+      var sdk = apigeetool.getPromiseSDK()
+  
+      sdk.deleteProduct(opts)
+        .then(function(result){
+          done()
+        },function(err){
+          done(err)
+        }) ;
+    });
   });
 
   it('Deploy Apigee Proxy', function(done) {
@@ -748,8 +751,7 @@ describe('Remote Tests', function() {
         }
       });
     });
-
-  })
+  }); // end hosted target tests
 
   it('Create an Cache Resource',function(done){
     var opts = baseOpts();
@@ -814,178 +816,174 @@ describe('Remote Tests', function() {
     });
   });
 
-  it('Create KVM',function(done){
-    var opts = baseOpts();
-    opts.mapName = MAP_NAME;
-    opts.environment = config.environment;
-    apigeetool.getPromiseSDK()
-      .createKVM(opts)
-      .then(function(){done()},
-        function(err){
-          console.log(err)
-          done(err)})
-  });
-
-  it('Create Encrypted KVM',function(done){
-    var opts = baseOpts();
-    opts.mapName = MAP_NAME_ENCRYPTED;
-    opts.environment = config.environment;
-    opts.encrypted = true;
-    apigeetool.getPromiseSDK()
-      .createKVM(opts)
-      .then(function(res){
-        if (!res.encrypted) {
-          return done(new Error('Map was not encrypted'));
-        }
-        done();
-      }, function(err){
-        console.log(err)
-        done(err)
-      })
-  });
-
-  it('Add Entry to KVM',function(done){
-    // This will not work for non-cps orgs
-    var opts = baseOpts();
-    opts.mapName = MAP_NAME;
-    opts.environment = config.environment;
-    opts.entryName = 'test';
-    opts.entryValue = 'test1';
-    apigeetool.getPromiseSDK()
-      .addEntryToKVM(opts)
-      .then(function(){done()},
-        function(err){
-          console.log(err);
-          done(err)})
-  });
-
-  it('Get KVM Entry', function(done) {
-    var opts = baseOpts();
-    opts.mapName = MAP_NAME;
-    opts.environment = config.environment;
-    opts.entryName = 'test';
-    apigeetool.getPromiseSDK()
-      .getKVMentry(opts)
-      .then(function(body){
-        assert.equal(body.value, 'test1')
-        done()
-      },
-      function(err) {
-        console.log(err);
-        done(err);
-      })
-  })
-
-  it('Get KVM Map', function(done) {
-    var opts = baseOpts();
-    opts.mapName = MAP_NAME;
-    opts.environment = config.environment;
-    apigeetool.getPromiseSDK()
-      .getkvmmap(opts)
-      .then(function(body){
-        assert.equal(body.entry.length, 1)
-        done()
-      },
-      function(err) {
-        console.log(err);
-        done(err);
-      })
-  })
-
-  it('Delete KVM Entry', function(done) {
-    var opts = baseOpts();
-    opts.mapName = MAP_NAME;
-    opts.environment = config.environment;
-    opts.entryName = 'test';
-    apigeetool.getPromiseSDK()
-      .deleteKVMentry(opts)
-      .then(function(body){
-        assert.equal(body.value, 'test1')
-        done()
-      },
-      function(err) {
-        console.log(err);
-        done(err);
-      })
-  })
-
-  it('Delete KVM',function(done){
-    var opts = baseOpts();
-    opts.mapName = MAP_NAME;
-    opts.environment = config.environment;
-    apigeetool.deleteKVM(opts,function(err,result) {
-      if (verbose) {
-        console.log('Delete KVM result = %j', result);
-      }
-      if (err) {
-        done(err);
-      } else {
-        done()
-      }
+  describe('KVM', function() {
+    it('Create KVM',function(done){
+      var opts = baseOpts();
+      opts.mapName = MAP_NAME;
+      opts.environment = config.environment;
+      apigeetool.getPromiseSDK()
+        .createKVM(opts)
+        .then(function(){done()},
+          function(err){
+            console.log(err)
+            done(err)})
     });
-  });
 
-  it('Deploy SharedFlow', function (done) {
-    var opts = baseOpts();
-    opts.name = SHARED_FLOW_NAME;
-    opts.directory = path.join(__dirname, '../test/fixtures/employees-sf');
-    apigeetool.deploySharedflow(opts, function (err, result) {
-      if (verbose) {
-        console.log('Deploy result = %j', result);
-      }
-      if (err) {
-        done(err);
-      } else {
-        try {
-          if (Array.isArray(result)) {
-            result = result[0]
+    it('Create Encrypted KVM',function(done){
+      var opts = baseOpts();
+      opts.mapName = MAP_NAME_ENCRYPTED;
+      opts.environment = config.environment;
+      opts.encrypted = true;
+      apigeetool.getPromiseSDK()
+        .createKVM(opts)
+        .then(function(res){
+          if (!res.encrypted) {
+            return done(new Error('Map was not encrypted'));
           }
-          assert.equal(result.name, SHARED_FLOW_NAME);
-          assert.equal(result.environment, config.environment);
-          assert.equal(result.state, 'deployed');
-          // assert.equal(result.uris.length, 1);
-          assert(typeof result.revision === 'number');
-          deployedRevision = result.revision;
-          // deployedUri = result.uris[0];
           done();
-        } catch (e) {
-          done(e);
+        }, function(err){
+          console.log(err)
+          done(err)
+        })
+    });
+
+    it('Add Entry to KVM',function(done){
+      // This will not work for non-cps orgs
+      var opts = baseOpts();
+      opts.mapName = MAP_NAME;
+      opts.environment = config.environment;
+      opts.entryName = 'test';
+      opts.entryValue = 'test1';
+      apigeetool.getPromiseSDK()
+        .addEntryToKVM(opts)
+        .then(function(){done()},
+          function(err){
+            console.log(err);
+            done(err)})
+    });
+
+    it('Get KVM Entry', function(done) {
+      var opts = baseOpts();
+      opts.mapName = MAP_NAME;
+      opts.environment = config.environment;
+      opts.entryName = 'test';
+      apigeetool.getPromiseSDK()
+        .getKVMentry(opts)
+        .then(function(body){
+          assert.equal(body.value, 'test1')
+          done()
+        },
+        function(err) {
+          console.log(err);
+          done(err);
+        })
+    })
+
+    it('Get KVM Map', function(done) {
+      var opts = baseOpts();
+      opts.mapName = MAP_NAME;
+      opts.environment = config.environment;
+      apigeetool.getPromiseSDK()
+        .getkvmmap(opts)
+        .then(function(body){
+          assert.equal(body.entry.length, 1)
+          done()
+        },
+        function(err) {
+          console.log(err);
+          done(err);
+        })
+    })
+
+    it('Delete KVM Entry', function(done) {
+      var opts = baseOpts();
+      opts.mapName = MAP_NAME;
+      opts.environment = config.environment;
+      opts.entryName = 'test';
+      apigeetool.getPromiseSDK()
+        .deleteKVMentry(opts)
+        .then(function(body){
+          assert.equal(body.value, 'test1')
+          done()
+        },
+        function(err) {
+          console.log(err);
+          done(err);
+        })
+    })
+
+    it('Delete KVM',function(done){
+      var opts = baseOpts();
+      opts.mapName = MAP_NAME;
+      opts.environment = config.environment;
+      apigeetool.deleteKVM(opts,function(err,result) {
+        if (verbose) {
+          console.log('Delete KVM result = %j', result);
         }
-      }
+        if (err) {
+          done(err);
+        } else {
+          done()
+        }
+      });
     });
-  });
+  })
 
-  it('listSharedflowDeployments'); // Until MGMT-3671 is merged, will not work
 
-  it('fetchSharedflow');
-
-  it('undeploySharedflow', function() {
-    var opts = baseOpts();
-    opts.name = SHARED_FLOW_NAME;
-
-    apigeetool.undeploySharedflow(opts, function(err, result) {
-      if (err) {
-        done(err);
-      } else { // If response is non-200 it throws an Error
-        done();
-      }
+  describe('SharedFlows', function() {
+    it('Deploy SharedFlow', function (done) {
+      var opts = baseOpts();
+      opts.name = SHARED_FLOW_NAME;
+      opts.directory = path.join(__dirname, '../test/fixtures/employees-sf');
+      apigeetool.deploySharedflow(opts, function (err, result) {
+        if (verbose) {
+          console.log('Deploy result = %j', result);
+        }
+        if (err) {
+          done(err);
+        } else {
+          try {
+            if (Array.isArray(result)) {
+              result = result[0]
+            }
+            assert.equal(result.name, SHARED_FLOW_NAME);
+            assert.equal(result.environment, config.environment);
+            assert.equal(result.state, 'deployed');
+            // assert.equal(result.uris.length, 1);
+            assert(typeof result.revision === 'number');
+            deployedRevision = result.revision;
+            // deployedUri = result.uris[0];
+            done();
+          } catch (e) {
+            done(e);
+          }
+        }
+      });
     });
-  });
 
-  it('deleteSharedflow', function() {
-    var opts = baseOpts();
-    opts.name = SHARED_FLOW_NAME;
+    it('listSharedflowDeployments'); // Until MGMT-3671 is merged, will not work
 
-    apigeetool.deleteSharedflow(opts, function(err, result) {
-      if (err) {
-        done(err);
-      } else {
-        assert(result.name === SHARED_FLOW_NAME);
-        done();
-      }
+    it('fetchSharedflow');
+
+    it('undeploySharedflow', function(done) {
+      var opts = baseOpts();
+      opts.name = SHARED_FLOW_NAME;
+
+      apigeetool.undeploySharedflow(opts, function(err, result) {
+        if (err) {
+          done(err);
+        } else { // If response is non-200 it throws an Error
+          done();
+        }
+      });
     });
-  });
 
+    it('deleteSharedflow', function(done) {
+      var opts = baseOpts();
+      opts.name = SHARED_FLOW_NAME;
+      apigeetool.deleteSharedflow(opts, done);
+    });
+  })
 });
 
 function baseOpts() {
