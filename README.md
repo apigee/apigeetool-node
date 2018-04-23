@@ -91,7 +91,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 # <a name="reference"></a>Command reference and examples
 
 * [deploynodeapp](#deploynodeapp)
-* [deployhostedfunction](#deployhostedfunction)
+* [deployhostedtarget](#deployhostedtarget)
 * [deployproxy](#deployproxy)
 * [undeploy](#undeploy)
 * [listdeployments](#listdeployments)
@@ -187,19 +187,19 @@ for organization name, all of which are required.
 `--wait-after-import  -W`  
 (optional) Number of seconds to delay before deploying node.js proxy.
 
-## <a name="deployhostedfunction"></a>deployhostedfunction
+## <a name="deployhostedtarget"></a>deployhostedtarget
 
-Deploys a Hosted Function to Apigee Edge as an API proxy. With your Hosted Function deployed to Edge, you can take advantage of Edge features like security, quotas, caching, analytics, trace tool, and more.
+Deploys a Hosted Target to Apigee Edge as an API proxy. With your Hosted Target deployed to Edge, you can take advantage of Edge features like security, quotas, caching, analytics, trace tool, and more.
 
 #### Examples
 
-Deploys a Node.js app as a Hosted Function to Apigee Edge.
+Deploys a Node.js app as a Hosted Target to Apigee Edge.
 
-    apigeetool deployhostedfunction -u sdoe@apigee.com -o sdoe -e test -n 'test-node-app-2' -b /node2
+    apigeetool deployhostedtarget -u sdoe@apigee.com -o sdoe -e test -n 'test-node-app-2' -b /node2
 
-Deploys a Node.js app as a Hosted Function to both the default (HTTP) and secure (HTTPS) virtual hosts.
+Deploys a Node.js app as a Hosted Target to both the default (HTTP) and secure (HTTPS) virtual hosts.
 
-    apigeetool deployhostedfunction -u sdoe@apigee.com -o sdoe -e test -n 'test-node-app-2' -b /node2 -v default,secure
+    apigeetool deployhostedtarget -u sdoe@apigee.com -o sdoe -e test -n 'test-node-app-2' -b /node2 -v default,secure
 
 #### Required parameters
 
@@ -235,7 +235,7 @@ The name of the API proxy. The name of the API proxy must be unique within an or
 (optional) If specified, the highest revision of the existing proxy will be downloaded and the source code in your directory will be overlayed upon it to create a resulting proxy that contains both any existing policies and the source code in the directory. If there is no existing revision, this option will have no effect.
 
 `--virtualhosts  -v`
-(optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deployhostedfunction` uses `default,secure`.
+(optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deployhostedtarget` uses `default,secure`.
 
 `--bundled-dependencies`
 (optional) If specified, the source code will be uploaded with its `bundledDependencies` as defined in the `package.json`.
@@ -454,7 +454,7 @@ for organization name, all of which are required.
 
 ## <a name="getlogs"></a>getlogs
 
-Retrieve the last set of log records from a Node.js application or Hosted Function deployed to Apigee Edge.
+Retrieve the last set of log records from a Node.js application or Hosted Target deployed to Apigee Edge.
 
 The resulting log files will be written directly to standard output. Each is prefixed with:
 
@@ -520,11 +520,11 @@ should be a name such as "PST."
 
 `--hosted-build`
 (optional) If specified will attempt to get the build logs for a deployed
-Hosted Function.
+Hosted Target.
 
 `--hosted-runtime`
 (optional) If specified will attempt to get the runtime logs for a deployed
-Hosted Function.
+Hosted Target.
 
 ## <a name="deploySharedflow"></a>deploySharedflow
 
