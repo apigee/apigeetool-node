@@ -931,23 +931,23 @@ You could use apigeetool as an SDK to orchestrate tasks that you want to perform
 
 #### Usage Example
 
-        var apigeetool = require('apigeetool')
-        var sdk = apigeetool.getPromiseSDK()
-        var opts = {
-            organization: 'edge-org',
-            username: 'edge-user',
-            password: 'password',
-            environment: 'environment',
-        }
-        opts.api = APIGEE_PROXY_NAME;
+    var apigeetool = require('apigeetool')
+    var sdk = apigeetool.getPromiseSDK()
+    var opts = {
+        organization: 'edge-org',
+        username: 'edge-user',
+        password: 'password',
+        environments: 'environment',
+    }
+    opts.api = APIGEE_PROXY_NAME;
     opts.directory = path.join(__dirname);
 
-        sdk.deployProxy(opts)
-                .then(function(result){
-                        //deploy success
-                        },function(err){
-                        //deploy failed
-                })
+    sdk.deployProxy(opts)
+        .then(function(result){
+            //deploy success
+        },function(err){
+            //deploy failed
+        });
 
 ## <a name="createdeveloper"></a>Create Developer
 
