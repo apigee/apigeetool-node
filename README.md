@@ -112,6 +112,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [deleteproduct](#deleteproduct)
 * [createapp](#createapp)
 * [deleteapp](#deleteapp)
+* [createkeysecret](#createkeysecret)
 * [createcache](#createcache)
 * [deletecache](#deletecache)
 * [createkvmmap](#createkvmmap)
@@ -1060,6 +1061,25 @@ Delete App in Edge
       },function(err){
         //delete app failed
       }) ;
+
+## <a name="createkeysecret"></a>Create Key / Secret
+
+Create Key / Secret in Edge
+
+#### Example
+
+    opts.key = APP_KEY;
+    opts.secret = APP_SECRET;
+    opts.developerId = DEVELOPER_EMAIL;
+    opts.appName = APP_NAME;
+    opts.apiProducts = PRODUCT_NAME;
+    
+    sdk.createKeySecret(opts)
+    .then(function(result){
+    //delete app success
+    },function(err){
+    //delete app failed
+    }) ;
 
 ## <a name="createcache"></a>Create Cache
 
