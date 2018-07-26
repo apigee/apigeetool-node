@@ -962,6 +962,12 @@ Create a developer.
     opts.firstName = 'Test'
     opts.lastName = 'Test1'
     opts.userName = 'runningFromTest123'
+    opts.attributes = [
+        {
+            name: "testAttribute",
+            value: "newValue"
+        }
+    ]
 
     sdk.createDeveloper(opts)
       .then(function(result){
