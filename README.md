@@ -1076,9 +1076,9 @@ Create App Key in Edge
     
     sdk.createAppKey(opts)
     .then(function(result){
-    //delete app success
+    //create key/secret success
     },function(err){
-    //delete app failed
+    //create key/secret failed
     }) ;
 
 ## <a name="createcache"></a>Create Cache
