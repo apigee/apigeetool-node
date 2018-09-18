@@ -112,6 +112,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [deleteproduct](#deleteproduct)
 * [createapp](#createapp)
 * [deleteapp](#deleteapp)
+* [createappkey](#createappkey)
 * [createcache](#createcache)
 * [deletecache](#deletecache)
 * [createkvmmap](#createkvmmap)
@@ -962,6 +963,12 @@ Create a developer.
     opts.firstName = 'Test'
     opts.lastName = 'Test1'
     opts.userName = 'runningFromTest123'
+    opts.attributes = [
+        {
+            name: "testAttribute",
+            value: "newValue"
+        }
+    ]
 
     sdk.createDeveloper(opts)
       .then(function(result){
@@ -1054,6 +1061,25 @@ Delete App in Edge
       },function(err){
         //delete app failed
       }) ;
+
+## <a name="createappkey"></a>Create App Key
+
+Create App Key in Edge
+
+#### Example
+
+    opts.key = APP_KEY;
+    opts.secret = APP_SECRET;
+    opts.developerId = DEVELOPER_EMAIL;
+    opts.appName = APP_NAME;
+    opts.apiProducts = PRODUCT_NAME;
+    
+    sdk.createAppKey(opts)
+    .then(function(result){
+    //create key/secret success
+    },function(err){
+    //create key/secret failed
+    }) ;
 
 ## <a name="createcache"></a>Create Cache
 
