@@ -390,6 +390,9 @@ including the URL to use as the base path for each one.
 `--revision  -r`
 (optional) Filters the list by the specified revision number.
 
+`--includeserverstatus`
+(optional) The response will include "server" information. If you don't want server details, you can make the call faster by omitting this parameter.
+
 ## <a name="fetchproxy"></a>fetchproxy
 
 Fetches a deployed API proxy or Node.js application from Apigee Edge. The
