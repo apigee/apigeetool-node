@@ -77,8 +77,10 @@ describe('Remote Tests', function() {
 
     it('Create Product', function(done){
       var opts = baseOpts() ;
+      var displayName = 'custom name';
       opts.productName = APIGEE_PRODUCT_NAME;
       opts.productDesc = 'abc123';
+      opts.displayName = displayName;
       opts.proxies = APIGEE_PROXY_NAME;
       opts.quota = '1';
       opts.quotaInterval = '1';
@@ -88,7 +90,12 @@ describe('Remote Tests', function() {
 
       sdk.createProduct(opts)
         .then(function(result){
-          done()
+          try {
+            assert.equal(result.displayName, displayName);
+            done();
+          } catch (e) {
+            done(e);
+          }
         },function(err){
           done(err)
         }) ;
