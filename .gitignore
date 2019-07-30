@@ -2,3 +2,4 @@ node_modules
 testdir.zip
 test.zip
 *.tgz
+.idea

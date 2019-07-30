@@ -293,6 +293,9 @@ for organization name, all of which are required.
 `--wait-after-import  -W`  
 (optional) Number of seconds to delay before deploying node.js proxy.
 
+`--revision  -r`  
+(optional) revision number to update if specified.
+
 ## <a name="deployExistingRevision"></a>deployExistingRevision
 
 Deploys an existing API proxy revision to Apigee Edge. If a different revision is already deployed to the targeted environments, it will be undeployed and replaced with the requested revision.
@@ -563,6 +566,9 @@ for organization name, all of which are required.
 
 `--import-only   -i`
 (optional) Imports the sharedflow to Apigee Edge but does not deploy it.
+
+`--revision  -r`  
+(optional) revision number to update if specified.
 
 ## <a name="undeploySharedflow"></a>undeploySharedflow
 
