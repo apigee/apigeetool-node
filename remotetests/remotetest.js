@@ -17,6 +17,7 @@ var HOSTED_TARGETS_PROXY_NAME = 'cli-hosted-targets-test';
 var CACHE_RESOURCE_NAME='apigee-cli-remotetests-cache1';
 var PROXY_BASE_PATH = '/apigee-cli-test-employees';
 var APIGEE_PRODUCT_NAME = 'TESTPRODUCT';
+var APIGEE_PRIVATE_PRODUCT_NAME = 'TESTPRODUCT-private';
 var DEVELOPER_EMAIL = 'test123@apigee.com';
 var APP_NAME = 'test123test123';
 var TARGET_SERVER_NAME = 'apigee-cli-test-servername';
@@ -101,6 +102,35 @@ describe('Remote Tests', function() {
         }) ;
     });
 
+    it('Create Private Product', function(done){
+      var opts = baseOpts() ;
+      var displayName = 'custom name';
+      opts.productName = APIGEE_PRIVATE_PRODUCT_NAME;
+      opts.productDesc = 'abc123';
+      opts.displayName = displayName;
+      opts.proxies = APIGEE_PROXY_NAME;
+      opts.quota = '1';
+      opts.quotaInterval = '1';
+      opts.quotaTimeUnit = 'minute';
+      opts.attributes = [ {"name": "access", "value": "private"} ];
+      var sdk = apigeetool.getPromiseSDK()
+
+      sdk.createProduct(opts)
+        .then(function(result){
+          try {
+            assert.equal(result.displayName, displayName);
+            assert.equal(result.attributes.length, 1);
+            assert.equal(result.attributes[0].name, 'access');
+            assert.equal(result.attributes[0].value, 'private');
+            done();
+          } catch (e) {
+            done(e);
+          }
+        },function(err){
+          done(err)
+        }) ;
+    });
+
     it('Create Developer' , function(done){
       var opts = baseOpts()
       opts.email = DEVELOPER_EMAIL
@@ -162,6 +192,20 @@ describe('Remote Tests', function() {
     it('Delete API Product',function(done){
       var opts = baseOpts() ;
       opts.productName = APIGEE_PRODUCT_NAME
+  
+      var sdk = apigeetool.getPromiseSDK()
+  
+      sdk.deleteProduct(opts)
+        .then(function(result){
+          done()
+        },function(err){
+          done(err)
+        }) ;
+    });
+
+    it('Delete API private Product',function(done){
+      var opts = baseOpts() ;
+      opts.productName = APIGEE_PRIVATE_PRODUCT_NAME 
   
       var sdk = apigeetool.getPromiseSDK()
   
