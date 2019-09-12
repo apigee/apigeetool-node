@@ -121,6 +121,8 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [getKVMentry](#getKVMentry)
 * [deletekvmmap](#deletekvmmap)
 * [deleteKVMentry](#deleteKVMentry)
+* [createTargetServer](#createTargetServer)
+* [deleteTargetServer](#deleteTargetServer)
 
 
 ## <a name="deploynodeapp"></a>deploynodeapp
@@ -926,6 +928,56 @@ for organization name, all of which are required.
 `--environment -e`
 (required) The environment to target.
 
+## <a name="Target Server Operations"></a>Target Server Operations
+
+### <a name="createTargetServer"></a>createTargetServer
+
+Creates a Target Server with the given name.
+
+#### Example
+Create Target Server named "test-target" with SSL enabled.
+
+    apigeetool createTargetServer -N -o $ORG -e $ENV --targetServerName test-target --targetHost httpbin.org --targetPort 443 --targetSSL true
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--targetServerName` (required) The name of the Target Server to be created.  
+`--targetHost` (required) The hostname of the target.  
+`--targetPort` (required) The port number of the target.  
+`--targetSSL` (optional) Whether or not SSL is configured, defaults to none.  
+`--targetEnabled` (optional) Whether or not the Target Server itself is enabled, defaults to true.  
+
+### <a name="deleteTargetServer"></a>deleteTargetServer
+
+Deletes a Target Server with the given name.
+
+#### Example
+Delete Target Server named "test-target".
+
+    apigeetool deleteTargetServer -N -o $ORG -e $ENV --targetServerName test-target
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--targetServerName` (required) The name of the Target Server to be deleted.
+
 # <a name="sdkreference"></a>SDK Reference
 
 You could use apigeetool as an SDK to orchestrate tasks that you want to perform with Edge, for eg, deploying an api proxy or running tests etc.
@@ -1073,7 +1125,7 @@ Create App Key in Edge
     opts.developerId = DEVELOPER_EMAIL;
     opts.appName = APP_NAME;
     opts.apiProducts = PRODUCT_NAME;
-    
+
     sdk.createAppKey(opts)
     .then(function(result){
     //create key/secret success
