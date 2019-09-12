@@ -192,14 +192,6 @@ describe('Options parsing test', function() {
     var rqst = defaults.defaultRequest(opts);
     // validate the files is read when the options is set
     expect(fs.readFileSync).not.toHaveBeenCalled();
-    // validate the request's default request object absent the key and cert properties
-    expect(request.defaults).toHaveBeenCalledWith(
-      {          
-        'auth': {},
-        'json': true,
-        'headers': {},
-        'agentOptions': {},
-      });
   });
 
   it('Test secure value', function() {
