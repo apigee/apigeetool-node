@@ -55,6 +55,12 @@ this tool:
 Multiple file names may be comma-separated. Use this to communicate with an installation
 of Apigee Edge that uses a custom certificate for API calls.
 
+`--keyfile -K`
+(optional) The name of the PEM file that represents the private key in a mutual auth connection.
+
+`--certfile -C`
+(optional) The name of the PEM file that represents the certificate in a mutual auth connection.
+
 `--debug -D`
 (optional) Prints additional information about the deployment, including router and message processor IDs.
 
