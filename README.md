@@ -21,12 +21,12 @@ This is a tool for deploying API proxies and Node.js applications to the Apigee 
 
 You must have an account on Apigee Edge to perform any `apigeetool` functions. These functions include:
 
-* deploying an API proxy to Edge,
-* undeploying an API proxy from Edge,
+* deploying an API proxy or shared flow to Edge,
+* undeploying an API proxy or shared flow from Edge,
 * deploying Node.js apps to Edge,
-* listing deployed API proxies on Edge,
-* retrieving deployed proxies and apps from Edge,
-* deleting proxy definitions from Edge, and
+* listing deployed API proxies or shared flows on Edge,
+* retrieving deployed proxies or shared flows from Edge,
+* deleting proxy or shared flow definitions from Edge, and
 * retreiving log messages from Node.js apps deployed to Edge.
 * create or delete an API product in Edge
 * create or delete a Developer in Edge
@@ -34,6 +34,7 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 * create or delete a Cache resource in Edge
 * create, retrieve or delete a KVM Map in Edge
 * create, retrieve or delete a KVM Entry in Edge
+* attach, detach, or get a FlowHook
 
 You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments.
 
@@ -70,9 +71,6 @@ trusted TLS certificate.
 (optional) Limit for the maximum number of operations performed concurrently.
 Currently this only affects file uploads in the `deploynodeapp` command. Defaults to 4.
 
-`--json  -j`
-(optional) Formats the command's response as a JSON object.
-
 `--organization  -o`
 (required) The name of the organization to deploy to. May be set as an environment variable APIGEE_ORGANIZATION.
 
@@ -93,37 +91,41 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 
 # <a name="reference"></a>Command reference and examples
 
-* [deploynodeapp](#deploynodeapp)
-* [deployhostedtarget](#deployhostedtarget)
-* [deployproxy](#deployproxy)
-* [undeploy](#undeploy)
-* [listdeployments](#listdeployments)
-* [fetchproxy](#fetchproxy)
-* [getlogs](#getlogs)
-* [delete](#delete)
-* [deploySharedflow](#deploySharedflow)
-* [undeploySharedflow](#undeploySharedflow)
-* [listSharedflowDeployments](#listSharedflowDeployments)
-* [fetchSharedflow](#fetchSharedflow)
-* [deleteSharedflow](#deleteSharedflow)
-* [createdeveloper](#createdeveloper)
-* [deletedeveloper](#deletedeveloper)
-* [createproduct](#createproduct)
-* [deleteproduct](#deleteproduct)
-* [createapp](#createapp)
-* [deleteapp](#deleteapp)
-* [createappkey](#createappkey)
-* [createcache](#createcache)
-* [deletecache](#deletecache)
-* [createkvmmap](#createkvmmap)
 * [addEntryToKVM](#addEntryToKVM)
-* [getkvmmap](#getkvmmap)
-* [getKVMentry](#getKVMentry)
-* [deletekvmmap](#deletekvmmap)
-* [deleteKVMentry](#deleteKVMentry)
+* [attachFlowHook](#attachFlowHook)
+* [createappkey](#createappkey)
+* [createapp](#createapp)
+* [createcache](#createcache)
+* [createdeveloper](#createdeveloper)
+* [createKVMmap](#createKVMmap)
+* [createproduct](#createproduct)
 * [createTargetServer](#createTargetServer)
+* [deleteapp](#deleteapp)
+* [deletecache](#deletecache)
+* [deletedeveloper](#deletedeveloper)
+* [deleteKVMentry](#deleteKVMentry)
+* [deleteKVMmap](#deleteKVMmap)
+* [deleteproduct](#deleteproduct)
+* [deleteSharedflow](#deleteSharedflow)
 * [deleteTargetServer](#deleteTargetServer)
-
+* [delete](#delete)
+* [deployhostedtarget](#deployhostedtarget)
+* [deploynodeapp](#deploynodeapp)
+* [deployproxy](#deployproxy)
+* [deploySharedflow](#deploySharedflow)
+* [detachFlowHook](#detachFlowHook)
+* [fetchproxy](#fetchproxy)
+* [fetchSharedflow](#fetchSharedflow)
+* [getFlowHook](#getFlowHook)
+* [getKVMentry](#getKVMentry)
+* [getKVMmap](#getKVMmap)
+* [getlogs](#getlogs)
+* [getTargetServer](#getTargetServer)
+* [listdeployments](#listdeployments)
+* [listSharedflowDeployments](#listSharedflowDeployments)
+* [listTargetServers](#listTargetServers)
+* [undeploySharedflow](#undeploySharedflow)
+* [undeploy](#undeploy)
 
 ## <a name="deploynodeapp"></a>deploynodeapp
 
@@ -701,14 +703,14 @@ When the `--organization` and `--environment` options are present, the operation
 
 When the `--organization` and `--api` options are present, the operation will correspond to the API-scoped KVM.
 
-### <a name="createkvmmap"></a>createkvmmap
+### <a name="createKVMmap"></a>createKVMmap
 
 Creates a map in the Apigee KVM with the given name.
 
 #### Example
 Create KVM map named "test-map"
 
-    apigeetool createkvmmap -u sdoe@example.com -o sdoe -e test --mapName test-map
+    apigeetool createKVMmap -u sdoe@example.com -o sdoe -e test --mapName test-map
 
 #### Required parameters
 
@@ -771,7 +773,7 @@ for organization name, all of which are required.
 `--api -n`
 (optional) The API to target for an API-scoped KVM operation.
 
-### <a name="getkvmmap"></a>getkvmmap
+### <a name="getKVMmap"></a>getKVMmap
 
 Retrieves an entire KVM map with all of its entries, by name.
 
@@ -779,7 +781,7 @@ Retrieves an entire KVM map with all of its entries, by name.
 
 Get map named "test-map".
 
-    apigeetool getkvmmap -u sdoe@example.com -o sdoe -e test --mapName test-map
+    apigeetool getKVMmap -u sdoe@example.com -o sdoe -e test --mapName test-map
 
 #### Required parameters
 
@@ -836,7 +838,7 @@ for organization name, all of which are required.
 `--api -n`
 (optional) The API to target for an API-scoped KVM operation.
 
-### <a name="deletekvmmap"></a>deletekvmmap
+### <a name="deleteKVMmap"></a>deleteKVMmap
 
 Deletes an entire map from the Apigee KVM along with all of its entries.
 
@@ -844,7 +846,7 @@ Deletes an entire map from the Apigee KVM along with all of its entries.
 
 Delete map named "test-map".
 
-    apigeetool deletekvmmap -u sdoe@example.com -o sdoe -e test --mapName test-map
+    apigeetool deleteKVMmap -u sdoe@example.com -o sdoe -e test --mapName test-map
 
 #### Required parameters
 
@@ -875,7 +877,7 @@ Deletes a single entry by name from an Apigee KVM map.
 
 Delete entry named "test1" from the map named "test-map".
 
-    apigeetool deletekvmmap -u sdoe@example.com -o sdoe -e test --mapName test-map --entryName test1
+    apigeetool deleteKVMmmap -u sdoe@example.com -o sdoe -e test --mapName test-map --entryName test1
 
 #### Required parameters
 
