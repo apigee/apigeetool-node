@@ -24,11 +24,9 @@ var TARGET_SERVER_NAME = 'apigee-cli-test-servername';
 var MAP_NAME = 'apigee-cli-test-kvm';
 var MAP_NAME_ENCRYPTED = 'apigee-cli-test-kvm-encrypted';
 var SHARED_FLOW_NAME = 'apigee-cli-sf';
-var ROLE_NAME = 'apigee-cli-test-role';
 var verbose = false;
 var deployedRevision;
 var deployedUri;
-var prevSharedFlow;
 
 // Run all using: mocha remotetests
 // Run all "describe" tests using: mocha remotetests --grep "SharedFlows and FlowHooks"
@@ -907,22 +905,6 @@ describe('Caches', function() {
 describe('Target Servers', function() {
   this.timeout(REASONABLE_TIMEOUT);
 
-  it('List Target Servers SDK',function(done){
-    var opts = baseOpts();
-    opts.environment = config.environment;
-    apigeetool.getPromiseSDK()
-      .listTargetServers(opts)
-      .then(function(res){
-        if (verbose) {
-          console.log('List Target Servers result = %j', res);
-        }
-        done()
-      },function(err){
-        console.log(err)
-        done(err)
-      })
-  });
-
   it('Create Target Server SDK',function(done){
     var opts = baseOpts();
     opts.environment = config.environment;
@@ -937,23 +919,6 @@ describe('Target Servers', function() {
       .then(function(res){
         if (verbose) {
           console.log('Create Target Server result = %j', res);
-        }
-        done()
-      },function(err){
-        console.log(err)
-        done(err)
-      })
-  });
-
-  it('Get Target Server SDK',function(done){
-    var opts = baseOpts();
-    opts.environment = config.environment;
-    opts.targetServerName = TARGET_SERVER_NAME;
-    apigeetool.getPromiseSDK()
-      .getTargetServer(opts)
-      .then(function(res){
-        if (verbose) {
-          console.log('Get Target Server result = %j', res);
         }
         done()
       },function(err){
@@ -1131,7 +1096,7 @@ describe('KVM', function() {
   });
 }); // end KVM tests
 
-describe('SharedFlows and FlowHooks', function() {
+describe('SharedFlows', function() {
   this.timeout(REASONABLE_TIMEOUT);
   it('Deploy SharedFlow', function (done) {
     var opts = baseOpts();
@@ -1195,80 +1160,6 @@ describe('SharedFlows and FlowHooks', function() {
     });
   });
 
-  it('getPreviousSharedFlow', function(done) {
-    var opts = baseOpts();
-    opts.flowHookName = "PreProxyFlowHook";
-
-    apigeetool.getFlowHook(opts, function(err, result) {
-      if (verbose) {
-        console.log('getFlowhook result = %j', result);
-      }
-      if (err) {
-        done(err);
-      } else {
-        if( result.sharedFlow ) {
-          prevSharedFlow = result.sharedFlow;
-        }
-        done();
-      }
-    });
-  });
-
-  it('attachFlowhook', function(done) {
-    var opts = baseOpts();
-    opts.flowHookName = "PreProxyFlowHook";
-    opts.sharedFlowName = SHARED_FLOW_NAME;
-
-    apigeetool.attachFlowHook(opts, function(err, result) {
-      if (verbose) {
-        console.log('attachFlowHook result = %j', result);
-      }
-      if (err) {
-        done(err);
-      } else {
-        done();
-      }
-    });
-  });
-
-  it('detachFlowHook', function(done) {
-    var opts = baseOpts();
-    opts.flowHookName = "PreProxyFlowHook";
-
-    apigeetool.detachFlowHook(opts, function(err, result) {
-      if (verbose) {
-        console.log('detachFlowHook result = %j', result);
-      }
-      if (err) {
-        done(err);
-      } else {
-        done();
-      }
-    });
-  });
-
-  it('re-attachFlowHook', function(done) {
-    if( prevSharedFlow ) {
-      var opts = baseOpts();
-      opts.flowHookName = "PreProxyFlowHook";
-      opts.sharedFlowName = prevSharedFlow;
-
-      apigeetool.attachFlowHook(opts, function(err, result) {
-        if (verbose) {
-          console.log('prevSharedFlow ' + prevSharedFlow );
-          console.log('re-attachFlowHook result = %j', result);
-        }
-        if (err) {
-          done(err);
-        } else {
-          done();
-        }
-      });
-    } else {
-      done();
-    }
-  });
-
   it('undeploySharedflow', function(done) {
     var opts = baseOpts();
     opts.name = SHARED_FLOW_NAME;
@@ -1287,143 +1178,7 @@ describe('SharedFlows and FlowHooks', function() {
     opts.name = SHARED_FLOW_NAME;
     apigeetool.deleteSharedflow(opts, done);
   });
-}); // end shared flow and flow hook tests
-
-describe('User Roles and Permissions', function() {
-  this.timeout(REASONABLE_TIMEOUT);
-  
-  it('Create Role', function (done) {
-    var opts = baseOpts();
-    opts.roleName = ROLE_NAME;
-
-    apigeetool.createRole(opts, function (err, result) {
-      if (verbose) {
-        console.log('Create Role result = %j', result);
-      }
-      if (err) { done(err); } else { done(); }
-    });
-  });
-
-  it('Get Role', function (done) {
-    var opts = baseOpts();
-    opts.roleName = ROLE_NAME;
-
-    apigeetool.getRole(opts, function (err, result) {
-      if (verbose) {
-        console.log('Get Role result = %j', result);
-      }
-      if (err) { done(err); } else { done(); }
-    });
-  });
-
-  it('Get Roles', function (done) {
-    var opts = baseOpts();
-
-    apigeetool.getRoles(opts, function (err, result) {
-      if (verbose) {
-        console.log('Get Roles result = %j', result);
-      }
-      if (err) { done(err); } else { 
-        assert.equal( result.includes(ROLE_NAME), true );
-        done(); 
-      }
-    });
-  });
-  
-  it('Set Role Permissions', function (done) {
-    var opts = baseOpts();
-    opts.roleName = ROLE_NAME;
-    opts.permissions = '[{"path":"/userroles","permissions":["get"]}]';
-
-    apigeetool.setRolePermissions(opts, function (err, result) {
-      if (verbose) {
-        console.log('Set Role Permissions result = %j', result);
-      }
-      if (err) { done(err); } else { done(); }
-    });
-  });
-
-  it('Get Role Permissions', function (done) {
-    var opts = baseOpts();
-    opts.roleName = ROLE_NAME;
-
-    apigeetool.getRolePermissions(opts, function (err, result) {
-      if (verbose) {
-        console.log('Get Role Permissions result = %j', result);
-      }
-      if (err) { done(err); } else { done(); }
-    });
-  });
-
-  it('Assign User to Role', function (done) {
-    var opts = baseOpts();
-    opts.roleName = ROLE_NAME;
-    opts.email = config.useremail;
-
-    apigeetool.assignUserRole(opts, function (err, result) {
-      if (verbose) {
-        console.log('Assign User to Role result = %j', result);
-      }
-      if (err) { done(err); } else { done(); }
-    });
-  });
-
-  it('Verify User in Role', function (done) {
-    var opts = baseOpts();
-    opts.roleName = ROLE_NAME;
-    opts.email = config.useremail;
-
-    apigeetool.verifyUserRole(opts, function (err, result) {
-      if (verbose) {
-        console.log('Verify User in Role result = %j', result);
-      }
-      if (err) { done(err); } else { 
-        assert.equal( result.emailId, opts.email);
-        done(); 
-      }
-    });
-  });
-
-  it('Verify access allowed', function (done) {
-    var opts = baseOpts();
-    opts.netrc = false;
-    opts.username = config.useremail;
-    opts.password = config.userpassword;
-    apigeetool.getRoles(opts, function (err, result) {
-      if (verbose) {
-        console.log('Verify access allowed result = %j', result);
-      }
-      if (err) { done(err); } else { done(); }
-    });
-  });
-
-
-  it('Remove User from Role', function (done) {
-    var opts = baseOpts();
-    opts.roleName = ROLE_NAME;
-    opts.email = config.useremail;
-
-    apigeetool.removeUserRole(opts, function (err, result) {
-      if (verbose) {
-        console.log('Remove User from Role result = %j', result);
-      }
-      if (err) { done(err); } else { done(); }
-    });
-  });
-
-  it('Delete Role', function (done) {
-    var opts = baseOpts();
-    opts.roleName = ROLE_NAME;
-
-    apigeetool.deleteRole(opts, function (err, result) {
-      if (verbose) {
-        console.log('Delete Role result = %j', result);
-      }
-      if (err) { done(err); } else { done(); }
-    });
-  });
-
-});
+}); // end shared flow tests
 
 function baseOpts() {
   var o = {

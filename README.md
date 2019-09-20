@@ -34,10 +34,7 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 * create or delete a Cache resource in Edge
 * create, retrieve or delete a KVM Map in Edge
 * create, retrieve or delete a KVM Entry in Edge
-* attach, detach, or get a FlowHook
-* list, create, get, delete Roles
-* assign, remove, verify Users for a Role
-* get all Users in a Role
+* create, delete Target Servers
 
 You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments.
 
@@ -95,15 +92,12 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 # <a name="reference"></a>Command reference and examples
 
 * [addEntryToKVM](#addEntryToKVM)
-* [assignUserRole](#assignUserRole)
-* [attachFlowHook](#attachFlowHook)
 * [createappkey](#createappkey)
 * [createapp](#createapp)
 * [createcache](#createcache)
 * [createdeveloper](#createdeveloper)
 * [createKVMmap](#createKVMmap)
 * [createProduct](#createproduct)
-* [createRole](#createRole)
 * [createTargetServer](#createTargetServer)
 * [deleteapp](#deleteapp)
 * [deletecache](#deletecache)
@@ -111,7 +105,6 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [deleteKVMentry](#deleteKVMentry)
 * [deleteKVMmap](#deleteKVMmap)
 * [deleteproduct](#deleteproduct)
-* [deleteRole](#deleteRole)
 * [deleteSharedflow](#deleteSharedflow)
 * [deleteTargetServer](#deleteTargetServer)
 * [delete](#delete)
@@ -122,23 +115,13 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [detachFlowHook](#detachFlowHook)
 * [fetchproxy](#fetchproxy)
 * [fetchSharedflow](#fetchSharedflow)
-* [getFlowHook](#getFlowHook)
 * [getKVMentry](#getKVMentry)
 * [getKVMmap](#getKVMmap)
 * [getlogs](#getlogs)
-* [getRoles](#getRoles)
-* [getRole](#getRole)
-* [getRolePermissions](#getRolePermissions)
-* [getRoleUsers](#getRoleUsers)
-* [getTargetServer](#getTargetServer)
 * [listdeployments](#listdeployments)
 * [listSharedflowDeployments](#listSharedflowDeployments)
-* [listTargetServers](#listTargetServers)
-* [removeUserRole](#removeUserRole)
-* [setRolePermissions](#setRolePermissions)
 * [undeploySharedflow](#undeploySharedflow)
 * [undeploy](#undeploy)
-* [verifyUserRole](#verifyUserRole)
 
 ## <a name="deploynodeapp"></a>deploynodeapp
 
