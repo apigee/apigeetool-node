@@ -24,9 +24,16 @@ var TARGET_SERVER_NAME = 'apigee-cli-test-servername';
 var MAP_NAME = 'apigee-cli-test-kvm';
 var MAP_NAME_ENCRYPTED = 'apigee-cli-test-kvm-encrypted';
 var SHARED_FLOW_NAME = 'apigee-cli-sf';
+var ROLE_NAME = 'apigee-cli-test-role';
 var verbose = false;
+var deployedRevision;
+var deployedUri;
+var prevSharedFlow;
 
-/* These tests need some TLC, they don't run successfully */
+// Run all using: mocha remotetests
+// Run all "describe" tests using: mocha remotetests --grep "SharedFlows and FlowHooks"
+// Run one "it" test using: mocha remotetests --grep "fetchSharedflow"
+
 describe('Remote Tests', function() {
   this.timeout(REASONABLE_TIMEOUT);
   var deployedRevision;
@@ -39,13 +46,13 @@ describe('Remote Tests', function() {
     opts.environment = config.environment;
     apigeetool.deleteKVM(opts,function(err,result) {
       if (verbose) {
-        console.log('Delete KVM result = %j', result);
+        console.log('Delete envrypted KVM result = %j', result);
       }
       done();
     });
   });
 
-  it('Deploy Apigee Proxy with Promise SDK', function(done) {
+  it('Deploy Apigee Proxy', function(done) {
     var opts = baseOpts();
     opts.api = APIGEE_PROXY_NAME;
     opts.directory = path.join(__dirname, '../test/fixtures/employees');
@@ -116,6 +123,7 @@ describe('Products / Developers', function() {
     opts.quotaInterval = '1';
     opts.quotaTimeUnit = 'minute';
     opts.attributes = [ {"name": "access", "value": "private"} ];
+    opts.approvalType = "auto";
     var sdk = apigeetool.getPromiseSDK()
 
     sdk.createProduct(opts)
@@ -154,7 +162,7 @@ describe('Products / Developers', function() {
   it('Create App' , function(done){
     var opts = baseOpts()
     opts.name = APP_NAME
-    opts.apiproducts = APIGEE_PRODUCT_NAME
+    opts.apiProducts = APIGEE_PRODUCT_NAME
     opts.email = DEVELOPER_EMAIL
 
     var sdk = apigeetool.getPromiseSDK()
@@ -470,6 +478,36 @@ describe('Products / Developers', function() {
     });
   });
 
+  it('Fetch proxy', function(done) {
+    var opts = baseOpts();
+    opts.api = APIGEE_PROXY_NAME;
+    opts.revision = deployedRevision;
+
+    apigeetool.fetchProxy(opts, function(err, result) {
+      if (verbose) {
+        console.log('Fetch proxy result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+  it('Delete proxy', function(done) {
+    var opts = baseOpts();
+    opts.api = APIGEE_PROXY_NAME;
+
+    apigeetool.delete(opts, function(err, result) {
+      if (verbose) {
+        console.log('Delete proxy result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+});
+
+describe('Node.js Apps', function() {
+  this.timeout(REASONABLE_TIMEOUT);
+
   it('Deploy Node.js App', function(done) {
     var opts = baseOpts();
     opts.api = NODE_PROXY_NAME;
@@ -650,9 +688,23 @@ describe('Products / Developers', function() {
       }
     });
   });
-});
+
+  it('Delete node proxy', function(done) {
+    var opts = baseOpts();
+    opts.api = NODE_PROXY_NAME;
+
+    apigeetool.delete(opts, function(err, result) {
+      if (verbose) {
+        console.log('Delete node proxy result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+}); // End Node.js Apps
 
 describe('Hosted Target', function() {
+  this.timeout(REASONABLE_TIMEOUT);
 
   it('Deploy Hosted Targets App', function(done) {
     var opts = baseOpts();
@@ -805,8 +857,20 @@ describe('Hosted Target', function() {
       }
     });
   });
+
+  it('Delete hosted target proxy', function(done) {
+    var opts = baseOpts();
+    opts.api = HOSTED_TARGETS_PROXY_NAME;
+
+    apigeetool.delete(opts, function(err, result) {
+      if (verbose) {
+        console.log('Delete hosted target proxy result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
 }); // end hosted target tests
-/* End of tests that need TLC */
 
 describe('Caches', function() {
   it('Create an Cache Resource',function(done){
@@ -1100,11 +1164,37 @@ describe('SharedFlows and FlowHooks', function() {
     });
   });
 
-  it('listSharedflowDeployments'); // Until MGMT-3671 is merged, will not work
+  it('listSharedflowDeployments', function(done) {
+    var opts = baseOpts();
+    opts.sharedFlowName = SHARED_FLOW_NAME;
+    opts.revision = 1;
 
-  it('fetchSharedflow');
+    apigeetool.listSharedflowDeployments(opts, function(err, result) {
+      if (verbose) {
+        console.log('listSharedflowDeployments result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else { done(); }
+    });
+  });
 
-  var prevSharedFlow;
+
+  it('fetchSharedflow', function(done) {
+    var opts = baseOpts();
+    opts.name = SHARED_FLOW_NAME;
+    opts.revision = 1
+
+    apigeetool.fetchSharedflow(opts, function(err, result) {
+      if (verbose) {
+        console.log('fetchSharedflow result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else { done(); }
+    });
+  });
+
   it('getPreviousSharedFlow', function(done) {
     var opts = baseOpts();
     opts.flowHookName = "PreProxyFlowHook";
@@ -1198,6 +1288,142 @@ describe('SharedFlows and FlowHooks', function() {
     apigeetool.deleteSharedflow(opts, done);
   });
 }); // end shared flow and flow hook tests
+
+describe('User Roles and Permissions', function() {
+  this.timeout(REASONABLE_TIMEOUT);
+  
+  it('Create Role', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+
+    apigeetool.createRole(opts, function (err, result) {
+      if (verbose) {
+        console.log('Create Role result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+  it('Get Role', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+
+    apigeetool.getRole(opts, function (err, result) {
+      if (verbose) {
+        console.log('Get Role result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+  it('Get Roles', function (done) {
+    var opts = baseOpts();
+
+    apigeetool.getRoles(opts, function (err, result) {
+      if (verbose) {
+        console.log('Get Roles result = %j', result);
+      }
+      if (err) { done(err); } else { 
+        assert.equal( result.includes(ROLE_NAME), true );
+        done(); 
+      }
+    });
+  });
+  
+  it('Set Role Permissions', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+    opts.permissions = '[{"path":"/userroles","permissions":["get"]}]';
+
+    apigeetool.setRolePermissions(opts, function (err, result) {
+      if (verbose) {
+        console.log('Set Role Permissions result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+  it('Get Role Permissions', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+
+    apigeetool.getRolePermissions(opts, function (err, result) {
+      if (verbose) {
+        console.log('Get Role Permissions result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+  it('Assign User to Role', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+    opts.email = config.useremail;
+
+    apigeetool.assignUserRole(opts, function (err, result) {
+      if (verbose) {
+        console.log('Assign User to Role result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+  it('Verify User in Role', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+    opts.email = config.useremail;
+
+    apigeetool.verifyUserRole(opts, function (err, result) {
+      if (verbose) {
+        console.log('Verify User in Role result = %j', result);
+      }
+      if (err) { done(err); } else { 
+        assert.equal( result.emailId, opts.email);
+        done(); 
+      }
+    });
+  });
+
+  it('Verify access allowed', function (done) {
+    var opts = baseOpts();
+    opts.netrc = false;
+    opts.username = config.useremail;
+    opts.password = config.userpassword;
+    apigeetool.getRoles(opts, function (err, result) {
+      if (verbose) {
+        console.log('Verify access allowed result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+
+  it('Remove User from Role', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+    opts.email = config.useremail;
+
+    apigeetool.removeUserRole(opts, function (err, result) {
+      if (verbose) {
+        console.log('Remove User from Role result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+  it('Delete Role', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+
+    apigeetool.deleteRole(opts, function (err, result) {
+      if (verbose) {
+        console.log('Delete Role result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+});
 
 function baseOpts() {
   var o = {
