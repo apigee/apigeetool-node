@@ -210,7 +210,7 @@ describe('Options parsing test', function() {
     // validate the files is read when the options is set
     expect(fs.readFileSync).not.toHaveBeenCalled();
   });
-  
+
   it('Test secure value', function() {
     var sv = new options.SecureValue('foobar');
     assert.notEqual(util.format('%s', sv), 'foobar');
@@ -218,4 +218,5 @@ describe('Options parsing test', function() {
     assert.equal(sv.getValue(), 'foobar');
     assert(sv instanceof options.SecureValue);
   });
+
 });

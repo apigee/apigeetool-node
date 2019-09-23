@@ -104,6 +104,7 @@ describe('Remote Tests', function() { //  it
     opts.quotaTimeUnit = 'minute';
     opts.attributes = [ {"name": "access", "value": "private"} ];
     opts.approvalType = "auto";
+
     var sdk = apigeetool.getPromiseSDK()
 
     sdk.createProduct(opts)
