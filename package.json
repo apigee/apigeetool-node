@@ -7,7 +7,7 @@
     "apigeetool": "./lib/cli.js"
   },
   "scripts": {
-    "test": "mocha -R spec",
+    "test": "jasmine test/testoptions.js",
     "remotetest": "mocha -R spec remotetests"
   },
   "keywords": [

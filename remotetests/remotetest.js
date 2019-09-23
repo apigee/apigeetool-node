@@ -31,24 +31,10 @@ var deployedUri;
 // Run all using: mocha remotetests
 // Run all "describe" tests using: mocha remotetests --grep "SharedFlows and FlowHooks"
 // Run one "it" test using: mocha remotetests --grep "fetchSharedflow"
+// To see tests use 'grep "  it" remotetest.j'
 
-describe('Remote Tests', function() {
+describe('Remote Tests', function() { //  it
   this.timeout(REASONABLE_TIMEOUT);
-  var deployedRevision;
-  var deployedUri;
-
-  after(function(done) {
-    // cleanup encrypted kvm
-    var opts = baseOpts();
-    opts.mapName = MAP_NAME_ENCRYPTED;
-    opts.environment = config.environment;
-    apigeetool.deleteKVM(opts,function(err,result) {
-      if (verbose) {
-        console.log('Delete envrypted KVM result = %j', result);
-      }
-      done();
-    });
-  });
 
   it('Deploy Apigee Proxy', function(done) {
     var opts = baseOpts();
@@ -78,11 +64,7 @@ describe('Remote Tests', function() {
         done(err);
       })
   });
-});
-
-describe('Products / Developers', function() {
-  this.timeout(REASONABLE_TIMEOUT);
-
+  
   it('Create Product', function(done){
     var opts = baseOpts() ;
     var displayName = 'custom name';
@@ -503,7 +485,7 @@ describe('Products / Developers', function() {
 
 });
 
-describe('Node.js Apps', function() {
+describe('Node.js Apps', function() { //  it
   this.timeout(REASONABLE_TIMEOUT);
 
   it('Deploy Node.js App', function(done) {
@@ -701,7 +683,7 @@ describe('Node.js Apps', function() {
 
 }); // End Node.js Apps
 
-describe('Hosted Target', function() {
+describe('Hosted Target', function() { //  it
   this.timeout(REASONABLE_TIMEOUT);
 
   it('Deploy Hosted Targets App', function(done) {
@@ -870,7 +852,7 @@ describe('Hosted Target', function() {
 
 }); // end hosted target tests
 
-describe('Caches', function() {
+describe('Caches', function() { //  it
   it('Create an Cache Resource',function(done){
     var opts = baseOpts();
     opts.cache = CACHE_RESOURCE_NAME;
@@ -902,7 +884,7 @@ describe('Caches', function() {
   });
 }); // end cache tests
 
-describe('Target Servers', function() {
+describe('Target Servers', function() { //  it
   this.timeout(REASONABLE_TIMEOUT);
 
   it('Create Target Server SDK',function(done){
@@ -946,7 +928,7 @@ describe('Target Servers', function() {
 
 }); // end target server tests
 
-describe('KVM', function() {
+describe('KVM', function() { //  it
   it('Create KVM',function(done){
     var opts = baseOpts();
     opts.mapName = MAP_NAME;
@@ -1096,7 +1078,7 @@ describe('KVM', function() {
   });
 }); // end KVM tests
 
-describe('SharedFlows', function() {
+describe('SharedFlows', function() { //  it
   this.timeout(REASONABLE_TIMEOUT);
   it('Deploy SharedFlow', function (done) {
     var opts = baseOpts();
