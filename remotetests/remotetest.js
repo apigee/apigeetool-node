@@ -24,6 +24,7 @@ var TARGET_SERVER_NAME = 'apigee-cli-test-servername';
 var MAP_NAME = 'apigee-cli-test-kvm';
 var MAP_NAME_ENCRYPTED = 'apigee-cli-test-kvm-encrypted';
 var SHARED_FLOW_NAME = 'apigee-cli-sf';
+var ROLE_NAME = 'apigee-cli-test-role';
 var verbose = false;
 var deployedRevision;
 var deployedUri;
@@ -1303,6 +1304,156 @@ describe('SharedFlows and FlowHooks', function() { //  it
     apigeetool.deleteSharedflow(opts, done);
   });
 }); // end shared flow tests
+
+describe('User Roles and Permissions', function() { //  it
+  this.timeout(REASONABLE_TIMEOUT);
+  
+  it('Create Role', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+
+    apigeetool.createRole(opts, function (err, result) {
+      if (verbose) {
+        console.log('Create Role result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+  it('Get Role', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+
+    apigeetool.getRole(opts, function (err, result) {
+      if (verbose) {
+        console.log('Get Role result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+  it('List Roles', function (done) {
+    var opts = baseOpts();
+
+    apigeetool.listRoles(opts, function (err, result) {
+      if (verbose) {
+        console.log('List Roles result = %j', result);
+      }
+      if (err) { done(err); } else { 
+        assert.equal( result.includes(ROLE_NAME), true );
+        done(); 
+      }
+    });
+  });
+
+  it('Set Role Permissions', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+    opts.permissions = '[{"path":"/userroles","permissions":["get"]}]';
+
+    apigeetool.setRolePermissions(opts, function (err, result) {
+      if (verbose) {
+        console.log('Set Role Permissions result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+  it('Get Role Permissions', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+
+    apigeetool.getRolePermissions(opts, function (err, result) {
+      if (verbose) {
+        console.log('Get Role Permissions result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+  it('Assign User to Role', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+    opts.email = config.useremail;
+
+    apigeetool.assignUserRole(opts, function (err, result) {
+      if (verbose) {
+        console.log('Assign User to Role result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+  it('Verify User in Role', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+    opts.email = config.useremail;
+
+    apigeetool.verifyUserRole(opts, function (err, result) {
+      if (verbose) {
+        console.log('Verify User in Role result = %j', result);
+      }
+      if (err) { done(err); } else { 
+        assert.equal( result.emailId, opts.email);
+        done(); 
+      }
+    });
+  });
+
+  it('List Users in a Role', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+    opts.email = config.useremail;
+
+    apigeetool.listRoleUsers(opts, function (err, result) {
+      if (verbose) {
+        console.log('List Users in a Role result = %j', result);
+      }
+      if (err) { done(err); } else { 
+        assert.equal( result.includes(opts.email), true);
+        done(); 
+      }
+    });
+  });
+
+  it('Verify access allowed', function (done) {
+    var opts = baseOpts();
+    opts.netrc = false;
+    opts.username = config.useremail;
+    opts.password = config.userpassword;
+    apigeetool.listRoles(opts, function (err, result) {
+      if (verbose) {
+        console.log('Verify access allowed for user %s result = %j', config.useremail, result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+  it('Remove User from Role', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+    opts.email = config.useremail;
+
+    apigeetool.removeUserRole(opts, function (err, result) {
+      if (verbose) {
+        console.log('Remove User from Role result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+
+  it('Delete Role', function (done) {
+    var opts = baseOpts();
+    opts.roleName = ROLE_NAME;
+
+    apigeetool.deleteRole(opts, function (err, result) {
+      if (verbose) {
+        console.log('Delete Role result = %j', result);
+      }
+      if (err) { done(err); } else { done(); }
+    });
+  });
+}); // End User Roles and Permissions
 
 function baseOpts() {
   var o = {

@@ -36,6 +36,10 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 * create, retrieve or delete a KVM Entry in Edge
 * attach, detach, or get a FlowHook
 * create, get, delete, list Target Servers
+* create, get, delete, List Roles
+* get, set Role Permisions
+* assign, remove, verify Users for a Role
+* list all Users in a Role
 
 You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments.
 
@@ -99,6 +103,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 # <a name="reference"></a>Command reference and examples
 
 * [addEntryToKVM](#addEntryToKVM)
+* [assignUserRole](#assignUserRole)
 * [attachFlowHook](#attachFlowHook)
 * [createappkey](#createappkey)
 * [createapp](#createapp)
@@ -106,6 +111,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [createdeveloper](#createdeveloper)
 * [createKVMmap](#createKVMmap)
 * [createProduct](#createproduct)
+* [createRole](#createRole)
 * [createTargetServer](#createTargetServer)
 * [deleteapp](#deleteapp)
 * [deletecache](#deletecache)
@@ -113,6 +119,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [deleteKVMentry](#deleteKVMentry)
 * [deleteKVMmap](#deleteKVMmap)
 * [deleteproduct](#deleteproduct)
+* [deleteRole](#deleteRole)
 * [deleteSharedflow](#deleteSharedflow)
 * [deleteTargetServer](#deleteTargetServer)
 * [delete](#delete)
@@ -127,12 +134,19 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [getKVMentry](#getKVMentry)
 * [getKVMmap](#getKVMmap)
 * [getlogs](#getlogs)
+* [getRole](#getRole)
+* [getRolePermissions](#getRolePermissions)
 * [getTargetServer](#getTargetServer)
 * [listdeployments](#listdeployments)
+* [listRoles](#listRoles)
+* [listRoleUsers](#listRoleUsers)
 * [listSharedflowDeployments](#listSharedflowDeployments)
 * [listTargetServers](#listTargetServers)
+* [removeUserRole](#removeUserRole)
+* [setRolePermissions](#setRolePermissions)
 * [undeploySharedflow](#undeploySharedflow)
 * [undeploy](#undeploy)
+* [verifyUserRole](#verifyUserRole)
 
 ## <a name="deploynodeapp"></a>deploynodeapp
 
@@ -1105,6 +1119,228 @@ the "-u" and "-p" parameters for username and password or preferably -N for .net
 `--organization -o` (required) The organization to target.  
 `--environment -e` (required) The environment to target.  
 `--flowHookName` (required) The pre-defined name of the FlowHook.  
+
+## <a name="Roles and Permissions Operations"></a>Roles and Permissions Operations
+
+Operations on Roles, Permissions and User assignment. The general flow is:
+
+* Create a role
+* Assign Permissions to the Role
+* Assign the Role to a User
+
+### <a name="createRole"></a>createRole
+
+Create a role.
+
+#### Example
+Create role "AllowGetUserRoles".
+
+    apigeetool createRole -N -o $ORG --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--roleName` (required) The name for the role.  
+
+### <a name="getRole"></a>getRole
+
+Get a role.
+
+#### Example
+Get role "AllowGetUserRoles".
+
+    apigeetool getRole -N -o $ORG --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--roleName` (required) The name for the role.  
+
+### <a name="deleteRole"></a>deleteRole
+
+Delete a role.
+
+#### Example
+Delete role "AllowGetUserRoles".
+
+    apigeetool deleteRole -N -o $ORG --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--roleName` (required) The name for the role.  
+
+### <a name="listRoles"></a>listRoles
+
+List roles.
+
+#### Example
+List roles.
+
+    apigeetool listRoles -N -o $ORG
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+
+### <a name="setRolePermissions"></a>setRolePermissions
+
+Set Role Permissions for a Role.
+
+#### Example
+Set Permissions on Role "AllowGetUserRoles" to allow access to list Roles.
+
+    apigeetool setRolePermissions -N -o $ORG --roleName AllowGetUserRoles --permissions '[{"path":"/userroles","permissions":["get"]}]'
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--roleName` (required) The name for the role.  
+`--permissions` Permissions array for path and verbs.  
+
+### <a name="getRolePermissions"></a>getRolePermissions
+
+Get Role Permissions for a Role.
+
+#### Example
+Get Permissions on Role "AllowGetUserRoles".
+
+    apigeetool getRolePermissions -N -o $ORG --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--roleName` (required) The name for the role.  
+
+### <a name="assignUserRole"></a>assignUserRole
+
+Assign existing User to a Role. NOTE: User must already exist in Edge.
+
+#### Example
+Assign "somedeveloper@any.com" to Role "AllowGetUserRoles".
+
+    apigeetool assignUserRole -N -o $ORG --email "somedeveloper@any.com" --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--email` (required) Email for an existing User in Edge.  
+`--roleName` (required) The name for the role.  
+
+### <a name="removeUserRole"></a>removeUserRole
+
+Remove existing User from a Role. 
+
+#### Example
+Remove "somedeveloper@any.com" from Role "AllowGetUserRoles".
+
+    apigeetool removeUserRole -N -o $ORG --email "somedeveloper@any.com" --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--email` (required) Email for an existing User in Edge.  
+`--roleName` (required) The name for the role. 
+
+### <a name="verifyUserRole"></a>verifyUserRole
+
+Verify User assigned to a Role. 
+
+#### Example
+Verify "somedeveloper@any.com" assigned to Role "AllowGetUserRoles".
+
+    apigeetool verifyUserRole -N -o $ORG --email "somedeveloper@any.com" --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--email` (required) Email for an existing User in Edge.  
+`--roleName` (required) The name for the role. 
+
+### <a name="listRoleUsers"></a>listRoleUsers
+
+Get Users assigned to a Role. 
+
+#### Example
+List Users assigned to Role "AllowGetUserRoles".
+
+    apigeetool listRoleUsers -N -o $ORG --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--email` (required) Email for an existing User in Edge.  
+`--roleName` (required) The name for the role. 
 
 # <a name="sdkreference"></a>SDK Reference
 
