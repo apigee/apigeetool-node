@@ -34,8 +34,8 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 * create or delete a Cache resource in Edge
 * create, retrieve or delete a KVM Map in Edge
 * create, retrieve or delete a KVM Entry in Edge
-* create, delete Target Servers
 * attach, detach, or get a FlowHook
+* create, get, delete, list Target Servers
 
 You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments.
 
@@ -127,8 +127,10 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [getKVMentry](#getKVMentry)
 * [getKVMmap](#getKVMmap)
 * [getlogs](#getlogs)
+* [getTargetServer](#getTargetServer)
 * [listdeployments](#listdeployments)
 * [listSharedflowDeployments](#listSharedflowDeployments)
+* [listTargetServers](#listTargetServers)
 * [undeploySharedflow](#undeploySharedflow)
 * [undeploy](#undeploy)
 
@@ -984,6 +986,49 @@ the "-u" and "-p" parameters for username and password or preferably -N for .net
 `--organization -o` (required) The organization to target.  
 `--environment -e` (required) The environment to target.  
 `--targetServerName` (required) The name of the Target Server to be deleted.
+
+### <a name="getTargetServer"></a>getTargetServer
+
+Get details for a Target Server with the given name.
+
+#### Example
+Get Target Server named "test-target".
+
+    apigeetool getTargetServer -N -o $ORG -e $ENV --targetServerName test-target
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--targetServerName` (required) The name of the Target Server to be deleted.
+
+### <a name="listTargetServers"></a>listTargetServers
+
+List Target Servers in a given environment.
+
+#### Example
+List Target Servers.
+
+    apigeetool listTargetServers -N -o $ORG -e $ENV
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
 
 ## <a name="FlowHook Operations"></a>FlowHook Operations
 

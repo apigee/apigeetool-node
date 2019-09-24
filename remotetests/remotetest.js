@@ -889,7 +889,7 @@ describe('Caches', function() { //  it
 describe('Target Servers', function() { //  it
   this.timeout(REASONABLE_TIMEOUT);
 
-  it('Create Target Server SDK',function(done){
+  it('Create Target Server',function(done){
     var opts = baseOpts();
     opts.environment = config.environment;
     opts.targetServerName = TARGET_SERVER_NAME;
@@ -897,35 +897,89 @@ describe('Target Servers', function() { //  it
     opts.targetEnabled = true;
     opts.targetPort = 443;
     opts.targetSSL=true;
-    opts.environment = config.environment;
-    apigeetool.getPromiseSDK()
-      .createTargetServer(opts)
-      .then(function(res){
-        if (verbose) {
-          console.log('Create Target Server result = %j', res);
+    opts.environment = config.environment
+
+    apigeetool.createTargetServer(opts, function(err, result) {
+      if (verbose) {
+        console.log('Create Target Server result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(result.name,TARGET_SERVER_NAME);
+          assert.equal(result.port,443);
+          assert.equal(result.isEnabled,true);
+          done();
+        } catch (e) {
+          done(e);
         }
-        done()
-      },function(err){
-        console.log(err)
-        done(err)
-      })
+      }
+    });
   });
 
-  it('Delete Target Server SDK',function(done){
+  it('List Target Servers',function(done){
+    var opts = baseOpts();
+    opts.environment = config.environment;
+    apigeetool.listTargetServers(opts, function(err, result) {
+      if (verbose) {
+        console.log('List Target Servers result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(result.includes(TARGET_SERVER_NAME),true);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
+  it('Get Target Server',function(done){
     var opts = baseOpts();
     opts.environment = config.environment;
     opts.targetServerName = TARGET_SERVER_NAME;
-    apigeetool.getPromiseSDK()
-      .deleteTargetServer(opts)
-      .then(function(res){
-        if (verbose) {
-          console.log('Delete Target Server result = %j', res);
+    apigeetool.getTargetServer(opts, function(err, result) {
+      if (verbose) {
+        console.log('Get Target Server result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(result.name,TARGET_SERVER_NAME);
+          assert.equal(result.port,443);
+          assert.equal(result.isEnabled,true);
+          done();
+        } catch (e) {
+          done(e);
         }
-        done()
-      },function(err){
-        console.log(err)
-        done(err)
-      })
+      }
+    });
+  });
+
+  it('Delete Target Server',function(done){
+    var opts = baseOpts();
+    opts.environment = config.environment;
+    opts.targetServerName = TARGET_SERVER_NAME;
+    apigeetool.deleteTargetServer(opts, function(err, result) {
+      if (verbose) {
+        console.log('Delete Target Server result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(result.name,TARGET_SERVER_NAME);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
   });
 
 }); // end target server tests
