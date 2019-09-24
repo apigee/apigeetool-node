@@ -35,6 +35,7 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 * create, retrieve or delete a KVM Map in Edge
 * create, retrieve or delete a KVM Entry in Edge
 * create, delete Target Servers
+* attach, detach, or get a FlowHook
 
 You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments.
 
@@ -98,6 +99,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 # <a name="reference"></a>Command reference and examples
 
 * [addEntryToKVM](#addEntryToKVM)
+* [attachFlowHook](#attachFlowHook)
 * [createappkey](#createappkey)
 * [createapp](#createapp)
 * [createcache](#createcache)
@@ -118,9 +120,10 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [deploynodeapp](#deploynodeapp)
 * [deployproxy](#deployproxy)
 * [deploySharedflow](#deploySharedflow)
-* [detachFlowHook](#detachFlowHook)
+* [detachFlowHook](#detachFlowHook) 
 * [fetchproxy](#fetchproxy)
 * [fetchSharedflow](#fetchSharedflow)
+* [getFlowHook](#getFlowHook)
 * [getKVMentry](#getKVMentry)
 * [getKVMmap](#getKVMmap)
 * [getlogs](#getlogs)
@@ -572,7 +575,7 @@ for organization name, all of which are required.
 
 ## <a name="undeploySharedflow"></a>undeploySharedflow
 
-Undeploys a named API proxy or Node.js app deployed on Apigee Edge.
+Undeploys a SharedFlow deployed on Apigee Edge.
 
 #### Example
 
@@ -981,6 +984,82 @@ the "-u" and "-p" parameters for username and password or preferably -N for .net
 `--organization -o` (required) The organization to target.  
 `--environment -e` (required) The environment to target.  
 `--targetServerName` (required) The name of the Target Server to be deleted.
+
+## <a name="FlowHook Operations"></a>FlowHook Operations
+
+Operations on the pre-defined FlowHook names:
+
+* PreProxyFlowHook
+* PreTargetFlowHook
+* PostTargetFlowHook
+* PostProxyFlowHook
+
+### <a name="attachFlowHook"></a>attachFlowHook
+
+Attach a deployed SharedFlow to one of the [named FlowHooks](#FlowHook Operations).
+
+#### Example
+Attach SharedFlow "GetLogValues" to "PreProxyFlowHook".
+
+    apigeetool attachFlowHook -N -o $ORG -e $ENV --flowHookName PreProxyFlowHook --sharedFlowName GetLogValues
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--flowHookName` (required) The pre-defined name of the FlowHook.  
+`--sharedFlowName` (required) The name of a deployed SharedFlow.  
+
+### <a name="detachFlowHook"></a>detachFlowHook
+
+Detach a SharedFlow from one of the [named FlowHooks](#FlowHook Operations).
+
+#### Example
+Detach "PreProxyFlowHook".
+
+    apigeetool detachFlowHook -N -o $ORG -e $ENV --flowHookName PreProxyFlowHook
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--flowHookName` (required) The pre-defined name of the FlowHook.  
+
+### <a name="getFlowHook"></a>getFlowHook
+
+Get the SharedFlow currently attached to one of the [named FlowHooks](#FlowHook Operations).
+
+#### Example
+Detach "PreProxyFlowHook".
+
+    apigeetool getFlowHook -N -o $ORG -e $ENV --flowHookName PreProxyFlowHook
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--flowHookName` (required) The pre-defined name of the FlowHook.  
 
 # <a name="sdkreference"></a>SDK Reference
 

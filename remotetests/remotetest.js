@@ -27,10 +27,11 @@ var SHARED_FLOW_NAME = 'apigee-cli-sf';
 var verbose = false;
 var deployedRevision;
 var deployedUri;
+var prevSharedFlow;
 
 // Run all using: mocha remotetests
 // Run all "describe" tests using: mocha remotetests --grep "SharedFlows and FlowHooks"
-// Run one "it" test using: mocha remotetests --grep "fetchSharedflow"
+// Run one "it" test using: mocha remotetests --grep "fetchSharedFlow"
 // To see tests use 'grep "  it" remotetest.j'
 
 describe('Remote Tests', function() { //  it
@@ -1079,7 +1080,7 @@ describe('KVM', function() { //  it
   });
 }); // end KVM tests
 
-describe('SharedFlows', function() { //  it
+describe('SharedFlows and FlowHooks', function() { //  it
   this.timeout(REASONABLE_TIMEOUT);
   it('Deploy SharedFlow', function (done) {
     var opts = baseOpts();
@@ -1112,30 +1113,42 @@ describe('SharedFlows', function() { //  it
     });
   });
 
-  it('listSharedflowDeployments', function(done) {
+  it('listSharedFlowDeployments', function(done) {
     var opts = baseOpts();
-    opts.sharedFlowName = SHARED_FLOW_NAME;
+    delete opts.environment;
+    opts.name = SHARED_FLOW_NAME;
     opts.revision = 1;
 
     apigeetool.listSharedflowDeployments(opts, function(err, result) {
       if (verbose) {
-        console.log('listSharedflowDeployments result = %j', result);
+        console.log('listSharedFlowDeployments result = %j', result);
       }
       if (err) {
         done(err);
-      } else { done(); }
+      } else { 
+        try {
+          result = result.deployments[0];
+          assert.equal(result.name, SHARED_FLOW_NAME);
+          assert.equal(result.environment, config.environment);
+          assert.equal(result.state, 'deployed');
+          assert(typeof result.revision === 'number');
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
     });
   });
 
 
-  it('fetchSharedflow', function(done) {
+  it('fetchSharedFlow', function(done) {
     var opts = baseOpts();
     opts.name = SHARED_FLOW_NAME;
     opts.revision = 1
 
     apigeetool.fetchSharedflow(opts, function(err, result) {
       if (verbose) {
-        console.log('fetchSharedflow result = %j', result);
+        console.log('fetchSharedFlow result: %j', result);
       }
       if (err) {
         done(err);
@@ -1143,7 +1156,81 @@ describe('SharedFlows', function() { //  it
     });
   });
 
-  it('undeploySharedflow', function(done) {
+  it('getPreviousSharedFlow', function(done) {
+    var opts = baseOpts();
+    opts.flowHookName = "PreProxyFlowHook";
+
+    apigeetool.getFlowHook(opts, function(err, result) {
+      if (verbose) {
+        console.log('getPreviousSharedFlow result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        if( result.sharedFlow ) {
+          prevSharedFlow = result.sharedFlow;
+        }
+        done();
+      }
+    });
+  });
+
+  it('attachFlowHook', function(done) {
+    var opts = baseOpts();
+    opts.flowHookName = "PreProxyFlowHook";
+    opts.sharedFlowName = SHARED_FLOW_NAME;
+
+    apigeetool.attachFlowHook(opts, function(err, result) {
+      if (verbose) {
+        console.log('attachFlowHook result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        done();
+      }
+    });
+  });
+
+  it('detachFlowHook', function(done) {
+    var opts = baseOpts();
+    opts.flowHookName = "PreProxyFlowHook";
+
+    apigeetool.detachFlowHook(opts, function(err, result) {
+      if (verbose) {
+        console.log('detachFlowHook result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        done();
+      }
+    });
+  });
+
+  it('re-attachFlowHook', function(done) {
+    if( prevSharedFlow ) {
+      var opts = baseOpts();
+      opts.flowHookName = "PreProxyFlowHook";
+      opts.sharedFlowName = prevSharedFlow;
+
+      apigeetool.attachFlowHook(opts, function(err, result) {
+        if (verbose) {
+          console.log('prevSharedFlow ' + prevSharedFlow );
+          console.log('re-attachFlowHook result = %j', result);
+        }
+        if (err) {
+          done(err);
+        } else {
+          done();
+        }
+      });
+    } else {
+      done();
+    }
+  });
+
+  it('undeploySharedFlow', function(done) {
     var opts = baseOpts();
     opts.name = SHARED_FLOW_NAME;
 
@@ -1156,7 +1243,7 @@ describe('SharedFlows', function() { //  it
     });
   });
 
-  it('deleteSharedflow', function(done) {
+  it('deleteSharedFlow', function(done) {
     var opts = baseOpts();
     opts.name = SHARED_FLOW_NAME;
     apigeetool.deleteSharedflow(opts, done);
