@@ -82,6 +82,9 @@ trusted TLS certificate.
 (optional) Limit for the maximum number of operations performed concurrently.
 Currently this only affects file uploads in the `deploynodeapp` command. Defaults to 4.
 
+`--json  -j`
+(optional) Formats the command's response as a JSON object.
+
 `--organization  -o`
 (required) The name of the organization to deploy to. May be set as an environment variable APIGEE_ORGANIZATION.
 
