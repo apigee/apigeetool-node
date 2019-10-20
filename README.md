@@ -768,7 +768,7 @@ Adds an entry of name:value to the named map in the Apigee KVM.
 
 Add entry to KVM with name "test1" and value "value1"
 
-    apigeetool addEntryToKVM -u sdoe@example.com -o sdoe -e test --mapName test-map --entryName test1 --entryValue value1
+    apigeetool addEntryToKVM -u sdoe@example.com -o sdoe -e test --mapName test-map --entryName test1 --entryValue value1 --publicCloudScopedKVM true
 
 #### Required parameters
 
@@ -788,6 +788,9 @@ for organization name, all of which are required.
 
 `--entryValue`
 (required) The value of the entry to be created.
+
+`--publicCloudScopedKVM`
+(optional) true is apigee edge is deployed as public cloud. false if deployed on private cloud Default value is true, deployed as public cloud.
 
 #### Optional parameters
 
