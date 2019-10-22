@@ -52,19 +52,6 @@ describe('Options parsing test', function() {
     });
   });
 
-  it('Test missing option prompt false', function(done) {
-    var desc = {
-      foo: {},
-      ping: { required: false, prompt: false },
-      pong: { required: true, prompt: false }
-    };
-    var opts = { foo: 1, ping: 1};
-    options.validate(opts, desc, function(err) {
-      assert(err);
-      assert(/Missing required option/.test(err.message));
-      done();
-    });
-  });
   it('Test nothing and missing stuff', function(done) {
     var desc = {
       foo: {},
