@@ -936,10 +936,12 @@ Creates a Cache with the given name.
 #### Example
 Create Cache map named "test-cache"
 
-    apigeetool createcache -u sdoe@example.com -o sdoe -e test -z test-cache --description "sample key" --cacheExpiryByDate 12-31-9999
-
-    apigeetool createcache -u sdoe@example.com -o sdoe -e test -z test-cache --description "sample key" --cacheExpiryInSecs 40000
+    apigeetool createcache -u sdoe@example.com -o sdoe -e test -z test-cache 
     
+Create Cache map named "test-cache" (with description and expiry)
+
+    apigeetool createcache -u sdoe@example.com -o sdoe -e test -z test-cache --description "sample key" --cacheExpiryInSecs 40000    
+
 #### Required parameters
 
 The following parameters are required. However, if any are left unspecified
@@ -953,19 +955,17 @@ for organization name, all of which are required.
 `-z`
 (required) The name of the cache to be created.
 
-`--description`
-(required) The description of the cache to be created.
-
 `--environment -e`
 (required) The environment to target.
 
-Either of the following parameters are required to set the expiry settings
+`--description`
+(optional) The description of the cache to be created.
 
 `--cacheExpiryByDate`
-(either-required) Date by which the cache will expire. Date format must be mm-dd-yyyy.
+(optional) Date by which the cache will expire. Date format must be mm-dd-yyyy.
 
 `--cacheExpiryInSecs`
-(either-required) Duration in seconds by which the cache will expire.
+(optional) Duration in seconds by which the cache will expire.
 
 ## <a name="Target Server Operations"></a>Target Server Operations
 
