@@ -15,6 +15,9 @@ var APIGEE_PROXY_NAME = 'apigee-cli-apigee-test';
 var NODE_PROXY_NAME = 'apigee-cli-node-test';
 var HOSTED_TARGETS_PROXY_NAME = 'cli-hosted-targets-test';
 var CACHE_RESOURCE_NAME='apigee-cli-remotetests-cache1';
+var CACHE_RESOURCE_WITH_EXPIRY_NAME='apigee-cli-remotetests-cache2';
+var CACHE_RESOURCE_WITH_EXPIRY_DESCRIPTION='sample key';
+var CACHE_RESOURCE_WITH_EXPIRY_TIMEOUT='5000';
 var PROXY_BASE_PATH = '/apigee-cli-test-employees';
 var APIGEE_PRODUCT_NAME = 'TESTPRODUCT';
 var APIGEE_PRIVATE_PRODUCT_NAME = 'TESTPRODUCT-private';
@@ -874,6 +877,38 @@ describe('Caches', function() { //  it
   it('Delete Cache Resource',function(done){
     var opts = baseOpts();
     opts.cache = CACHE_RESOURCE_NAME;
+    apigeetool.deletecache(opts,function(err,result) {
+      if (verbose) {
+        console.log('Delete Cache result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        done()
+      }
+    });
+  });
+
+  it('Create an Cache Resource with description and expiry',function(done){
+    var opts = baseOpts();
+    opts.cache = CACHE_RESOURCE_WITH_EXPIRY_NAME;
+    opts.description = CACHE_RESOURCE_WITH_EXPIRY_DESCRIPTION;
+    opts.cacheExpiryInSecs = CACHE_RESOURCE_WITH_EXPIRY_TIMEOUT;
+    apigeetool.createcache(opts,function(err,result) {
+      if (verbose) {
+        console.log('Create Cache result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        done()
+      }
+    });
+  });
+
+  it('Delete Cache Resource having with description and expiry',function(done){
+    var opts = baseOpts();
+    opts.cache = CACHE_RESOURCE_WITH_EXPIRY_NAME;
     apigeetool.deletecache(opts,function(err,result) {
       if (verbose) {
         console.log('Delete Cache result = %j', result);
