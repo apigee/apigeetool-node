@@ -17,6 +17,7 @@ var HOSTED_TARGETS_PROXY_NAME = 'cli-hosted-targets-test';
 var CACHE_RESOURCE_NAME='apigee-cli-remotetests-cache1';
 var CACHE_RESOURCE_WITH_EXPIRY_NAME='apigee-cli-remotetests-cache2';
 var CACHE_RESOURCE_WITH_EXPIRY_DESCRIPTION='sample key';
+var CACHE_RESOURCE_WITH_EXPIRY_DATE='31-12-2021';
 var CACHE_RESOURCE_WITH_EXPIRY_TIMEOUT='5000';
 var PROXY_BASE_PATH = '/apigee-cli-test-employees';
 var APIGEE_PRODUCT_NAME = 'TESTPRODUCT';
@@ -889,7 +890,33 @@ describe('Caches', function() { //  it
     });
   });
 
-  it('Create an Cache Resource with description and expiry',function(done){
+  it('Create an Cache Resource with description and expiry in date',function(done){
+    var opts = baseOpts();
+    opts.cache = CACHE_RESOURCE_WITH_EXPIRY_NAME;
+    opts.description = CACHE_RESOURCE_WITH_EXPIRY_DESCRIPTION;
+    opts.cacheExpiryByDate = CACHE_RESOURCE_WITH_EXPIRY_DATE;
+    apigeetool.createcache(opts,function(err,result) {
+      if (verbose) {
+        console.log('Create Cache result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        apigeetool.deletecache(opts,function(delete_err,delete_result) {
+          if (verbose) {
+            console.log('Delete Cache result = %j', delete_result);
+          }
+          if (delete_err) {
+            done(delete_err);
+          } else {
+            done()
+          }
+        });
+      }
+    });
+  });
+
+  it('Create an Cache Resource with description and expiry in secs',function(done){
     var opts = baseOpts();
     opts.cache = CACHE_RESOURCE_WITH_EXPIRY_NAME;
     opts.description = CACHE_RESOURCE_WITH_EXPIRY_DESCRIPTION;
@@ -901,22 +928,43 @@ describe('Caches', function() { //  it
       if (err) {
         done(err);
       } else {
-        done()
+        apigeetool.deletecache(opts,function(delete_err,delete_result) {
+          if (verbose) {
+            console.log('Delete Cache result = %j', delete_result);
+          }
+          if (delete_err) {
+            done(delete_err);
+          } else {
+            done()
+          }
+        });
       }
     });
   });
 
-  it('Delete Cache Resource having with description and expiry',function(done){
+  it('Create an Cache Resource with description and expiry in secs, data',function(done){
     var opts = baseOpts();
     opts.cache = CACHE_RESOURCE_WITH_EXPIRY_NAME;
-    apigeetool.deletecache(opts,function(err,result) {
+    opts.description = CACHE_RESOURCE_WITH_EXPIRY_DESCRIPTION;
+    opts.cacheExpiryByDate = CACHE_RESOURCE_WITH_EXPIRY_DATE;
+    opts.cacheExpiryInSecs = CACHE_RESOURCE_WITH_EXPIRY_TIMEOUT;
+    apigeetool.createcache(opts,function(err,result) {
       if (verbose) {
-        console.log('Delete Cache result = %j', result);
+        console.log('Create Cache result = %j', result);
       }
       if (err) {
         done(err);
       } else {
-        done()
+        apigeetool.deletecache(opts,function(delete_err,delete_result) {
+          if (verbose) {
+            console.log('Delete Cache result = %j', delete_result);
+          }
+          if (delete_err) {
+            done(delete_err);
+          } else {
+            done()
+          }
+        });
       }
     });
   });
