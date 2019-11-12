@@ -133,6 +133,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [detachFlowHook](#detachFlowHook) 
 * [fetchproxy](#fetchproxy)
 * [fetchSharedflow](#fetchSharedflow)
+* [getcache](#getcache)
 * [getFlowHook](#getFlowHook)
 * [getKVMentry](#getKVMentry)
 * [getKVMmap](#getKVMmap)
@@ -140,6 +141,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [getRole](#getRole)
 * [getRolePermissions](#getRolePermissions)
 * [getTargetServer](#getTargetServer)
+* [listcaches](#listcaches)
 * [listdeployments](#listdeployments)
 * [listRoles](#listRoles)
 * [listRoleUsers](#listRoleUsers)
@@ -149,6 +151,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [setRolePermissions](#setRolePermissions)
 * [undeploySharedflow](#undeploySharedflow)
 * [undeploy](#undeploy)
+* [updatecache](#updatecache)
 * [verifyUserRole](#verifyUserRole)
 
 ## <a name="deploynodeapp"></a>deploynodeapp
@@ -966,6 +969,75 @@ for organization name, all of which are required.
 
 `--cacheExpiryInSecs`
 (optional) Duration in seconds by which the cache will expire.
+
+### <a name="getcache"></a>getcache
+
+Get details for a Cache with the given name.
+
+#### Example
+Get Cache named "test-cache".
+
+    apigeetool getcache -N -o sdoe -e test -z test-cache
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`-z` (required) The name of the cache.
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+
+### <a name="listcaches"></a>listcaches
+
+List Caches in an environment.
+
+#### Example
+List all Caches.
+
+    apigeetool listcaches -N -o sdoe -e test
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+
+### <a name="updatecache"></a>updatecache
+
+Updates details for a Cache in an environment.
+
+#### Example
+Updates Cache named "test-cache" (with description and expiry).
+
+    apigeetool updatecache -N -o sdoe -e test -z test-cache --description "updated key" --cacheExpiryByDate 12-31-2022  
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`-z` (required) The name of the cache.  
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--description` (optional) The description of the cache to be created.  
+`--cacheExpiryByDate` (optional) Date by which the cache will expire. Date format must be mm-dd-yyyy.  
+`--cacheExpiryInSecs` (optional) Duration in seconds by which the cache will expire.  
+
 
 ## <a name="Target Server Operations"></a>Target Server Operations
 

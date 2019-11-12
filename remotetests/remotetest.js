@@ -17,8 +17,10 @@ var HOSTED_TARGETS_PROXY_NAME = 'cli-hosted-targets-test';
 var CACHE_RESOURCE_NAME='apigee-cli-remotetests-cache1';
 var CACHE_RESOURCE_WITH_EXPIRY_NAME='apigee-cli-remotetests-cache2';
 var CACHE_RESOURCE_WITH_EXPIRY_DESCRIPTION='sample key';
-var CACHE_RESOURCE_WITH_EXPIRY_DATE='31-12-2021';
+var CACHE_RESOURCE_WITH_EXPIRY_DATE='12-31-2021';
 var CACHE_RESOURCE_WITH_EXPIRY_TIMEOUT='5000';
+var CACHE_RESOURCE_WITH_EXPIRY_DATE_DEFAULT='12-31-9999';
+var CACHE_RESOURCE_WITH_EXPIRY_DATE_UPDATE='12-31-2022';
 var PROXY_BASE_PATH = '/apigee-cli-test-employees';
 var APIGEE_PRODUCT_NAME = 'TESTPRODUCT';
 var APIGEE_PRIVATE_PRODUCT_NAME = 'TESTPRODUCT-private';
@@ -875,6 +877,78 @@ describe('Caches', function() { //  it
     });
   });
 
+  it('Get Cache', function(done) {
+    var opts = baseOpts();
+    opts.cache = CACHE_RESOURCE_NAME;
+    apigeetool.getcache(opts, function(err, result) {
+      if (verbose) {
+        console.log('Get Cache result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(result.expirySettings.expiryDate.value, CACHE_RESOURCE_WITH_EXPIRY_DATE_DEFAULT);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
+  it('List Caches', function(done) {
+    var opts = baseOpts();
+    apigeetool.listcaches(opts, function(err, result) {
+      if (verbose) {
+        console.log('List Caches result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(result.includes(CACHE_RESOURCE_NAME), true);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
+  it('Updates an Cache Resource with description and expiry in date', function(done) {
+    var opts = baseOpts();
+    opts.cache = CACHE_RESOURCE_NAME;
+    opts.description = CACHE_RESOURCE_WITH_EXPIRY_DESCRIPTION;
+    opts.cacheExpiryByDate = CACHE_RESOURCE_WITH_EXPIRY_DATE_UPDATE;
+    apigeetool.updatecache(opts, function(err, result) {
+      if (verbose) {
+        console.log('Update Cache result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        var get_opts = baseOpts();
+        get_opts.cache = CACHE_RESOURCE_NAME;
+        apigeetool.getcache(get_opts, function(get_err, get_result) {
+          if (verbose) {
+            console.log('Get Cache result = %j', get_result);
+          }
+          if (get_err) {
+            done(get_err);
+          } else {
+            try {
+              assert.equal(get_result.expirySettings.expiryDate.value, CACHE_RESOURCE_WITH_EXPIRY_DATE_UPDATE);
+              done();
+            } catch (e) {
+              done(e);
+            }
+          }
+        });
+      }
+    });
+  });
+
   it('Delete Cache Resource',function(done){
     var opts = baseOpts();
     opts.cache = CACHE_RESOURCE_NAME;
@@ -890,79 +964,133 @@ describe('Caches', function() { //  it
     });
   });
 
-  it('Create an Cache Resource with description and expiry in date',function(done){
+  it('Create an Cache Resource with description and expiry in date', function(done) {
     var opts = baseOpts();
     opts.cache = CACHE_RESOURCE_WITH_EXPIRY_NAME;
     opts.description = CACHE_RESOURCE_WITH_EXPIRY_DESCRIPTION;
     opts.cacheExpiryByDate = CACHE_RESOURCE_WITH_EXPIRY_DATE;
-    apigeetool.createcache(opts,function(err,result) {
+    apigeetool.createcache(opts, function(err, result) {
       if (verbose) {
         console.log('Create Cache result = %j', result);
       }
       if (err) {
         done(err);
       } else {
-        apigeetool.deletecache(opts,function(delete_err,delete_result) {
+        var get_opts = baseOpts();
+        get_opts.cache = CACHE_RESOURCE_WITH_EXPIRY_NAME;
+        apigeetool.getcache(get_opts, function(get_err, get_result) {
           if (verbose) {
-            console.log('Delete Cache result = %j', delete_result);
+            console.log('Get Cache result = %j', get_result);
           }
-          if (delete_err) {
-            done(delete_err);
+          if (get_err) {
+            done(get_err);
           } else {
-            done()
+            try {
+              assert.equal(get_result.expirySettings.expiryDate.value, CACHE_RESOURCE_WITH_EXPIRY_DATE);
+              var delete_opts = baseOpts();
+              delete_opts.cache = CACHE_RESOURCE_WITH_EXPIRY_NAME;
+              apigeetool.deletecache(delete_opts, function(delete_err, delete_result) {
+                if (verbose) {
+                  console.log('Delete Cache result = %j', delete_result);
+                }
+                if (delete_err) {
+                  done(delete_err);
+                } else {
+                  done()
+                }
+              });
+            } catch(e) {
+              done(e);
+            }
           }
         });
       }
     });
   });
 
-  it('Create an Cache Resource with description and expiry in secs',function(done){
+  it('Create an Cache Resource with description and expiry in secs', function(done) {
     var opts = baseOpts();
     opts.cache = CACHE_RESOURCE_WITH_EXPIRY_NAME;
     opts.description = CACHE_RESOURCE_WITH_EXPIRY_DESCRIPTION;
     opts.cacheExpiryInSecs = CACHE_RESOURCE_WITH_EXPIRY_TIMEOUT;
-    apigeetool.createcache(opts,function(err,result) {
+    apigeetool.createcache(opts, function(err, result) {
       if (verbose) {
         console.log('Create Cache result = %j', result);
       }
       if (err) {
         done(err);
       } else {
-        apigeetool.deletecache(opts,function(delete_err,delete_result) {
+        var get_opts = baseOpts();
+        get_opts.cache = CACHE_RESOURCE_WITH_EXPIRY_NAME;
+        apigeetool.getcache(get_opts, function(get_err, get_result) {
           if (verbose) {
-            console.log('Delete Cache result = %j', delete_result);
+            console.log('Get Cache result = %j', get_result);
           }
-          if (delete_err) {
-            done(delete_err);
+          if (get_err) {
+            done(get_err);
           } else {
-            done()
+            try {
+              assert.equal(get_result.expirySettings.timeoutInSec.value, CACHE_RESOURCE_WITH_EXPIRY_TIMEOUT);
+              var delete_opts = baseOpts();
+              delete_opts.cache = CACHE_RESOURCE_WITH_EXPIRY_NAME;
+              apigeetool.deletecache(delete_opts, function(delete_err, delete_result) {
+                if (verbose) {
+                  console.log('Delete Cache result = %j', delete_result);
+                }
+                if (delete_err) {
+                  done(delete_err);
+                } else {
+                  done()
+                }
+              });
+            } catch(e) {
+              done(e);
+            }
           }
         });
       }
     });
   });
 
-  it('Create an Cache Resource with description and expiry in secs, data',function(done){
+  it('Create an Cache Resource with description and expiry in secs, data', function(done) {
     var opts = baseOpts();
     opts.cache = CACHE_RESOURCE_WITH_EXPIRY_NAME;
     opts.description = CACHE_RESOURCE_WITH_EXPIRY_DESCRIPTION;
     opts.cacheExpiryByDate = CACHE_RESOURCE_WITH_EXPIRY_DATE;
     opts.cacheExpiryInSecs = CACHE_RESOURCE_WITH_EXPIRY_TIMEOUT;
-    apigeetool.createcache(opts,function(err,result) {
+    apigeetool.createcache(opts, function(err, result) {
       if (verbose) {
         console.log('Create Cache result = %j', result);
       }
       if (err) {
         done(err);
       } else {
-        apigeetool.deletecache(opts,function(delete_err,delete_result) {
+        var get_opts = baseOpts();
+        get_opts.cache = CACHE_RESOURCE_WITH_EXPIRY_NAME;
+        apigeetool.getcache(get_opts, function(get_err, get_result) {
           if (verbose) {
-            console.log('Delete Cache result = %j', delete_result);
+            console.log('Get Cache result = %j', get_result);
           }
-          if (delete_err) {
-            done(delete_err);
+          if (get_err) {
+            done(get_err);
           } else {
-            done()
+            try {
+              assert.equal(get_result.expirySettings.timeoutInSec.value, CACHE_RESOURCE_WITH_EXPIRY_TIMEOUT);
+              var delete_opts = baseOpts();
+              delete_opts.cache = CACHE_RESOURCE_WITH_EXPIRY_NAME;
+              apigeetool.deletecache(delete_opts, function(delete_err, delete_result) {
+                if (verbose) {
+                  console.log('Delete Cache result = %j', delete_result);
+                }
+                if (delete_err) {
+                  done(delete_err);
+                } else {
+                  done()
+                }
+              });
+            } catch(e) {
+              done(e);
+            }
           }
         });
       }
