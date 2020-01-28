@@ -149,6 +149,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [setRolePermissions](#setRolePermissions)
 * [undeploySharedflow](#undeploySharedflow)
 * [undeploy](#undeploy)
+* [updateTargetServer](#updateTargetServer)
 * [verifyUserRole](#verifyUserRole)
 
 ## <a name="deploynodeapp"></a>deploynodeapp
@@ -977,6 +978,32 @@ Creates a Target Server with the given name.
 Create Target Server named "test-target" with SSL enabled.
 
     apigeetool createTargetServer -N -o $ORG -e $ENV --targetServerName test-target --targetHost httpbin.org --targetPort 443 --targetSSL true
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--targetServerName` (required) The name of the Target Server to be created.  
+`--targetHost` (required) The hostname of the target.  
+`--targetPort` (required) The port number of the target.  
+`--targetSSL` (optional) Whether or not SSL is configured, defaults to none.  
+`--targetEnabled` (optional) Whether or not the Target Server itself is enabled, defaults to true.  
+
+### <a name="updateTargetServer"></a>updateTargetServer
+
+Update a Target Server with the given name.
+
+#### Example
+Update Target Server named "test-target" with SSL enabled.
+
+    apigeetool updateTargetServer -N -o $ORG -e $ENV --targetServerName test-target --targetHost httpbin.org --targetPort 443 --targetSSL true
 
 #### Required parameters
 
