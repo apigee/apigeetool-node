@@ -149,6 +149,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [setRolePermissions](#setRolePermissions)
 * [undeploySharedflow](#undeploySharedflow)
 * [undeploy](#undeploy)
+* [updateKVMEntry](#updateKVMEntry)
 * [updateTargetServer](#updateTargetServer)
 * [verifyUserRole](#verifyUserRole)
 
@@ -797,6 +798,39 @@ for organization name, all of which are required.
 
 `--api -n`
 (optional) The API to target for an API-scoped KVM operation.
+
+### <a name="updateKVMEntry"></a>updateKVMEntry
+
+Updates an entry of name:value to the named map in the Apigee KVM.
+
+#### Example
+
+Update entry to KVM with name "test1" and value "value1"
+
+    apigeetool updateKVMentry -u sdoe@example.com -o sdoe -e test --mapName test-map --entryName test1 --entryValue value1
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--mapName`
+(required) The name of the map the entry will belong to.
+
+`--entryName`
+(required) The name of the entry to be created.
+
+`--entryValue`
+(required) The value of the entry to be created.
+
+`--environment -e`
+(optional) The environment to target for an Environment-scoped KVM operation.
+
 
 ### <a name="getKVMmap"></a>getKVMmap
 
