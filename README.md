@@ -21,12 +21,12 @@ This is a tool for deploying API proxies and Node.js applications to the Apigee 
 
 You must have an account on Apigee Edge to perform any `apigeetool` functions. These functions include:
 
-* deploying an API proxy to Edge,
-* undeploying an API proxy from Edge,
+* deploying an API proxy or shared flow to Edge,
+* undeploying an API proxy or shared flow from Edge,
 * deploying Node.js apps to Edge,
-* listing deployed API proxies on Edge,
-* retrieving deployed proxies and apps from Edge,
-* deleting proxy definitions from Edge, and
+* listing deployed API proxies or shared flows on Edge,
+* retrieving deployed proxies or shared flows from Edge,
+* deleting proxy or shared flow definitions from Edge, and
 * retreiving log messages from Node.js apps deployed to Edge.
 * create or delete an API product in Edge
 * create or delete a Developer in Edge
@@ -34,6 +34,12 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 * create or delete a Cache resource in Edge
 * create, retrieve or delete a KVM Map in Edge
 * create, retrieve or delete a KVM Entry in Edge
+* attach, detach, or get a FlowHook
+* create, get, delete, list Target Servers
+* create, get, delete, List Roles
+* get, set Role Permisions
+* assign, remove, verify Users for a Role
+* list all Users in a Role
 
 You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments.
 
@@ -54,6 +60,12 @@ this tool:
 (optional) The names of one of more PEM files that represent trusted certificate authorities.
 Multiple file names may be comma-separated. Use this to communicate with an installation
 of Apigee Edge that uses a custom certificate for API calls.
+
+`--keyfile -K`
+(optional) The name of the PEM file that represents the private key in a mutual auth connection.
+
+`--certfile -C`
+(optional) The name of the PEM file that represents the certificate in a mutual auth connection.
 
 `--debug -D`
 (optional) Prints additional information about the deployment, including router and message processor IDs.
@@ -93,35 +105,51 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 
 # <a name="reference"></a>Command reference and examples
 
-* [deploynodeapp](#deploynodeapp)
-* [deployhostedtarget](#deployhostedtarget)
-* [deployproxy](#deployproxy)
-* [undeploy](#undeploy)
-* [listdeployments](#listdeployments)
-* [fetchproxy](#fetchproxy)
-* [getlogs](#getlogs)
-* [delete](#delete)
-* [deploySharedflow](#deploySharedflow)
-* [undeploySharedflow](#undeploySharedflow)
-* [listSharedflowDeployments](#listSharedflowDeployments)
-* [fetchSharedflow](#fetchSharedflow)
-* [deleteSharedflow](#deleteSharedflow)
-* [createdeveloper](#createdeveloper)
-* [deletedeveloper](#deletedeveloper)
-* [createproduct](#createproduct)
-* [deleteproduct](#deleteproduct)
-* [createapp](#createapp)
-* [deleteapp](#deleteapp)
-* [createappkey](#createappkey)
-* [createcache](#createcache)
-* [deletecache](#deletecache)
-* [createkvmmap](#createkvmmap)
 * [addEntryToKVM](#addEntryToKVM)
-* [getkvmmap](#getkvmmap)
-* [getKVMentry](#getKVMentry)
-* [deletekvmmap](#deletekvmmap)
+* [assignUserRole](#assignUserRole)
+* [attachFlowHook](#attachFlowHook)
+* [createappkey](#createappkey)
+* [createapp](#createapp)
+* [createcache](#createcache)
+* [createdeveloper](#createdeveloper)
+* [createKVMmap](#createKVMmap)
+* [createProduct](#createproduct)
+* [createRole](#createRole)
+* [createTargetServer](#createTargetServer)
+* [deleteapp](#deleteapp)
+* [deletecache](#deletecache)
+* [deletedeveloper](#deletedeveloper)
 * [deleteKVMentry](#deleteKVMentry)
-
+* [deleteKVMmap](#deleteKVMmap)
+* [deleteproduct](#deleteproduct)
+* [deleteRole](#deleteRole)
+* [deleteSharedflow](#deleteSharedflow)
+* [deleteTargetServer](#deleteTargetServer)
+* [delete](#delete)
+* [deployhostedtarget](#deployhostedtarget)
+* [deploynodeapp](#deploynodeapp)
+* [deployproxy](#deployproxy)
+* [deploySharedflow](#deploySharedflow)
+* [detachFlowHook](#detachFlowHook) 
+* [fetchproxy](#fetchproxy)
+* [fetchSharedflow](#fetchSharedflow)
+* [getFlowHook](#getFlowHook)
+* [getKVMentry](#getKVMentry)
+* [getKVMmap](#getKVMmap)
+* [getlogs](#getlogs)
+* [getRole](#getRole)
+* [getRolePermissions](#getRolePermissions)
+* [getTargetServer](#getTargetServer)
+* [listdeployments](#listdeployments)
+* [listRoles](#listRoles)
+* [listRoleUsers](#listRoleUsers)
+* [listSharedflowDeployments](#listSharedflowDeployments)
+* [listTargetServers](#listTargetServers)
+* [removeUserRole](#removeUserRole)
+* [setRolePermissions](#setRolePermissions)
+* [undeploySharedflow](#undeploySharedflow)
+* [undeploy](#undeploy)
+* [verifyUserRole](#verifyUserRole)
 
 ## <a name="deploynodeapp"></a>deploynodeapp
 
@@ -572,7 +600,7 @@ for organization name, all of which are required.
 
 ## <a name="undeploySharedflow"></a>undeploySharedflow
 
-Undeploys a named API proxy or Node.js app deployed on Apigee Edge.
+Undeploys a SharedFlow deployed on Apigee Edge.
 
 #### Example
 
@@ -705,14 +733,14 @@ When the `--organization` and `--environment` options are present, the operation
 
 When the `--organization` and `--api` options are present, the operation will correspond to the API-scoped KVM.
 
-### <a name="createkvmmap"></a>createkvmmap
+### <a name="createKVMmap"></a>createKVMmap
 
 Creates a map in the Apigee KVM with the given name.
 
 #### Example
 Create KVM map named "test-map"
 
-    apigeetool createkvmmap -u sdoe@example.com -o sdoe -e test --mapName test-map
+    apigeetool createKVMmap -u sdoe@example.com -o sdoe -e test --mapName test-map
 
 #### Required parameters
 
@@ -775,7 +803,7 @@ for organization name, all of which are required.
 `--api -n`
 (optional) The API to target for an API-scoped KVM operation.
 
-### <a name="getkvmmap"></a>getkvmmap
+### <a name="getKVMmap"></a>getKVMmap
 
 Retrieves an entire KVM map with all of its entries, by name.
 
@@ -783,7 +811,7 @@ Retrieves an entire KVM map with all of its entries, by name.
 
 Get map named "test-map".
 
-    apigeetool getkvmmap -u sdoe@example.com -o sdoe -e test --mapName test-map
+    apigeetool getKVMmap -u sdoe@example.com -o sdoe -e test --mapName test-map
 
 #### Required parameters
 
@@ -840,7 +868,7 @@ for organization name, all of which are required.
 `--api -n`
 (optional) The API to target for an API-scoped KVM operation.
 
-### <a name="deletekvmmap"></a>deletekvmmap
+### <a name="deleteKVMmap"></a>deleteKVMmap
 
 Deletes an entire map from the Apigee KVM along with all of its entries.
 
@@ -848,7 +876,7 @@ Deletes an entire map from the Apigee KVM along with all of its entries.
 
 Delete map named "test-map".
 
-    apigeetool deletekvmmap -u sdoe@example.com -o sdoe -e test --mapName test-map
+    apigeetool deleteKVMmap -u sdoe@example.com -o sdoe -e test --mapName test-map
 
 #### Required parameters
 
@@ -879,7 +907,7 @@ Deletes a single entry by name from an Apigee KVM map.
 
 Delete entry named "test1" from the map named "test-map".
 
-    apigeetool deletekvmmap -u sdoe@example.com -o sdoe -e test --mapName test-map --entryName test1
+    apigeetool deleteKVMmmap -u sdoe@example.com -o sdoe -e test --mapName test-map --entryName test1
 
 #### Required parameters
 
@@ -914,7 +942,11 @@ Creates a Cache with the given name.
 #### Example
 Create Cache map named "test-cache"
 
-    apigeetool createcache -u sdoe@example.com -o sdoe -e test -z test-cache
+    apigeetool createcache -u sdoe@example.com -o sdoe -e test -z test-cache 
+    
+Create Cache map named "test-cache" (with description and expiry)
+
+    apigeetool createcache -u sdoe@example.com -o sdoe -e test -z test-cache --description "sample key" --cacheExpiryInSecs 40000    
 
 #### Required parameters
 
@@ -931,6 +963,406 @@ for organization name, all of which are required.
 
 `--environment -e`
 (required) The environment to target.
+
+`--description`
+(optional) The description of the cache to be created.
+
+`--cacheExpiryByDate`
+(optional) Date by which the cache will expire. Date format must be mm-dd-yyyy.
+
+`--cacheExpiryInSecs`
+(optional) Duration in seconds by which the cache will expire.
+
+## <a name="Target Server Operations"></a>Target Server Operations
+
+### <a name="createTargetServer"></a>createTargetServer
+
+Creates a Target Server with the given name.
+
+#### Example
+Create Target Server named "test-target" with SSL enabled.
+
+    apigeetool createTargetServer -N -o $ORG -e $ENV --targetServerName test-target --targetHost httpbin.org --targetPort 443 --targetSSL true
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--targetServerName` (required) The name of the Target Server to be created.  
+`--targetHost` (required) The hostname of the target.  
+`--targetPort` (required) The port number of the target.  
+`--targetSSL` (optional) Whether or not SSL is configured, defaults to none.  
+`--targetEnabled` (optional) Whether or not the Target Server itself is enabled, defaults to true.  
+
+### <a name="deleteTargetServer"></a>deleteTargetServer
+
+Deletes a Target Server with the given name.
+
+#### Example
+Delete Target Server named "test-target".
+
+    apigeetool deleteTargetServer -N -o $ORG -e $ENV --targetServerName test-target
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--targetServerName` (required) The name of the Target Server to be deleted.
+
+### <a name="getTargetServer"></a>getTargetServer
+
+Get details for a Target Server with the given name.
+
+#### Example
+Get Target Server named "test-target".
+
+    apigeetool getTargetServer -N -o $ORG -e $ENV --targetServerName test-target
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--targetServerName` (required) The name of the Target Server to be deleted.
+
+### <a name="listTargetServers"></a>listTargetServers
+
+List Target Servers in a given environment.
+
+#### Example
+List Target Servers.
+
+    apigeetool listTargetServers -N -o $ORG -e $ENV
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+
+## <a name="FlowHook Operations"></a>FlowHook Operations
+
+Operations on the pre-defined FlowHook names:
+
+* PreProxyFlowHook
+* PreTargetFlowHook
+* PostTargetFlowHook
+* PostProxyFlowHook
+
+### <a name="attachFlowHook"></a>attachFlowHook
+
+Attach a deployed SharedFlow to one of the [named FlowHooks](#FlowHook Operations).
+
+#### Example
+Attach SharedFlow "GetLogValues" to "PreProxyFlowHook".
+
+    apigeetool attachFlowHook -N -o $ORG -e $ENV --flowHookName PreProxyFlowHook --sharedFlowName GetLogValues
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--flowHookName` (required) The pre-defined name of the FlowHook.  
+`--sharedFlowName` (required) The name of a deployed SharedFlow.  
+
+### <a name="detachFlowHook"></a>detachFlowHook
+
+Detach a SharedFlow from one of the [named FlowHooks](#FlowHook Operations).
+
+#### Example
+Detach "PreProxyFlowHook".
+
+    apigeetool detachFlowHook -N -o $ORG -e $ENV --flowHookName PreProxyFlowHook
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--flowHookName` (required) The pre-defined name of the FlowHook.  
+
+### <a name="getFlowHook"></a>getFlowHook
+
+Get the SharedFlow currently attached to one of the [named FlowHooks](#FlowHook Operations).
+
+#### Example
+Detach "PreProxyFlowHook".
+
+    apigeetool getFlowHook -N -o $ORG -e $ENV --flowHookName PreProxyFlowHook
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--flowHookName` (required) The pre-defined name of the FlowHook.  
+
+## <a name="Roles and Permissions Operations"></a>Roles and Permissions Operations
+
+Operations on Roles, Permissions and User assignment. The general flow is:
+
+* Create a role
+* Assign Permissions to the Role
+* Assign the Role to a User
+
+### <a name="createRole"></a>createRole
+
+Create a role.
+
+#### Example
+Create role "AllowGetUserRoles".
+
+    apigeetool createRole -N -o $ORG --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--roleName` (required) The name for the role.  
+
+### <a name="getRole"></a>getRole
+
+Get a role.
+
+#### Example
+Get role "AllowGetUserRoles".
+
+    apigeetool getRole -N -o $ORG --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--roleName` (required) The name for the role.  
+
+### <a name="deleteRole"></a>deleteRole
+
+Delete a role.
+
+#### Example
+Delete role "AllowGetUserRoles".
+
+    apigeetool deleteRole -N -o $ORG --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--roleName` (required) The name for the role.  
+
+### <a name="listRoles"></a>listRoles
+
+List roles.
+
+#### Example
+List roles.
+
+    apigeetool listRoles -N -o $ORG
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+
+### <a name="setRolePermissions"></a>setRolePermissions
+
+Set Role Permissions for a Role.
+
+#### Example
+Set Permissions on Role "AllowGetUserRoles" to allow access to list Roles.
+
+    apigeetool setRolePermissions -N -o $ORG --roleName AllowGetUserRoles --permissions '[{"path":"/userroles","permissions":["get"]}]'
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--roleName` (required) The name for the role.  
+`--permissions` Permissions array for path and verbs.  
+
+### <a name="getRolePermissions"></a>getRolePermissions
+
+Get Role Permissions for a Role.
+
+#### Example
+Get Permissions on Role "AllowGetUserRoles".
+
+    apigeetool getRolePermissions -N -o $ORG --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--roleName` (required) The name for the role.  
+
+### <a name="assignUserRole"></a>assignUserRole
+
+Assign existing User to a Role. NOTE: User must already exist in Edge.
+
+#### Example
+Assign "somedeveloper@any.com" to Role "AllowGetUserRoles".
+
+    apigeetool assignUserRole -N -o $ORG --email "somedeveloper@any.com" --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--email` (required) Email for an existing User in Edge.  
+`--roleName` (required) The name for the role.  
+
+### <a name="removeUserRole"></a>removeUserRole
+
+Remove existing User from a Role. 
+
+#### Example
+Remove "somedeveloper@any.com" from Role "AllowGetUserRoles".
+
+    apigeetool removeUserRole -N -o $ORG --email "somedeveloper@any.com" --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--email` (required) Email for an existing User in Edge.  
+`--roleName` (required) The name for the role. 
+
+### <a name="verifyUserRole"></a>verifyUserRole
+
+Verify User assigned to a Role. 
+
+#### Example
+Verify "somedeveloper@any.com" assigned to Role "AllowGetUserRoles".
+
+    apigeetool verifyUserRole -N -o $ORG --email "somedeveloper@any.com" --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--email` (required) Email for an existing User in Edge.  
+`--roleName` (required) The name for the role. 
+
+### <a name="listRoleUsers"></a>listRoleUsers
+
+Get Users assigned to a Role. 
+
+#### Example
+List Users assigned to Role "AllowGetUserRoles".
+
+    apigeetool listRoleUsers -N -o $ORG --roleName AllowGetUserRoles
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--email` (required) Email for an existing User in Edge.  
+`--roleName` (required) The name for the role. 
 
 # <a name="sdkreference"></a>SDK Reference
 
@@ -1000,7 +1432,7 @@ Delete a Developer in Edge
         //developer delete failed
       }) ;
 
-## <a name="createproduct"></a>Create Product
+## <a name="createProduct"></a>Create Product
 
 Creates a new API Product in Edge
 
@@ -1079,7 +1511,7 @@ Create App Key in Edge
     opts.developerId = DEVELOPER_EMAIL;
     opts.appName = APP_NAME;
     opts.apiProducts = PRODUCT_NAME;
-    
+
     sdk.createAppKey(opts)
     .then(function(result){
     //create key/secret success

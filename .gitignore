@@ -1,4 +1,5 @@
 node_modules
+remotetests/testconfig.js
 testdir.zip
 test.zip
 *.tgz
