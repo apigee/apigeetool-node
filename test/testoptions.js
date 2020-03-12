@@ -16,7 +16,7 @@ describe('Options parsing test', function() {
     fs.readFileSync.calls.reset();
     request.defaults.calls.reset();
   });
-
+  
   it('Test no descriptor', function(done) {
     var desc = {};
     var opts = { foo: 1, bar: 'baz'};
@@ -51,6 +51,7 @@ describe('Options parsing test', function() {
       done();
     });
   });
+
   it('Test nothing and missing stuff', function(done) {
     var desc = {
       foo: {},
@@ -114,13 +115,16 @@ describe('Options parsing test', function() {
 
   it('Test command-line help', function() {
     var desc = {
-      foo: {},
-      bar: { required: false, shortOption: 'b' },
-      baz: { required: true }
+      foo: { },
+      ping: { name: 'Ping', required: false, prompt: false },
+      pong: { name: 'Pong', required: true, prompt: false }
     };
+    var opts = { ping: 1, pong: 'value'};
     var help = options.getHelp(desc);
     //console.log('Help is:' + help);
+    assert.notEqual( help, undefined );
   });
+
   it('Test command-line toggle', function() {
     var desc = {
       foo: {},

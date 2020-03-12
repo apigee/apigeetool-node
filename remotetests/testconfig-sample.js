@@ -10,11 +10,17 @@ module.exports = {
   // The user name to authenticate with for the Apigee management API
   username: '<edgeuser>',
   // The password for that user name
-  password: '<pass>'
+  password: '<pass>',
 
   // comment the username and password and uncomment the following to use .netrc
   // netrc: true
-
+  debug: false,
+  verbose: false,
+  
+  // Developer must exist or be added to org before tests
+  useremail: 'someone+tester@google.com',
+  userpassword: 'Supersecret123'
+  
   // Uncomment for the management API URI of your local Apigee environment
   // Leave commented to test using the Apigee cloud.
   //baseuri: 'http://mgmt:8080'
