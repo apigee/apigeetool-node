@@ -936,7 +936,11 @@ Creates a Cache with the given name.
 #### Example
 Create Cache map named "test-cache"
 
-    apigeetool createcache -u sdoe@example.com -o sdoe -e test -z test-cache
+    apigeetool createcache -u sdoe@example.com -o sdoe -e test -z test-cache 
+    
+Create Cache map named "test-cache" (with description and expiry)
+
+    apigeetool createcache -u sdoe@example.com -o sdoe -e test -z test-cache --description "sample key" --cacheExpiryInSecs 40000    
 
 #### Required parameters
 
@@ -953,6 +957,15 @@ for organization name, all of which are required.
 
 `--environment -e`
 (required) The environment to target.
+
+`--description`
+(optional) The description of the cache to be created.
+
+`--cacheExpiryByDate`
+(optional) Date by which the cache will expire. Date format must be mm-dd-yyyy.
+
+`--cacheExpiryInSecs`
+(optional) Duration in seconds by which the cache will expire.
 
 ## <a name="Target Server Operations"></a>Target Server Operations
 
