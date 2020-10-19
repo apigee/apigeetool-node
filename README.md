@@ -149,6 +149,8 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [setRolePermissions](#setRolePermissions)
 * [undeploySharedflow](#undeploySharedflow)
 * [undeploy](#undeploy)
+* [updateKVMEntry](#updateKVMEntry)
+* [updateTargetServer](#updateTargetServer)
 * [verifyUserRole](#verifyUserRole)
 
 ## <a name="deploynodeapp"></a>deploynodeapp
@@ -797,6 +799,39 @@ for organization name, all of which are required.
 `--api -n`
 (optional) The API to target for an API-scoped KVM operation.
 
+### <a name="updateKVMEntry"></a>updateKVMEntry
+
+Updates an entry of name:value to the named map in the Apigee KVM.
+
+#### Example
+
+Update entry to KVM with name "test1" and value "value1"
+
+    apigeetool updateKVMentry -u sdoe@example.com -o sdoe -e test --mapName test-map --entryName test1 --entryValue value1
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password, and the "-o" parameter
+for organization name, all of which are required.
+
+`--mapName`
+(required) The name of the map the entry will belong to.
+
+`--entryName`
+(required) The name of the entry to be created.
+
+`--entryValue`
+(required) The value of the entry to be created.
+
+`--environment -e`
+(optional) The environment to target for an Environment-scoped KVM operation.
+
+
 ### <a name="getKVMmap"></a>getKVMmap
 
 Retrieves an entire KVM map with all of its entries, by name.
@@ -977,6 +1012,32 @@ Creates a Target Server with the given name.
 Create Target Server named "test-target" with SSL enabled.
 
     apigeetool createTargetServer -N -o $ORG -e $ENV --targetServerName test-target --targetHost httpbin.org --targetPort 443 --targetSSL true
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.  
+`--environment -e` (required) The environment to target.  
+`--targetServerName` (required) The name of the Target Server to be created.  
+`--targetHost` (required) The hostname of the target.  
+`--targetPort` (required) The port number of the target.  
+`--targetSSL` (optional) Whether or not SSL is configured, defaults to none.  
+`--targetEnabled` (optional) Whether or not the Target Server itself is enabled, defaults to true.  
+
+### <a name="updateTargetServer"></a>updateTargetServer
+
+Update a Target Server with the given name.
+
+#### Example
+Update Target Server named "test-target" with SSL enabled.
+
+    apigeetool updateTargetServer -N -o $ORG -e $ENV --targetServerName test-target --targetHost httpbin.org --targetPort 443 --targetSSL true
 
 #### Required parameters
 
