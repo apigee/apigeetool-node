@@ -39,7 +39,7 @@
     "connect": "^3.4.0",
     "express": "^4.13.3",
     "jasmine": "^3.5.0",
-    "mocha": "^5.2.0"
+    "mocha": "^8.2.0"
   },
   "repository": {
     "type": "git",
