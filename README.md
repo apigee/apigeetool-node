@@ -2,6 +2,8 @@
 
 This is a tool for deploying API proxies and Node.js applications to the Apigee Edge platform. The tool also lets you list and undeploy API proxies.
 
+**Note:** This is not an officially supported Google product.
+
 * [Installation](#installation)
 * [What you need to know about apigeetool](#whatyouneed)
 * [Command reference and examples](#reference)
