@@ -116,6 +116,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [createdeveloper](#createdeveloper)
 * [createKVMmap](#createKVMmap)
 * [createProduct](#createproduct)
+* [createReference](#createReference)
 * [createRole](#createRole)
 * [createTargetServer](#createTargetServer)
 * [deleteapp](#deleteapp)
@@ -139,6 +140,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [getKVMentry](#getKVMentry)
 * [getKVMmap](#getKVMmap)
 * [getlogs](#getlogs)
+* [getReference](#getReference)
 * [getRole](#getRole)
 * [getRolePermissions](#getRolePermissions)
 * [getTargetServer](#getTargetServer)
@@ -152,6 +154,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [undeploySharedflow](#undeploySharedflow)
 * [undeploy](#undeploy)
 * [updateKVMEntry](#updateKVMEntry)
+* [updateReference](#updateReference)
 * [updateTargetServer](#updateTargetServer)
 * [verifyUserRole](#verifyUserRole)
 
@@ -292,9 +295,7 @@ The following parameters are required. However, if any are left unspecified
 on the command line, and if apigeetool is running in an interactive shell,
 then apigeetool will prompt for them.
 
-See [Common Parameters](#commonargs) for a list of additional parameters, including
-the "-u" and "-p" parameters for username and password, and the "-o" parameter
-for organization name, all of which are required.
+ -e
 
 `--api   -n`
 (required) The name of the API proxy. Note: The name of the API proxy must be unique within an organization. The characters you are allowed to use in the name are restricted to the following: `A-Z0-9._\-$ %`.
@@ -1419,7 +1420,110 @@ the "-u" and "-p" parameters for username and password or preferably -N for .net
 
 `--organization -o` (required) The organization to target.  
 `--email` (required) Email for an existing User in Edge.  
-`--roleName` (required) The name for the role. 
+`--roleName` (required) The name for the role.
+
+## <a name="createReference"></a>createReference
+
+Creates reference to a keystore or truststore
+
+#### Example
+
+Creates a reference named example-ref to the dev environment in the example organization that refers to example-keystore.
+
+    apigeetool createReference -u jdoe@example.com -o example -e dev -n example-ref -r KeyStore -R example-keystore
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified on the command line, and if apigeetool is running in an interactive shell, then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including the "-u" and "-p" parameters for username and password, and the "-o" parameter for organization name, all of which are required.
+
+`--environment -e`
+(required) The name of the Apigee environment where the reference will be created.
+
+`--name -n`
+(required) The name of the reference to be created.
+
+`--refers -R`
+(required) Name of the keystore or truststore being referenced.
+
+`--resourceType -r`
+(required) Set to KeyStore or TrustStore.
+
+## <a name="getReferences"></a>getReferences
+
+Fetches and retuns a list of references or detail for a specific reference.
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified on the command line, and if apigeetool is running in an interactive shell, then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including the "-u" and "-p" parameters for username and password, and the "-o" parameter for organization name, all of which are required.
+
+`--environment -e`
+(required) The name of the Apigee environment to get references.
+
+#### Optional parameters
+
+`--name -n`
+(optional) Then name of the reference to return detail about.
+
+## <a name="updateReference"></a>updateReference
+
+Updates reference keystore or truststore
+
+#### Example
+
+Updates the example-keystore refers to point to new-example-keystore reference named example-ref in the dev environment within the example organization.
+
+    apigeetool updateReference -u jdoe@example.com -o example -e dev -n example-ref -r KeyStore -R new-example-keystore
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified on the command line, and if apigeetool is running in an interactive shell, then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including the "-u" and "-p" parameters for username and password, and the "-o" parameter for organization name, all of which are required.
+
+`--environment -e`
+(required) The name of the Apigee environment where the reference will be created.
+
+`--name -n`
+(required) The name of the reference to be created.
+
+`--refers -R`
+(required) Name of the keystore or truststore being referenced.
+
+`--resourceType -r`
+(required) Set to KeyStore or TrustStore.
+
+## <a name="deleteReference"></a>deleteReference
+
+Deletes reference to a keystore or truststore
+
+#### Example
+
+Deletes the reference named example-ref in the dev environment within the example organization that refers to new-example-keystore.
+
+    apigeetool deleteReference -u jdoe@example.com -o example -e dev -n example-ref -r KeyStore -R new-example-keystore
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified on the command line, and if apigeetool is running in an interactive shell, then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including the "-u" and "-p" parameters for username and password, and the "-o" parameter for organization name, all of which are required.
+
+`--environment -e`
+(required) The name of the Apigee environment where the reference will be deleted.
+
+`--name -n`
+(required) The name of the reference to be deleted.
+
+`--refers -R`
+(required) Name of the keystore or truststore being referenced.
+
+`--resourceType -r`
+(required) Set to KeyStore or TrustStore.
+
 
 # <a name="sdkreference"></a>SDK Reference
 
