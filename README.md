@@ -36,6 +36,10 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 * create or delete a Cache resource in Edge
 * create, retrieve or delete a KVM Map in Edge
 * create, retrieve or delete a KVM Entry in Edge
+* create, retrieve or delete a Keystore in Edge
+* retrieve a Keystore Reference in Edge
+* retrieve a Keystore Alias in Edge
+* retrieve a Certificate from a Keystore in Edge
 * attach, detach, or get a FlowHook
 * create, get, delete, list Target Servers
 * create, get, delete, List Roles
@@ -121,6 +125,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [deleteapp](#deleteapp)
 * [deletecache](#deletecache)
 * [deletedeveloper](#deletedeveloper)
+* [deleteKeystore](#deleteKeystore)
 * [deleteKVMentry](#deleteKVMentry)
 * [deleteKVMmap](#deleteKVMmap)
 * [deleteproduct](#deleteproduct)
@@ -135,14 +140,19 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [detachFlowHook](#detachFlowHook) 
 * [fetchproxy](#fetchproxy)
 * [fetchSharedflow](#fetchSharedflow)
+* [getAlias](#getAlias)
+* [getCertificate](#getCertificate)
 * [getFlowHook](#getFlowHook)
 * [getKVMentry](#getKVMentry)
 * [getKVMmap](#getKVMmap)
 * [getlogs](#getlogs)
+* [getReference](#getReference)
 * [getRole](#getRole)
 * [getRolePermissions](#getRolePermissions)
 * [getTargetServer](#getTargetServer)
 * [listdeployments](#listdeployments)
+* [listKeystores](#listKeystores)
+* [listReferences](#listReferences)
 * [listRoles](#listRoles)
 * [listRoleUsers](#listRoleUsers)
 * [listSharedflowDeployments](#listSharedflowDeployments)
@@ -1420,6 +1430,141 @@ the "-u" and "-p" parameters for username and password or preferably -N for .net
 `--organization -o` (required) The organization to target.  
 `--email` (required) Email for an existing User in Edge.  
 `--roleName` (required) The name for the role. 
+
+## <a name="Keystore Operations"></a>Keystore Operations
+
+### <a name="getAlias"></a>getAlias
+
+Get details about certificate alias.
+
+#### Example
+Get details about a certificate from the specific keystore "MyKeyStore-20210101" , using the cert alias "my-cert-alias".
+
+    apigeetool getAlias --keystoreName MyKeyStore-20210101 --aliasName my-cert-alias
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.··
+`--environment -e` (required) The environment to target.··
+`--keystoreName` (required) The keystore to query.
+`--aliasName` (required) The alias to query
+
+### <a name="getCertificate"></a>getCertificate
+
+Get details about a certificate in a keystore.
+
+#### Example
+Get details about the certificate "my-cert" in the keystore "MyKeyStore-20210101"
+
+    apigeetool getCertificate --keystoreName MyKeyStore-20210101 --certificateName my-cert
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.··
+`--environment -e` (required) The environment to target.··
+`--keystoreName` (required) The keystore to query.
+`--certificateName` (required) The certificate to query
+
+### <a name="getKeystore"></a>getKeystore
+
+Get details about a keystore
+
+#### Example
+Get details about the keystore "MyKeyStore-20210101"
+
+    apigeetool getKeystore --keystoreName MyKeyStore-20210101
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.··
+`--environment -e` (required) The environment to target.··
+`--keystoreName` (required) The keystore to query.
+
+### <a name="getReference"></a>getReference
+
+Get details about a reference
+
+#### Example
+Get details about the reference "TLSReference" about which real keystore it is pointing at. 
+
+    apigeetool getreference --referenceName "TLSReference"
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.··
+`--environment -e` (required) The environment to target.··
+`--referenceName` (required) The reference to query.
+
+### <a name="listKeystores"></a>listKeystores
+
+List all the keystore in an Apigee Environment
+
+#### Example
+List Keystores in the Dev Environment
+
+    apigeetool listKeystores -e "Dev"
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.··
+`--environment -e` (required) The environment to target.··
+
+### <a name="deleteKeystores"></a>deleteKeystore
+
+Delete a keystore.
+
+#### Example
+Delete a keystore "MyKeyStore-20210101"
+
+    apigeetool deleteKeystore --keystoreName MyKeyStore-20210101
+
+#### Required parameters
+
+The following parameters are required. However, if any are left unspecified
+on the command line, and if apigeetool is running in an interactive shell,
+then apigeetool will prompt for them.
+
+See [Common Parameters](#commonargs) for a list of additional parameters, including
+the "-u" and "-p" parameters for username and password or preferably -N for .netrc usage.
+
+`--organization -o` (required) The organization to target.
+`--environment -e` (required) The environment to target.
+`--keystoreName` (required) The keystore to delete.
 
 # <a name="sdkreference"></a>SDK Reference
 
