@@ -6,7 +6,6 @@ var path = require('path');
 var request = require('request');
 var util = require('util');
 var stream = require('stream');
-var _ = require('underscore');
 
 var config = require('./testconfig');
 
@@ -70,7 +69,7 @@ describe('Remote Tests', function() { //  it
         done(err);
       })
   });
-  
+
   it('Create Product', function(done){
     var opts = baseOpts() ;
     var displayName = 'custom name';
@@ -203,7 +202,7 @@ describe('Remote Tests', function() { //  it
 
   it('Delete API private Product',function(done){
     var opts = baseOpts() ;
-    opts.productName = APIGEE_PRIVATE_PRODUCT_NAME 
+    opts.productName = APIGEE_PRIVATE_PRODUCT_NAME
 
     var sdk = apigeetool.getPromiseSDK()
 
@@ -276,9 +275,10 @@ describe('Remote Tests', function() { //  it
       if (err) {
         done(err);
       } else {
-        var deployment = _.find(result.deployments, function(d) {
-          return (d.name === APIGEE_PROXY_NAME);
-        });
+        let deployment =
+          result.deployments
+          .find(d => (d.name === APIGEE_PROXY_NAME));
+
         try {
           assert.equal(deployment.name, APIGEE_PROXY_NAME);
           assert.equal(deployment.environment, config.environment);
@@ -304,9 +304,10 @@ describe('Remote Tests', function() { //  it
       if (err) {
         done(err);
       } else {
-        var deployment = _.find(result.deployments, function(d) {
-          return (d.name === APIGEE_PROXY_NAME);
-        });
+        let deployment =
+          result.deployments
+          .find(d => (d.name === APIGEE_PROXY_NAME));
+
         try {
           assert.equal(deployment.name, APIGEE_PROXY_NAME);
           assert.equal(deployment.environment, config.environment);
@@ -634,9 +635,10 @@ describe('Node.js Apps', function() { //  it
       if (err) {
         done(err);
       } else {
-        var deployment = _.find(result.deployments, function(d) {
-          return (d.name === NODE_PROXY_NAME);
-        });
+        let deployment =
+          result.deployments
+          .find(d => (d.name === NODE_PROXY_NAME));
+
         try {
           assert.equal(deployment.name, NODE_PROXY_NAME);
           assert.equal(deployment.environment, config.environment);
@@ -738,9 +740,10 @@ describe('Hosted Target', function() { //  it
       if (err) {
         done(err);
       } else {
-        var deployment = _.find(result.deployments, function(d) {
-          return (d.name === HOSTED_TARGETS_PROXY_NAME);
-        });
+        let deployment =
+          result.deployments
+          .find(d => (d.name === HOSTED_TARGETS_PROXY_NAME));
+
         try {
           assert.equal(deployment.name, HOSTED_TARGETS_PROXY_NAME);
           assert.equal(deployment.environment, config.environment);
@@ -1263,7 +1266,7 @@ describe('SharedFlows and FlowHooks', function() { //  it
       }
       if (err) {
         done(err);
-      } else { 
+      } else {
         try {
           result = result.deployments[0];
           assert.equal(result.name, SHARED_FLOW_NAME);
@@ -1390,7 +1393,7 @@ describe('SharedFlows and FlowHooks', function() { //  it
 
 describe('User Roles and Permissions', function() { //  it
   this.timeout(REASONABLE_TIMEOUT);
-  
+
   it('Create Role', function (done) {
     var opts = baseOpts();
     opts.roleName = ROLE_NAME;
@@ -1422,9 +1425,9 @@ describe('User Roles and Permissions', function() { //  it
       if (verbose) {
         console.log('List Roles result = %j', result);
       }
-      if (err) { done(err); } else { 
+      if (err) { done(err); } else {
         assert.equal( result.includes(ROLE_NAME), true );
-        done(); 
+        done();
       }
     });
   });
@@ -1476,9 +1479,9 @@ describe('User Roles and Permissions', function() { //  it
       if (verbose) {
         console.log('Verify User in Role result = %j', result);
       }
-      if (err) { done(err); } else { 
+      if (err) { done(err); } else {
         assert.equal( result.emailId, opts.email);
-        done(); 
+        done();
       }
     });
   });
@@ -1492,9 +1495,9 @@ describe('User Roles and Permissions', function() { //  it
       if (verbose) {
         console.log('List Users in a Role result = %j', result);
       }
-      if (err) { done(err); } else { 
+      if (err) { done(err); } else {
         assert.equal( result.includes(opts.email), true);
-        done(); 
+        done();
       }
     });
   });
