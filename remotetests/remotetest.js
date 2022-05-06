@@ -1151,6 +1151,30 @@ describe('Target Servers', function() {
     });
   });
 
+  it('Update Target Server', done => {
+    let opts = baseOpts();
+    opts.environment = config.environment;
+    opts.targetServerName = TARGET_SERVER_NAME;
+    opts.targetEnabled = false;
+    apigeetool.updateTargetServer(opts, function(err, result) {
+      if (verbose) {
+        console.log('Get Target Server result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(result.name,TARGET_SERVER_NAME);
+          assert.equal(result.port,443);
+          assert.equal(result.isEnabled,false);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
   it('Delete Target Server', done => {
     let opts = baseOpts();
     opts.environment = config.environment;
