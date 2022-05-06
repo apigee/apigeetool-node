@@ -16,6 +16,7 @@ Pull requests are welcomed.
 This tool works with Apigee Edge. It does not work with Apigee X or hybrid. 
 For a similar tool that works with X or hybrid, see [here](https://github.com/srinandan/apigeecli).
 
+## Contents
 
 * [Installation](#installation)
 * [What you need to know about apigeetool](#whatyouneed)
@@ -1059,10 +1060,17 @@ the "-u" and "-p" parameters for username and password or preferably -N for .net
 
 Update a Target Server with the given name.
 
-#### Example
+#### Examples
 Update Target Server named "test-target" with SSL enabled.
 
     apigeetool updateTargetServer -N -o $ORG -e $ENV --targetServerName test-target --targetHost httpbin.org --targetPort 443 --targetSSL true
+
+Disable the Target Server named "test-target" 
+
+    apigeetool updateTargetServer -N -o $ORG -e $ENV --targetServerName test-target --targetEnabled false
+Enable the Target Server named "test-target" 
+
+    apigeetool updateTargetServer -N -o $ORG -e $ENV --targetServerName test-target --targetEnabled true
 
 #### Required parameters
 
@@ -1076,8 +1084,8 @@ the "-u" and "-p" parameters for username and password or preferably -N for .net
 `--organization -o` (required) The organization to target.  
 `--environment -e` (required) The environment to target.  
 `--targetServerName` (required) The name of the Target Server to be created.  
-`--targetHost` (required) The hostname of the target.  
-`--targetPort` (required) The port number of the target.  
+`--targetHost` (optional) The hostname of the target.  
+`--targetPort` (optional) The port number of the target.  
 `--targetSSL` (optional) Whether or not SSL is configured, defaults to none.  
 `--targetEnabled` (optional) Whether or not the Target Server itself is enabled, defaults to true.  
 
