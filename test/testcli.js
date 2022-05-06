@@ -79,7 +79,8 @@ describe('CLI invocation Test', function() {
     done();
   });
 
-  commandsToTest.forEach( c => {
+  commandsToTest
+    .forEach( c => {
     let maxLines = 0;
     it(`invoke cli with ${c}, get help`, function(done) {
 

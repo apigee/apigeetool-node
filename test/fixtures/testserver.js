@@ -2,13 +2,13 @@
  * This server mocks the Apigee Edge API for deployment test purposes.
  */
 
-var express = require('express');
-var connect = require('connect');
-var jsonParser = require('body-parser').json();
+const express = require('express'),
+      connect = require('connect'),
+      jsonParser = require('body-parser').json();
 
-var app = express();
+const app = express();
 
-var PORT = process.env.PORT || 9000;
+const PORT = process.env.PORT || 9000;
 
 app.use(jsonParser);
 
@@ -51,7 +51,7 @@ function getOrganizations(req, resp) {
 }
 
 function getOrganization(req, resp) {
-  var orgName = req.param('orgName');
+  var orgName = req.params.orgName;
   var org = OrgData[orgName];
   if (org) {
     var r = {
@@ -60,78 +60,72 @@ function getOrganization(req, resp) {
     };
     resp.send(r);
   } else {
-    resp.send(404);
+    resp.sendStatus(404);
   }
 }
 
 function getEnvironments(req, resp) {
-  var org = OrgData[req.param('orgName')];
+  var org = OrgData[req.params.orgName];
   if (!org) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
 
   var es = [];
-  for (n in org.environments) {
+  for (var n in org.environments) {
     es.push(n);
   }
   resp.send(es);
 }
 
 function getEnvironment(req, resp) {
-  var org = OrgData[req.param('orgName')];
+  var org = OrgData[req.params.orgName];
   if (!org) {
     resp.send(404);
     return;
   }
-  var envName = req.param('envName');
-  var env = org.environments[envName];
+  let envName = req.params.envName;
+  let env = org.environments[envName];
   if (!env) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
 
-  var ret = {
-    name: envName
-  }
-  resp.send(ret);
+  resp.send({ name: envName });
 }
 
 function getVHosts(req, resp) {
-  var org = OrgData[req.param('orgName')];
+  let org = OrgData[req.params.orgName];
   if (!org) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
-  var envName = req.param('envName');
-  var env = org.environments[envName];
+  let envName = req.params.envName;
+  let env = org.environments[envName];
   if (!env) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
 
-  var vh = [];
-  for (n in env.virtualhosts) {
-    vh.push(n);
-  }
+  let vh = env.virtualhosts.map(vh => vh);
   resp.send(vh);
 }
 
 function getVHost(req, resp) {
-  var org = OrgData[req.param('orgName')];
+  var org = OrgData[req.params.orgName];
   if (!org) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
-  var env = org.environments[req.param('envName')];
+  var env = org.environments[req.params.envName];
   if (!env) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
-  var vhName = req.param('vhName');
+  var vhName = req.params.vhName;
   var vh = env.virtualhosts[vhName];
   if (!vh) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
 
@@ -146,58 +140,55 @@ function getVHost(req, resp) {
 // API deployments are set manually by the tool
 
 function getApis(req, resp) {
-  var org = OrgData[req.param('orgName')];
+  let org = OrgData[req.params.orgName];
   if (!org) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
-  var as = [];
-  for (n in org.apis) {
-    as.push(n);
-  }
+  let as = Object.keys(org.apis);
   resp.send(as);
 }
 
 function addApi(req, resp) {
-  var org = OrgData[req.param('orgName')];
+  var org = OrgData[req.params.orgName];
   if (!org) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
   if (!req.body) {
-    resp.send(400);
+    resp.sendStatus(400);
     return;
   }
 
   var apiName = req.body.name;
   if (!apiName) {
-    resp.send(400);
+    resp.sendStatus(400);
     return;
   }
   if (org.apis[apiName]) {
-    resp.send(409);
+    resp.sendStatus(409);
     return;
   }
 
   var newApi = req.body;
   if (newApi.name !== apiName) {
-    resp.send(400);
+    resp.sendStatus(400);
     return;
   }
   newApi.revisions = {};
   org.apis[apiName] = newApi;
-  resp.send(201, req.body);
+  resp.status(201).send(req.body);
 }
 
 function getApi(req, resp) {
-  var org = OrgData[req.param('orgName')];
+  let org = OrgData[req.params.orgName];
   if (!org) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
-  var api = org.apis[req.param('apiName')];
+  let api = org.apis[req.params.apiName];
   if (!api) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
 
@@ -205,73 +196,70 @@ function getApi(req, resp) {
 }
 
 function deleteApi(req, resp) {
-  var org = OrgData[req.param('orgName')];
+  let org = OrgData[req.params.orgName];
   if (!org) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
-  var apiName = req.param('apiName');
+  let apiName = req.params.apiName;
   var api = org.apis[apiName];
   if (!api) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
   delete org.apis[apiName];
-  resp.send(200, api);
+  resp.status(200).send(api);
 }
 
 function getRevisions(req, resp) {
-  var org = OrgData[req.param('orgName')];
+  var org = OrgData[req.params.orgName];
   if (!org) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
-  var api = org.apis[req.param('apiName')];
+  var api = org.apis[req.params.apiName];
   if (!api) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
 
-  var revs = [];
-  for (n in api.revisions) {
-    revs.push(n);
-  }
+  let revs = api.revisions.map( r => r);
   resp.send(revs);
 }
 
 function getRevision(req, resp) {
-  var org = OrgData[req.param('orgName')];
+  var org = OrgData[req.params.orgName];
   if (!org) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
-  var api = org.apis[req.param('apiName')];
+  var api = org.apis[req.params.apiName];
   if (!api) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
-  var revNum = req.param('revNum');
+  var revNum = req.params.revNum;
   if (revNum in api.revisions) {
     resp.send(api.revisions[revNum]);
   } else {
-    resp.send(404);
+    resp.sendStatus(404);
   }
 }
 
 function addRevision(req, resp) {
-  var org = OrgData[req.param('orgName')];
+  var org = OrgData[req.params.orgName];
   if (!org) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
-  var api = org.apis[req.param('apiName')];
+  var api = org.apis[req.params.apiName];
   if (!api) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
-  var revNum = req.param('revNum');
+  var revNum = req.params.revNum;
   if (api.revisions[revNum]) {
-    resp.send(409);
+    resp.sendStatus(409);
     return;
   }
   api.revisions[revNum] = req.body;
@@ -279,22 +267,22 @@ function addRevision(req, resp) {
 }
 
 function deleteRevision(req, resp) {
-  var org = OrgData[req.param('orgName')];
+  var org = OrgData[req.params.orgName];
   if (!org) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
-  var api = org.apis[req.param('apiName')];
+  var api = org.apis[req.params.apiName];
   if (!api) {
-    resp.send(404);
+    resp.sendStatus(404);
     return;
   }
-  var revNum = req.param('revNum');
+  var revNum = req.params.revNum;
   var rev = api.revisions[revNum];
   if (rev) {
     delete api.revisions[revNum];
     resp.send(rev);
   } else {
-    resp.send(404);
+    resp.sendStatus(404);
   }
 }

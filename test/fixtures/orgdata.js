@@ -1,6 +1,7 @@
 module.exports = {
-  test: {
-    apis: {},
+  org1: {
+    apis: {
+    },
     environments: {
       test: {
         virtualhosts: {

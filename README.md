@@ -1,8 +1,21 @@
 # apigeetool
 
-This is a tool for deploying API proxies and Node.js applications to the Apigee Edge platform. The tool also lets you list and undeploy API proxies.
+This is a tool for administering Apigee Edge things, including
+- deploying and undeploying API proxies or sharedflows
+- listing, creating, updating, or deleting products, caches, KVMs, developers, and apps
+- and other stuff
 
-**Note:** This is not an officially supported Google product.
+## This is not an official Google product
+
+This tool and the library included here is not an official Google product.
+Support is available on a best-effort basis via github or [the community site](https://www.googlecloudcommunity.com/gc/Apigee/bd-p/cloud-apigee).
+Pull requests are welcomed. 
+
+## This tool does not support Apigee X or hybrid
+
+This tool works with Apigee Edge. It does not work with Apigee X or hybrid. 
+For a similar tool that works with X or hybrid, see [here](https://github.com/srinandan/apigeecli).
+
 
 * [Installation](#installation)
 * [What you need to know about apigeetool](#whatyouneed)
@@ -143,8 +156,10 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [getRolePermissions](#getRolePermissions)
 * [getTargetServer](#getTargetServer)
 * [listdeployments](#listdeployments)
+* [listProxies](#listProxies)
 * [listRoles](#listRoles)
 * [listRoleUsers](#listRoleUsers)
+* [listSharedflows](#listSharedflows)
 * [listSharedflowDeployments](#listSharedflowDeployments)
 * [listTargetServers](#listTargetServers)
 * [removeUserRole](#removeUserRole)
@@ -627,7 +642,15 @@ for organization name, all of which are required.
 `--revision  -r`
 (optional) Specify the revision number of the sharedflow to undeploy.
 
-## <a name="listSharedflowDeployments"></a>listSharedflowDeployments
+### <a name="listSharedflows"></a>listSharedflows
+
+List shared flows
+
+#### Example
+
+    apigeetool listSharedflows -t $TOKEN -o $ORG
+
+### <a name="listSharedflowDeployments"></a>listSharedflowDeployments
 
 Lists the sharedflows deployed on Apigee Edge for the specified organization. Lets you filter the result by API proxy name or environment.
 
@@ -635,7 +658,7 @@ Lists the sharedflows deployed on Apigee Edge for the specified organization. Le
 
 List all Sharedflows in an organization:
 
-    $ apigeetool listSharedflowDeployments -u sdoe@example.com -o sdoe -e test` #Won't work due to missing API
+    $ apigeetool listSharedflowDeployments -u sdoe@example.com -o sdoe -e test
 
 List Sharedflows named "example-sf":
 
@@ -1270,12 +1293,19 @@ the "-u" and "-p" parameters for username and password or preferably -N for .net
 `--organization -o` (required) The organization to target.  
 `--roleName` (required) The name for the role.  
 
+### <a name="listProxies"></a>listProxies
+
+List proxies
+
+#### Example
+
+    apigeetool listProxies -t $TOKEN -o $ORG
+
 ### <a name="listRoles"></a>listRoles
 
 List roles.
 
 #### Example
-List roles.
 
     apigeetool listRoles -N -o $ORG
 
@@ -1571,9 +1601,9 @@ Create App Key in Edge
 
     sdk.createAppKey(opts)
     .then(function(result){
-    //create key/secret success
+      //create key/secret success
     },function(err){
-    //create key/secret failed
+      //create key/secret failed
     }) ;
 
 ## <a name="createcache"></a>Create Cache
@@ -1602,13 +1632,15 @@ Delete Cache in Edge
         //delete create failed
       }) ;
 
-# <a name="original"></a>Original Tool
+# <a name="history"></a>Some History
 
-This module replaces the original "apigeetool," which was written in Python.
-It is also called "apigeetool" and resides here:
+This module replaces the original "apigeetool" circa 2013, which was written in Python.
+It is also called "apigeetool" and resides [here](https://github.com/apigee/api-platform-tools). 
 
-https://github.com/apigee/api-platform-tools
+# <a name="remotetests"></a>Running Remote Tests
 
-# <a name="contrib"></a>Contribution
+To run tests that actually tickle and Apigee Edge organization, provide your Edge creds, org, env details in `remotetest/testconfig.js` similar to 'remotetest/testconfig-sample.js'
 
-To run remotetests, provide your edge creds, org, env details in `remotetest/testconfig.js` similar to 'remotetest/testconfig-sample.js'
+# <a name="contrib"></a>Contributing
+
+See [Contributing](./CONTRIBUTING.md)

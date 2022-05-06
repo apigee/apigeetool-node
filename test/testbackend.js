@@ -1,29 +1,27 @@
 /*
- * Test the mock back end that we have implemented in testserver.js
+ * Test the mock backend that we have implemented in testserver.js
  */
 
-var assert = require('assert');
-var childProcess = require('child_process');
-var path = require('path');
+const assert = require('assert'),
+      childProcess = require('child_process'),
+      path = require('path'),
+      requestModule = require('request'),
+      request = requestModule.defaults({
+        json: true
+      }),
+      BASE = 'http://localhost:9000/v1';
 
-var requestModule = require('request');
 
-var BASE = 'http://localhost:9000/v1';
-
-var request = requestModule.defaults({
-  json: true
-});
-
-describe('Test mock back end', function() {
+describe('Test mock backend', function() {
   var server;
 
-  before(function(done) {
+  beforeAll(function(done) {
     server = childProcess.fork(path.join(__dirname, 'fixtures/testserver.js'));
     setTimeout(function() {
       done();
     }, 1000);
   });
-  after(function() {
+  afterAll(function() {
     server.kill();
   });
 
@@ -35,9 +33,9 @@ describe('Test mock back end', function() {
   });
 
   it('Get good org', function(done) {
-    request.get(BASE + '/o/test', function(err, resp, body) {
+    request.get(BASE + '/o/org1', function(err, resp, body) {
       assert(!err);
-      assert.equal(body.name, 'test');
+      assert.equal(body.name, 'org1');
       done();
     });
   });
@@ -50,21 +48,21 @@ describe('Test mock back end', function() {
   });
 
   it('Get test environment', function(done) {
-    request.get(BASE + '/o/test/e/test', function(err, resp, body) {
+    request.get(BASE + '/o/org1/e/test', function(err, resp, body) {
       assert(!err);
       assert.equal(body.name, 'test');
       done();
     });
   });
   it('Get prod environment', function(done) {
-    request.get(BASE + '/o/test/e/prod', function(err, resp, body) {
+    request.get(BASE + '/o/org1/e/prod', function(err, resp, body) {
       assert(!err);
       assert.equal(body.name, 'prod');
       done();
     });
   });
   it('Get bad environment', function(done) {
-    request.get(BASE + '/o/test/e/BAD', function(err, resp, body) {
+    request.get(BASE + '/o/org1/e/BAD', function(err, resp, body) {
       assert(!err);
       assert.equal(resp.statusCode, 404);
       done();
@@ -72,7 +70,7 @@ describe('Test mock back end', function() {
   });
 
   it('Get default virtual host', function(done) {
-    request.get(BASE + '/o/test/e/test/virtualhosts/default', function(err, resp, body) {
+    request.get(BASE + '/o/org1/e/test/virtualhosts/default', function(err, resp, body) {
       assert(!err);
       assert.equal(body.name, 'default');
       assert.equal(body.port, 80);
@@ -80,7 +78,7 @@ describe('Test mock back end', function() {
     });
   });
   it('Get secure virtual host', function(done) {
-    request.get(BASE + '/o/test/e/test/virtualhosts/secure', function(err, resp, body) {
+    request.get(BASE + '/o/org1/e/test/virtualhosts/secure', function(err, resp, body) {
       assert(!err);
       assert.equal(body.name, 'secure');
       assert.equal(body.port, 443);
@@ -88,7 +86,7 @@ describe('Test mock back end', function() {
     });
   });
   it('Get bad virtual host', function(done) {
-    request.get(BASE + '/o/test/e/test/virtualhosts/BAD', function(err, resp, body) {
+    request.get(BASE + '/o/org1/e/test/virtualhosts/BAD', function(err, resp, body) {
       assert(!err);
       assert.equal(resp.statusCode, 404);
       done();
@@ -96,7 +94,7 @@ describe('Test mock back end', function() {
   });
 
   it('Get no APIs', function(done) {
-    request.get(BASE + '/o/test/apis', function(err, resp, body) {
+    request.get(BASE + '/o/org1/apis', function(err, resp, body) {
       assert(!err);
       assert.equal(resp.statusCode, 200);
       assert.equal(body.length, 0);
@@ -105,14 +103,14 @@ describe('Test mock back end', function() {
   });
   it('Add API', function(done) {
     var api = { name: 'api1'};
-    request.post(BASE + '/o/test/apis', { body: api }, function(err, resp, body) {
+    request.post(BASE + '/o/org1/apis', { body: api }, function(err, resp, body) {
       assert(!err);
       assert.equal(resp.statusCode, 201);
       done();
     });
   });
   it('Check API', function(done) {
-    request.get(BASE + '/o/test/apis/api1', function(err, resp, body) {
+    request.get(BASE + '/o/org1/apis/api1', function(err, resp, body) {
       assert(!err);
       assert.equal(resp.statusCode, 200);
       done();

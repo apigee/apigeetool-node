@@ -1,7 +1,6 @@
-var assert = require('assert');
-var fs = require('fs');
-
-var fsutils = require('../lib/fsutils');
+const assert = require('assert'),
+      fs = require('fs'),
+      fsutils = require('../lib/fsutils');
 
 describe('Test File Stuff', function() {
   it('Test List Files', function() {

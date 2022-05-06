@@ -14,10 +14,10 @@ app.use(express.json());
 
 // Initialize Usergrid
 var ug = new usergrid.client({
-    'orgName': config.organization,
-    'appName': config.application,
-    'clientId': config.clientId,
-    'clientSecret': config.clientSecret,
+    orgName: config.organization,
+    appName: config.application,
+    clientId: config.clientId,
+    clientSecret: config.clientSecret,
     logging:    config.logging
 });
 
@@ -33,12 +33,12 @@ var volosConfig = {
 
 var oauth = volosOauth.create(volosConfig);
 
-app.post('/accesstoken', 
-	 oauth.expressMiddleware().handleAccessToken());
+app.post('/accesstoken',
+         oauth.expressMiddleware().handleAccessToken());
 
 // The API starts here
 
-// GET / 
+// GET /
 
 var rootTemplate = {
   'employees': { 'href': './employees' }
@@ -50,7 +50,7 @@ app.get('/', function(req, resp) {
 
 // GET /employees
 
-app.get('/employees', 
+app.get('/employees',
   oauth.expressMiddleware().authenticate('READ'),
   function(req, res) {
     if (loggedIn === null) {
@@ -66,7 +66,7 @@ function getEmployees(req, res) {
           res.jsonp(500, {'error': JSON.stringify(err) });
           return;
         }
-        
+
         var emps = [];
         while (employees.hasNextEntity()) {
           var emp = employees.getNextEntity().get();
@@ -82,14 +82,14 @@ function getEmployees(req, res) {
 
 // POST /employees
 
-app.post('/employees', 
+app.post('/employees',
   oauth.expressMiddleware().authenticate('WRITE'),
   function(req, res) {
     if (!req.is('json')) {
       res.jsonp(400, {error: 'Bad request'});
       return;
     }
-    
+
     var b = req.body;
     var e = {
       'id': b.id,
@@ -97,13 +97,13 @@ app.post('/employees',
       'lastName': b.lastName,
       'phone': b.phone
     };
-    
+
     if ((e.id === undefined) || (e.firstName === undefined) ||
         (e.lastName === undefined) || (e.phone === undefined)) {
       res.jsonp(400, {error: 'Bad request' });
       return;
     }
-    
+
     if (loggedIn === null) {
         logIn(req, res, function() {
             createEmployee(e, req, res);
@@ -116,7 +116,7 @@ app.post('/employees',
 function createEmployee(e, req, res) {
     var opts = {
         type: 'employees',
-        name: e.id 
+        name: e.id
     };
     loggedIn.createEntity(opts, function(err, o) {
         if (err) {
@@ -144,7 +144,7 @@ function logIn(req, res, next) {
           res.jsonp(500, {error: err});
           return;
         }
-        
+
         loggedIn = new usergrid.client({
             'orgName' :  config.organization,
             'appName' :  config.application,
@@ -152,10 +152,10 @@ function logIn(req, res, next) {
             'token':     ug.token,
             logging:     config.logging
         });
-        
+
         // Go on to do what we were trying to do in the first place
         setTimeout(expireToken, config.tokenExpiration);
-        
+
         next(req, res);
     });
 }
@@ -171,9 +171,9 @@ function expireToken() {
 
 function checkPassword(username, password, cb) {
     if ((username === 'test') && (password === 'test')) {
-	cb(undefined, true);
+        cb(undefined, true);
     } else {
-	cb(undefined, false);
+        cb(undefined, false);
     }
 }
 
@@ -181,5 +181,3 @@ function checkPassword(username, password, cb) {
 
 app.listen(PORT);
 console.log('Listening on port %d', PORT);
-
-

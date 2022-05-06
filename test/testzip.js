@@ -33,10 +33,10 @@ describe('ZIP Utilities Test', function() {
     ziputils.enumerateDirectory('./test/fixtures/employeesnode', 'node', false, function(err, files) {
       if (err) { return done(err); }
 
-      console.log('%j', files);
+      //console.log('%j', files);
 
       // Should contain README.md
-      var readme = find(files, function(f) {
+      let readme = find(files, function(f) {
         return (f.fileName === 'test/fixtures/employeesnode/README.md');
       });
       assert(readme);
@@ -46,7 +46,7 @@ describe('ZIP Utilities Test', function() {
       assert(!readme.directory);
 
       // Should not contain an entry for the toplevel "node_modules" directory
-      var topModules = find(files, function(f) {
+      let topModules = find(files, function(f) {
         return (f.fileName === 'test/fixtures/employeesnode/node_modules');
       });
       assert(!topModules);
