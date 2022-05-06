@@ -1,5 +1,6 @@
 const apigeetool = require('..'),
       assert = require('assert'),
+      async = require('async'),
       path = require('path'),
       fs = require('fs'),
       request = require('request'),
@@ -959,7 +960,7 @@ describe('Caches', function() {
   it('Create a Cache Resource', done => {
     let opts = baseOpts();
     opts.cache = CACHE1_NAME;
-    apigeetool.createcache(opts,function(err,result) {
+    apigeetool.createCache(opts,function(err,result) {
       if (verbose) {
         console.log('Create Cache result = %j', result);
       }
@@ -972,10 +973,40 @@ describe('Caches', function() {
     });
   });
 
+  it('Get Cache Resource', (done) => {
+    let opts = baseOpts();
+    opts.cache = CACHE1_NAME;
+    apigeetool.getCache(opts, (err,result) => {
+      if (verbose) {
+        console.log('Get Cache result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        done();
+      }
+    });
+  });
+
+  it('Clear Cache', (done) => {
+    let opts = baseOpts();
+    opts.cache = CACHE1_NAME;
+    apigeetool.clearCache(opts, (err,result) => {
+      if (verbose) {
+        console.log('Clear Cache result = %j', result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        done();
+      }
+    });
+  });
+
   it('Delete Cache Resource', (done) => {
     let opts = baseOpts();
     opts.cache = CACHE1_NAME;
-    apigeetool.deletecache(opts, (err,result) => {
+    apigeetool.deleteCache(opts, (err,result) => {
       if (verbose) {
         console.log('Delete Cache result = %j', result);
       }
@@ -992,7 +1023,7 @@ describe('Caches', function() {
     opts.cache = CACHE2_NAME;
     opts.description = 'sample cache';
     opts.cacheExpiryByDate = '12-31-2025';
-    apigeetool.createcache(opts,function(err,result) {
+    apigeetool.createCache(opts,function(err,result) {
       if (verbose) {
         console.log('Create Cache result = %j', result);
       }
@@ -1000,7 +1031,7 @@ describe('Caches', function() {
         done(err);
       }
       else {
-        apigeetool.deletecache(opts,function(delete_err,delete_result) {
+        apigeetool.deleteCache(opts,function(delete_err,delete_result) {
           if (verbose) {
             console.log('Delete Cache result = %j', delete_result);
           }
@@ -1020,7 +1051,7 @@ describe('Caches', function() {
     opts.cache = CACHE2_NAME;
     opts.description = 'description two';
     opts.cacheExpiryInSecs = '5000';
-    apigeetool.createcache(opts, function(err,result) {
+    apigeetool.createCache(opts, function(err,result) {
       if (verbose) {
         console.log('Create Cache result = %j', result);
       }
@@ -1028,7 +1059,7 @@ describe('Caches', function() {
         done(err);
       }
       else {
-        apigeetool.deletecache(opts,function(delete_err,delete_result) {
+        apigeetool.deleteCache(opts,function(delete_err,delete_result) {
           if (verbose) {
             console.log('Delete Cache result = %j', delete_result);
           }
@@ -1049,28 +1080,63 @@ describe('Caches', function() {
     opts.description = 'more description here';
     opts.cacheExpiryByDate = '31-12-2025';
     opts.cacheExpiryInSecs = '5000';
-    apigeetool.createcache(opts, function(err,result) {
+    apigeetool.createCache(opts, function(e,result) {
       if (verbose) {
         console.log('Create Cache result = %j', result);
       }
+      done(e);
+      // if (err) {
+      //   done(err);
+      // }
+      // else {
+      //   apigeetool.deleteCache(opts,function(delete_err,delete_result) {
+      //     if (verbose) {
+      //       console.log('Delete Cache result = %j', delete_result);
+      //     }
+      //     if (delete_err) {
+      //       done(delete_err);
+      //     }
+      //     else {
+      //       done();
+      //     }
+      //   });
+      // }
+    });
+  });
+
+  it('List Cache Resources', (done) => {
+    let opts = baseOpts();
+    apigeetool.listCaches(opts, (err,result) => {
+      if (verbose) {
+        console.log('List Cache result = %j', result);
+      }
       if (err) {
         done(err);
-      }
-      else {
-        apigeetool.deletecache(opts,function(delete_err,delete_result) {
-          if (verbose) {
-            console.log('Delete Cache result = %j', delete_result);
-          }
-          if (delete_err) {
-            done(delete_err);
-          }
-          else {
+      } else {
+        assert(result.length);
+        // get just the caches that look like test caches.
+        let testcaches = result.filter(name =>
+                                       name.startsWith('apigeetool-test-cache'));
+        assert(testcaches.length);
+        async.series(
+          testcaches
+            .map(name => {
+              let opts = baseOpts();
+              opts.cache = name;
+              return function(done) { apigeetool.deleteCache(opts, done);};
+            }),
+          function(e, results) {
+            if (e) { return done(e);}
+            if (verbose) {
+              console.log('delete Cache result = %j', result);
+            }
             done();
-          }
-        });
+          });
       }
     });
   });
+
+
 }); // end cache tests
 
 
