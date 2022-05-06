@@ -3,3 +3,12 @@ remotetests/testconfig.js
 testdir.zip
 test.zip
 *.tgz
+
+**/Icon*
+**/Icon
+*/Icon
+Icon
+
+**/*.*~
+**/#*.*#
+

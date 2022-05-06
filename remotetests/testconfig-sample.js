@@ -16,11 +16,12 @@ module.exports = {
   // netrc: true
   debug: false,
   verbose: false,
-  
-  // Developer must exist or be added to org before tests
+
+  // This USER must exist in the Apigee org before running tests. To test roles etc.
   useremail: 'someone+tester@google.com',
+  // not sure we need the password.
   userpassword: 'Supersecret123'
-  
+
   // Uncomment for the management API URI of your local Apigee environment
   // Leave commented to test using the Apigee cloud.
   //baseuri: 'http://mgmt:8080'

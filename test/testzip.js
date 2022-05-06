@@ -1,26 +1,33 @@
-var assert = require('assert');
-var fs = require('fs');
-var _ = require('underscore');
+const assert = require('assert'),
+      fs = require('fs'),
+      find = require('lodash.find'),
+      ziputils = require('../lib/ziputils');
 
-var ziputils = require('../lib/ziputils');
+const LONG_TIMEOUT = 8000;
 
 describe('ZIP Utilities Test', function() {
-  it('Create one file archive', function() {
+  it('Create one file archive', function(done) {
     var data = 'Hello, World!';
-    var buf = ziputils.makeOneFileZip('./', 'root', data);
+
     assert(data.length > 0);
-    fs.writeFileSync('./test.zip', buf);
+
+    ziputils.makeOneFileZip('./', 'root', data)
+      .then( buf => {
+        let s = Object.prototype.toString.call(buf);
+        //console.log(`typeof buffer: ${s}\n`);
+        fs.writeFileSync('./test.zip', buf);
+        done();
+      });
   });
 
   it('ZIP whole directory', function(done) {
-    this.timeout(60000);
     ziputils.zipDirectory('./test/fixtures', function(err, result) {
       assert(!err);
       assert(result.length > 0);
       fs.writeFileSync('./testdir.zip', result);
       done();
     });
-  });
+  }, LONG_TIMEOUT);
 
   it('Enumerate node file list', function(done) {
     ziputils.enumerateDirectory('./test/fixtures/employeesnode', 'node', false, function(err, files) {
@@ -29,7 +36,7 @@ describe('ZIP Utilities Test', function() {
       //console.log('%j', files);
 
       // Should contain README.md
-      var readme = _.find(files, function(f) {
+      let readme = find(files, function(f) {
         return (f.fileName === 'test/fixtures/employeesnode/README.md');
       });
       assert(readme);
@@ -38,14 +45,14 @@ describe('ZIP Utilities Test', function() {
       assert.equal(readme.resourceType, 'node');
       assert(!readme.directory);
 
-      // Should not contain "node_modules.zip"
-      var topModules = _.find(files, function(f) {
+      // Should not contain an entry for the toplevel "node_modules" directory
+      let topModules = find(files, function(f) {
         return (f.fileName === 'test/fixtures/employeesnode/node_modules');
       });
       assert(!topModules);
 
-      // Should contain "node_modules_express"
-      var express = _.find(files, function(f) {
+      // Should contain "node_modules/express"
+      var express = find(files, function(f) {
         return (f.fileName === 'test/fixtures/employeesnode/node_modules/express');
       });
       assert(express);
@@ -60,6 +67,12 @@ describe('ZIP Utilities Test', function() {
   it('Enumerate regular file list', function() {
     var files =
       ziputils.enumerateResourceDirectory('./test/fixtures/employees/apiproxy/resources');
-    console.log('%j', files);
+
+    assert.equal(files.length, 7);
+    assert(files.find( f => f.fileName.endsWith("hello.js") && f.resourceType == "jsc"));
+    assert(files.find( f => f.fileName.endsWith("config.js")));
+    assert(files.find( f => f.fileName.endsWith("package.json")));
+    assert(files.find( f => f.fileName.endsWith("node_modules.zip")));
+    //console.log('%j', files);
   });
 });
