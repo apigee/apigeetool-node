@@ -9,6 +9,9 @@ test.zip
 */Icon
 Icon
 
+*~
+*--DO-NOT-COMMIT.txt
+**/.tern-port
 **/*.*~
 **/#*.*#
 
