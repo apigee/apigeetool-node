@@ -1203,6 +1203,7 @@ describe('KVM', function() {
 
   let kvm_entry_name = 'test-' + faker.random.alphaNumeric(8),
       kvm_entry_value = faker.random.alphaNumeric(68),
+      updated_entry_value = "NEW VALUE " + faker.random.alphaNumeric(32),
       KVM1_NAME = nameGen.kvm1(marker),
       KVM2_NAME = nameGen.kvm2(marker);
 
@@ -1273,7 +1274,7 @@ describe('KVM', function() {
         if (verbose) {
           console.log('Add Entry to KVM result = %j', res);
         }
-        done()
+        done();
       })
       .catch(e => {
         console.log(e);
@@ -1294,6 +1295,36 @@ describe('KVM', function() {
         }
         assert.equal(body.value, kvm_entry_value);
         done();
+      })
+      .catch(e => {
+        console.log(e);
+        done(e);
+      });
+
+  });
+
+  it('Update KVM Entry', function(done) {
+    let opts = baseOpts();
+    opts.mapName = KVM1_NAME;
+    opts.environment = config.environment;
+    opts.entryName = kvm_entry_name;
+    opts.entryValue = updated_entry_value;
+    let apigee = apigeetool.getPromiseSDK();
+    apigee.updateKVMentry(opts)
+      .then(body => {
+        if (verbose) {
+          console.log('Update KVM Entry result = %j', body);
+        }
+        assert.equal(updated_entry_value, body.value);
+        delete opts.entryValue;
+        return apigee.getKVMentry(opts)
+          .then(body => {
+            if (verbose) {
+              console.log('Get KVM Entry result = %j', body);
+            }
+            assert.equal(updated_entry_value, body.value);
+            done();
+          });
       })
       .catch(e => {
         console.log(e);
@@ -1332,7 +1363,7 @@ describe('KVM', function() {
         if (verbose) {
           console.log('Get KVM Map result = %j', body);
         }
-        assert.equal(body.value, kvm_entry_value);
+        assert.equal(updated_entry_value, body.value);
         done();
       })
       .catch(e => {
