@@ -9,11 +9,11 @@ This is a tool for administering Apigee Edge things, including
 
 This tool and the library included here is not an official Google product.
 Support is available on a best-effort basis via github or [the community site](https://www.googlecloudcommunity.com/gc/Apigee/bd-p/cloud-apigee).
-Pull requests are welcomed. 
+Pull requests are welcomed.
 
 ## This tool does not support Apigee X or hybrid
 
-This tool works with Apigee Edge. It does not work with Apigee X or hybrid. 
+This tool works with Apigee Edge. It does not work with Apigee X or hybrid.
 For a similar tool that works with X or hybrid, see [here](https://github.com/srinandan/apigeecli).
 
 ## Contents
@@ -31,7 +31,7 @@ For a similar tool that works with X or hybrid, see [here](https://github.com/sr
 
 `npm install -g apigeetool`
 
-*NOTE*: The `-g` option places the apigeetool command in your PATH. On "\*nix"-based machines, `sudo` may be required with the `-g` option. If you do not use `-g`, then you need to add the apigeetool command to your PATH manually. Typically, the `-g` option places modules in: `/usr/local/lib/node_modules/apigee-127` on *nix-based machines.
+*NOTE*: The `-g` option places the apigeetool command in your PATH. On "\*nix"-based machines, `sudo` may be required with the `-g` option. If you do not use `-g`, then you need to add the apigeetool command to your PATH manually. Typically, the `-g` option places modules in: `/usr/local/lib/node_modules/apigeetool-node` on *nix-based machines.
 
 # <a name="whatyouneed"></a>What you need to know about apigeetool
 
@@ -39,11 +39,9 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 
 * deploying an API proxy or shared flow to Edge,
 * undeploying an API proxy or shared flow from Edge,
-* deploying Node.js apps to Edge,
 * listing deployed API proxies or shared flows on Edge,
 * retrieving deployed proxies or shared flows from Edge,
 * deleting proxy or shared flow definitions from Edge, and
-* retreiving log messages from Node.js apps deployed to Edge.
 * create or delete an API product in Edge
 * create or delete a Developer in Edge
 * create or delete a Developer Application in Edge
@@ -57,7 +55,7 @@ You must have an account on Apigee Edge to perform any `apigeetool` functions. T
 * assign, remove, verify Users for a Role
 * list all Users in a Role
 
-You need to be familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, and environments.
+Obviously, this tool is only useful if you are familiar with basic concepts and features of Apigee Edge such as API proxies, organizations, environments, products, and so on.
 
 For more information, refer to the [Apigee Edge docs](http://apigee.com/docs/).
 
