@@ -5,7 +5,7 @@
 const assert = require('assert'),
       childProcess = require('child_process'),
       path = require('path'),
-      requestModule = require('request'),
+      requestModule = require('postman-request'),
       request = requestModule.defaults({
         json: true
       }),
