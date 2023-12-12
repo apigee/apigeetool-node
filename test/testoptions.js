@@ -4,7 +4,7 @@ var util = require('util');
 var options = require('../lib/options');
 var defaults = require('../lib/defaults');
 var fs = require('fs');
-var request = require('request');
+var request = require('postman-request');
 
 describe('Options parsing test', function() {
   beforeAll(function () {
