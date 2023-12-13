@@ -5,3 +5,8 @@ test.zip
 testdir.zip
 .idea
 *.iml
+notes--DO-NOT-COMMIT.txt
+
+**/*.*~
+**/#*.*#
+**/node_modules/*
