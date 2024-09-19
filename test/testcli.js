@@ -56,6 +56,13 @@ const commandsToTest = [
   "listRoleUsers"
 ];
 
+const nonExistentCommandsToTest = [
+  "doSpecialThing",
+  "doSomethingElse",
+  "getKVM",
+  "createKVM"
+];
+
 describe("CLI invocation Test", function () {
   it("invoke cli with invalid arg", function (done) {
     let child = childProcess.spawnSync(
@@ -96,13 +103,34 @@ describe("CLI invocation Test", function () {
 
       assert(!child.error, `error ${c}`);
       assert(child.stdout, `stdout ${c}`);
-      let lines = child.stdout.trim().split("\n");
+      const lines = child.stdout.trim().split("\n");
       assert(lines);
       maxLines = Math.max(maxLines, lines.length);
       assert(lines.length > 16, `lines ${c}`);
       assert.equal(lines[0], "Usage:", `lines[0] ${c}`);
       assert(child.stderr, `!stderr ${c}`);
       assert(child.stdout.split("\n").length > 3);
+      done();
+    });
+  });
+
+  nonExistentCommandsToTest.forEach((c) => {
+    let maxLines = 0;
+    it(`invoke cli with non-existent command '${c}', get help`, function (done) {
+      let child = childProcess.spawnSync(
+        "node",
+        [path.join(__dirname, "../lib/cli.js"), c],
+        { encoding: "utf8" }
+      );
+
+      assert(!child.error, `error ${c}`);
+      assert(!child.stdout, `stdout ${c}`);
+      assert(child.stderr, `stderr ${c}`);
+      const lines = child.stderr.trim().split("\n");
+      assert(lines);
+      assert(lines[0].startsWith(`Invalid command "${c}"`));
+      // just for warm fuzzies
+      console.log(lines.slice(0, 5).join("\n") + "\n...");
       done();
     });
   });
