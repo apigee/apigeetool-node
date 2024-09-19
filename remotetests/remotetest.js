@@ -1,96 +1,96 @@
-const apigeetool = require('..'),
-      assert = require('assert'),
-      async = require('async'),
-      path = require('path'),
-      fs = require('fs'),
-      request = require('postman-request'),
-      util = require('util'),
-      stream = require('stream'),
-      faker = require('faker');
+const apigeetool = require(".."),
+  assert = require("assert"),
+  async = require("async"),
+  path = require("path"),
+  fs = require("fs"),
+  request = require("postman-request"),
+  util = require("util"),
+  stream = require("stream"),
+  faker = require("faker");
 
-const config = require('./testconfig');
+const config = require("./testconfig");
 
 const REASONABLE_TIMEOUT = 25000;
 
 const nameGen = {
-        proxy: (s) => `apigeetool-test-proxy-${s}`,
-        nodeProxy: (s) => `apigeetool-test-nodeproxy-${s}`,
-        htProxy: (s) => `apigeetool-test-htproxy-${s}`,
-        product:(s) =>`apigeetool-test-product-${s}`,
-        privateProduct: (s) => `apigeetool-test-privproduct-${s}`,
-        devEmail : (s) => `apigeetooltest+${s}@apigee.com`,
-        app: (s) => `apigeetool-test-app-${s}`,
-        basePath: (s) => `/${s}`,
-        cache1: (s) => `apigeetool-test-cache1-${s}`,
-        cache2: (s) => `apigeetool-test-cache2-${s}`,
-        targetServer: (s) => `apigeetool-test-server-${s}`,
-        kvm1: (s) => `apigeetool-test-kvm1-${s}`,
-        kvm2: (s) => `apigeetool-test-kvm2-${s}`,
-        sf: (s) => `apigeetool-test-sf-${s}`,
-        role: (s) => `apigeetool-test-role-${s}`
-      };
+  proxy: (s) => `apigeetool-test-proxy-${s}`,
+  nodeProxy: (s) => `apigeetool-test-nodeproxy-${s}`,
+  htProxy: (s) => `apigeetool-test-htproxy-${s}`,
+  product: (s) => `apigeetool-test-product-${s}`,
+  privateProduct: (s) => `apigeetool-test-privproduct-${s}`,
+  devEmail: (s) => `apigeetooltest+${s}@apigee.com`,
+  app: (s) => `apigeetool-test-app-${s}`,
+  basePath: (s) => `/${s}`,
+  cache1: (s) => `apigeetool-test-cache1-${s}`,
+  cache2: (s) => `apigeetool-test-cache2-${s}`,
+  targetServer: (s) => `apigeetool-test-server-${s}`,
+  kvm1: (s) => `apigeetool-test-kvm1-${s}`,
+  kvm2: (s) => `apigeetool-test-kvm2-${s}`,
+  sf: (s) => `apigeetool-test-sf-${s}`,
+  role: (s) => `apigeetool-test-role-${s}`
+};
 
 const marker = faker.random.alphaNumeric(12);
 
 const verbose = config.verbose || false;
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Run all using: mocha remotetests
 // Run all "describe" tests using: mocha remotetests --grep "SharedFlows and FlowHooks"
 // Run one "it" test using: mocha remotetests --grep "fetchSharedFlow"
 // To see tests use 'grep "  it" remotetest.j'
 
-describe('Product/Dev/App Tests', function() {
+describe("Product/Dev/App Tests", function () {
   this.timeout(REASONABLE_TIMEOUT);
   this.slow(1500);
-  const PROXY_NAME = nameGen.proxy(marker) + '-1',
-        PRODUCT_NAME = nameGen.product(marker),
-        PRIVATE_PRODUCT_NAME = nameGen.privateProduct(marker),
-        DEVELOPER_EMAIL = nameGen.devEmail(marker),
-        APP_NAME = nameGen.app(marker);
+  const PROXY_NAME = nameGen.proxy(marker) + "-1",
+    PRODUCT_NAME = nameGen.product(marker),
+    PRIVATE_PRODUCT_NAME = nameGen.privateProduct(marker),
+    DEVELOPER_EMAIL = nameGen.devEmail(marker),
+    APP_NAME = nameGen.app(marker);
 
   let deployedRevision;
 
-  it('Deploy Apigee Proxy', function(done) {
+  it("Deploy Apigee Proxy", function (done) {
     let opts = baseOpts();
     opts.api = PROXY_NAME;
-    opts.directory = path.join(__dirname, '../test/fixtures/passthrough1');
+    opts.directory = path.join(__dirname, "../test/fixtures/passthrough1");
 
-    apigeetool.getPromiseSDK()
+    apigeetool
+      .getPromiseSDK()
       .deployProxy(opts)
-      .then(result => {
-
-        if(Array.isArray(result)) {
+      .then((result) => {
+        if (Array.isArray(result)) {
           result = result[0];
         }
         assert.equal(result.name, PROXY_NAME);
         assert.equal(result.environment, config.environment);
-        assert.equal(result.state, 'deployed');
+        assert.equal(result.state, "deployed");
         assert.equal(result.uris.length, 1);
-        assert(typeof result.revision === 'number');
+        assert(typeof result.revision === "number");
         deployedRevision = result.revision;
         done();
       })
-      .catch (e => done(e));
+      .catch((e) => done(e));
   });
 
-  it('Create Product', function(done) {
-    let opts = baseOpts() ;
-    let displayName = 'custom name';
+  it("Create Product", function (done) {
+    let opts = baseOpts();
+    let displayName = "custom name";
     opts.productName = PRODUCT_NAME;
-    opts.productDesc = 'abc123';
+    opts.productDesc = "abc123";
     opts.displayName = displayName;
     opts.proxies = PROXY_NAME;
-    opts.quota = '1';
-    opts.quotaInterval = '1';
-    opts.quotaTimeUnit = 'minute';
+    opts.quota = "1";
+    opts.quotaInterval = "1";
+    opts.quotaTimeUnit = "minute";
     opts.approvalType = "auto";
 
-    apigeetool.getPromiseSDK()
+    apigeetool
+      .getPromiseSDK()
       .createProduct(opts)
-      .then(result => {
+      .then((result) => {
         try {
           assert.equal(result.displayName, displayName);
           done();
@@ -98,111 +98,118 @@ describe('Product/Dev/App Tests', function() {
           done(e);
         }
       })
-      .catch(e => done(e));
+      .catch((e) => done(e));
   });
 
-  it('Create Private Product', done => {
-    let opts = baseOpts() ;
-    var displayName = 'custom name';
+  it("Create Private Product", (done) => {
+    let opts = baseOpts();
+    var displayName = "custom name";
     opts.productName = PRIVATE_PRODUCT_NAME;
-    opts.productDesc = 'abc123';
+    opts.productDesc = "abc123";
     opts.displayName = displayName;
     opts.proxies = PROXY_NAME;
-    opts.quota = '1';
-    opts.quotaInterval = '1';
-    opts.quotaTimeUnit = 'minute';
-    opts.attributes = [ {"name": "access", "value": "private"} ];
+    opts.quota = "1";
+    opts.quotaInterval = "1";
+    opts.quotaTimeUnit = "minute";
+    opts.attributes = [{ name: "access", value: "private" }];
     opts.approvalType = "auto";
 
-    apigeetool.getPromiseSDK()
+    apigeetool
+      .getPromiseSDK()
       .createProduct(opts)
-      .then(function(result){
+      .then(function (result) {
         try {
           assert.equal(result.displayName, displayName);
           assert.equal(result.attributes.length, 1);
-          assert.equal(result.attributes[0].name, 'access');
-          assert.equal(result.attributes[0].value, 'private');
+          assert.equal(result.attributes[0].name, "access");
+          assert.equal(result.attributes[0].value, "private");
           done();
         } catch (e) {
           done(e);
         }
       })
-      .catch(e => done(e));
+      .catch((e) => done(e));
   });
 
-  it('Create Developer', done => {
+  it("Create Developer", (done) => {
     let opts = baseOpts();
     opts.email = DEVELOPER_EMAIL;
-    opts.firstName = 'Test';
-    opts.lastName = 'Test1';
-    opts.userName = 'runningFromTest123';
+    opts.firstName = "Test";
+    opts.lastName = "Test1";
+    opts.userName = "runningFromTest123";
 
-    apigeetool.getPromiseSDK()
+    apigeetool
+      .getPromiseSDK()
       .createDeveloper(opts)
-      .then(r => done())
-      .catch(e => done(e));
+      .then((r) => done())
+      .catch((e) => done(e));
   });
 
-  it('Create App', done => {
+  it("Create App", (done) => {
     let opts = baseOpts();
     opts.name = APP_NAME;
     opts.apiProducts = PRODUCT_NAME;
     opts.email = DEVELOPER_EMAIL;
 
-    apigeetool.getPromiseSDK()
+    apigeetool
+      .getPromiseSDK()
       .createApp(opts)
-      .then( r => done())
-      .catch(e => done(e));
+      .then((r) => done())
+      .catch((e) => done(e));
   });
 
-  it('Delete App', done => {
+  it("Delete App", (done) => {
     let opts = baseOpts();
     opts.email = DEVELOPER_EMAIL;
     opts.name = APP_NAME;
-    apigeetool.getPromiseSDK()
+    apigeetool
+      .getPromiseSDK()
       .deleteApp(opts)
-      .then(r => done())
-      .catch(e => done(e));
+      .then((r) => done())
+      .catch((e) => done(e));
   });
 
-  it('Delete Developer', done => {
+  it("Delete Developer", (done) => {
     let opts = baseOpts();
     opts.email = DEVELOPER_EMAIL;
-    apigeetool.getPromiseSDK()
+    apigeetool
+      .getPromiseSDK()
       .deleteDeveloper(opts)
-      .then(r => done())
-      .catch(e => done(e));
+      .then((r) => done())
+      .catch((e) => done(e));
   });
 
-  it('Delete API Product', done => {
-    let opts = baseOpts() ;
+  it("Delete API Product", (done) => {
+    let opts = baseOpts();
     opts.productName = PRODUCT_NAME;
 
-    apigeetool.getPromiseSDK()
+    apigeetool
+      .getPromiseSDK()
       .deleteProduct(opts)
-      .then(result => done())
-      .catch(e => done(e));
+      .then((result) => done())
+      .catch((e) => done(e));
   });
 
-  it('Delete API private Product', done => {
+  it("Delete API private Product", (done) => {
     let opts = baseOpts();
     opts.productName = PRIVATE_PRODUCT_NAME;
 
-    apigeetool.getPromiseSDK()
+    apigeetool
+      .getPromiseSDK()
       .deleteProduct(opts)
-      .then(result => done())
-      .catch(e => done(e));
+      .then((result) => done())
+      .catch((e) => done(e));
   });
 
-  it('Undeploy Apigee Proxy With Revision', function(done) {
+  it("Undeploy Apigee Proxy With Revision", function (done) {
     assert(deployedRevision);
     let opts = baseOpts();
     opts.api = PROXY_NAME;
     opts.revision = deployedRevision;
 
-    apigeetool.undeploy(opts, function(err, result) {
+    apigeetool.undeploy(opts, function (err, result) {
       if (verbose) {
-        console.log('Undeploy result = %j', result);
+        console.log("Undeploy result = %j", result);
       }
       if (err) {
         done(err);
@@ -210,7 +217,7 @@ describe('Product/Dev/App Tests', function() {
         try {
           assert.equal(result.name, PROXY_NAME);
           assert.equal(result.environment, config.environment);
-          assert.equal(result.state, 'undeployed');
+          assert.equal(result.state, "undeployed");
           done();
         } catch (e) {
           done(e);
@@ -219,22 +226,21 @@ describe('Product/Dev/App Tests', function() {
     });
   });
 
-  it('Delete the API Proxy', function(done) {
+  it("Delete the API Proxy", function (done) {
     let opts = baseOpts();
     opts.api = PROXY_NAME;
     apigeetool.delete(opts, done);
   });
-
 });
 
-describe('List Tests', function() {
+describe("List Tests", function () {
   this.timeout(REASONABLE_TIMEOUT);
   this.slow(2000);
 
-  it('Lists Proxies', done => {
+  it("Lists Proxies", (done) => {
     let opts = baseOpts();
     apigeetool.listProxies(opts, (e, result) => {
-      assert(! e);
+      assert(!e);
       assert(result);
       assert(result.length);
       assert(result.length > 2);
@@ -242,45 +248,44 @@ describe('List Tests', function() {
     });
   });
 
-  it('Lists Sharedflows', done => {
+  it("Lists Sharedflows", (done) => {
     let opts = baseOpts();
     apigeetool.listSharedflows(opts, (e, result) => {
-      assert(! e);
+      assert(!e);
       assert(result);
       assert(result.length);
       assert(result.length > 2);
       done();
     });
   });
-
 });
 
-describe('API Deployment Tests', function() {
+describe("API Deployment Tests", function () {
   this.timeout(REASONABLE_TIMEOUT);
   this.slow(8000);
-  const PROXY_NAME = nameGen.proxy(marker)+ '-2';
+  const PROXY_NAME = nameGen.proxy(marker) + "-2";
   let deployedUri, deployedRevision;
 
-  it('Deploy Apigee Proxy', function(done) {
+  it("Deploy Apigee Proxy", function (done) {
     let opts = baseOpts();
     opts.api = PROXY_NAME;
-    opts.directory = path.join(__dirname, '../test/fixtures/loopback-1');
-    apigeetool.deployProxy(opts, function(err, result) {
+    opts.directory = path.join(__dirname, "../test/fixtures/loopback-1");
+    apigeetool.deployProxy(opts, function (err, result) {
       if (verbose) {
-        console.log('Deploy result = %j', result);
+        console.log("Deploy result = %j", result);
       }
       if (err) {
         done(err);
       } else {
         try {
-          if(Array.isArray(result)) {
+          if (Array.isArray(result)) {
             result = result[0];
           }
           assert.equal(result.name, PROXY_NAME);
           assert.equal(result.environment, config.environment);
-          assert.equal(result.state, 'deployed');
+          assert.equal(result.state, "deployed");
           assert.equal(result.uris.length, 1);
-          assert(typeof result.revision === 'number');
+          assert(typeof result.revision === "number");
           deployedRevision = result.revision;
           deployedUri = result.uris[0];
           done();
@@ -291,11 +296,11 @@ describe('API Deployment Tests', function() {
     });
   });
 
-  it('Verify deployed URI - 1', function(done) {
+  it("Verify deployed URI - 1", function (done) {
     if (verbose) {
-      console.log('Testing %s', deployedUri);
+      console.log("Testing %s", deployedUri);
     }
-    request(`${deployedUri}/t1`, function(err, resp) {
+    request(`${deployedUri}/t1`, function (err, resp) {
       if (err) {
         done(err);
       } else {
@@ -309,7 +314,7 @@ describe('API Deployment Tests', function() {
     });
   });
 
-  it('List Deployments by proxyname', function(done) {
+  it("List Deployments by proxyname", function (done) {
     assert(deployedRevision);
     let opts = baseOpts();
     delete opts.environment;
@@ -317,22 +322,19 @@ describe('API Deployment Tests', function() {
     opts.long = true;
     //opts.debug = true;
 
-    apigeetool.listDeployments(opts, function(err, result) {
+    apigeetool.listDeployments(opts, function (err, result) {
       if (verbose) {
-        console.log('List result = %j', result);
+        console.log("List result = %j", result);
       }
       if (err) {
         done(err);
-      }
-      else {
-        let deployment =
-          result.deployments
-          .find(d => (d.name === PROXY_NAME));
+      } else {
+        let deployment = result.deployments.find((d) => d.name === PROXY_NAME);
 
         try {
           assert.equal(deployment.name, PROXY_NAME);
           assert.equal(deployment.environment, config.environment);
-          assert.equal(deployment.state, 'deployed');
+          assert.equal(deployment.state, "deployed");
           assert.equal(deployment.revision, deployedRevision);
           assert.equal(deployment.uris.length, 1);
           assert.equal(deployment.uris[0], deployedUri);
@@ -344,26 +346,23 @@ describe('API Deployment Tests', function() {
     });
   });
 
-  it('List Deployments by environment', function(done) {
+  it("List Deployments by environment", function (done) {
     assert(deployedRevision);
     let opts = baseOpts();
     // environment is set in opts
-    apigeetool.listDeployments(opts, function(err, result) {
+    apigeetool.listDeployments(opts, function (err, result) {
       if (verbose) {
-        console.log('List result = %j', result);
+        console.log("List result = %j", result);
       }
       if (err) {
         done(err);
-      }
-      else {
-        let deployment =
-          result.deployments
-          .find(d => (d.name === PROXY_NAME));
+      } else {
+        let deployment = result.deployments.find((d) => d.name === PROXY_NAME);
 
         try {
           assert.equal(deployment.name, PROXY_NAME);
           assert.equal(deployment.environment, config.environment);
-          assert.equal(deployment.state, 'deployed');
+          assert.equal(deployment.state, "deployed");
           assert.equal(deployment.revision, deployedRevision);
           done();
         } catch (e) {
@@ -373,24 +372,23 @@ describe('API Deployment Tests', function() {
     });
   });
 
-  it('Undeploy Apigee Proxy With Revision - A', function(done) {
+  it("Undeploy Apigee Proxy With Revision - A", function (done) {
     assert(deployedRevision);
     let opts = baseOpts();
     opts.api = PROXY_NAME;
     opts.revision = deployedRevision;
 
-    apigeetool.undeploy(opts, function(err, result) {
+    apigeetool.undeploy(opts, function (err, result) {
       if (verbose) {
-        console.log('Undeploy result = %j', result);
+        console.log("Undeploy result = %j", result);
       }
       if (err) {
         done(err);
-      }
-      else {
+      } else {
         try {
           assert.equal(result.name, PROXY_NAME);
           assert.equal(result.environment, config.environment);
-          assert.equal(result.state, 'undeployed');
+          assert.equal(result.state, "undeployed");
           sleep(3000).then(done); // delay a bit before continuing
           deployedUri = null;
         } catch (e) {
@@ -400,28 +398,28 @@ describe('API Deployment Tests', function() {
     });
   });
 
-  it('Deploy Apigee Proxy with basepath prefix', function(done) {
+  it("Deploy Apigee Proxy with basepath prefix", function (done) {
     deployedUri = null;
     const PROXY_BASE_PATH = nameGen.basePath(marker); // a random basepath
     let opts = baseOpts();
     opts.api = PROXY_NAME;
     //opts.debug = true;
-    opts.directory = path.join(__dirname, '../test/fixtures/loopback-1');
-    opts['base-path'] = PROXY_BASE_PATH;
+    opts.directory = path.join(__dirname, "../test/fixtures/loopback-1");
+    opts["base-path"] = PROXY_BASE_PATH;
 
     sleep(4000) // the prior undeploy may take some time.
-      .then(_ => apigeetool.getPromiseSDK().deployProxy(opts))
-      .then(result => {
+      .then((_) => apigeetool.getPromiseSDK().deployProxy(opts))
+      .then((result) => {
         if (verbose) {
-          console.log('Deploy result = %j', result);
+          console.log("Deploy result = %j", result);
         }
         try {
           if (Array.isArray(result)) result = result[0];
           assert.equal(result.name, PROXY_NAME);
           assert.equal(result.environment, config.environment);
-          assert.equal(result.state, 'deployed');
+          assert.equal(result.state, "deployed");
           assert.equal(result.uris.length, 1);
-          assert(typeof result.revision === 'number');
+          assert(typeof result.revision === "number");
           deployedRevision = result.revision;
           deployedUri = result.uris[0];
           done();
@@ -429,16 +427,15 @@ describe('API Deployment Tests', function() {
           done(e);
         }
       })
-      .catch(e => done(e));
-
+      .catch((e) => done(e));
   });
 
-  it('Verify deployed URI - 2', function(done) {
+  it("Verify deployed URI - 2", function (done) {
     assert(deployedUri);
     if (verbose) {
-      console.log('Testing %s', deployedUri);
+      console.log("Testing %s", deployedUri);
     }
-    request(`${deployedUri}/t1`, function(err, resp) {
+    request(`${deployedUri}/t1`, function (err, resp) {
       if (err) {
         done(err);
       } else {
@@ -507,15 +504,15 @@ describe('API Deployment Tests', function() {
   });
   */
 
-  it('Undeploy Apigee Proxy With Revision - B', function(done) {
+  it("Undeploy Apigee Proxy With Revision - B", function (done) {
     assert(deployedRevision);
     let opts = baseOpts();
     opts.api = PROXY_NAME;
     opts.revision = deployedRevision;
 
-    apigeetool.undeploy(opts, function(err, result) {
+    apigeetool.undeploy(opts, function (err, result) {
       if (verbose) {
-        console.log('Undeploy result = %j', result);
+        console.log("Undeploy result = %j", result);
       }
       if (err) {
         done(err);
@@ -523,7 +520,7 @@ describe('API Deployment Tests', function() {
         try {
           assert.equal(result.name, PROXY_NAME);
           assert.equal(result.environment, config.environment);
-          assert.equal(result.state, 'undeployed');
+          assert.equal(result.state, "undeployed");
           done();
         } catch (e) {
           done(e);
@@ -532,15 +529,15 @@ describe('API Deployment Tests', function() {
     });
   });
 
-  it('Fetch proxy', function(done) {
+  it("Fetch proxy", function (done) {
     assert(deployedRevision);
     let opts = baseOpts();
     opts.api = PROXY_NAME;
     opts.revision = deployedRevision;
 
-    apigeetool.fetchProxy(opts, function(err, result) {
+    apigeetool.fetchProxy(opts, function (err, result) {
       if (verbose) {
-        console.log('Fetch proxy result = %j', util.format(result));
+        console.log("Fetch proxy result = %j", util.format(result));
       }
       if (err) {
         done(err);
@@ -551,28 +548,29 @@ describe('API Deployment Tests', function() {
       assert(fs.existsSync(result.filename));
       fs.unlinkSync(result.filename);
       done();
-
     });
   });
 
-  it('Delete proxy', function(done) {
+  it("Delete proxy", function (done) {
     let opts = baseOpts();
     opts.api = PROXY_NAME;
 
-    apigeetool.delete(opts, function(err, result) {
+    apigeetool.delete(opts, function (err, result) {
       if (verbose) {
-        console.log('Delete proxy result = %j', result);
+        console.log("Delete proxy result = %j", result);
       }
-      if (err) { done(err); }
-      else { done(); }
+      if (err) {
+        done(err);
+      } else {
+        done();
+      }
     });
   });
-
 });
 
-  // 20220505-1430
-  // proxies with ScriptTarget are no longer supported in Apigee Edge.
-  //
+// 20220505-1430
+// proxies with ScriptTarget are no longer supported in Apigee Edge.
+//
 
 // describe('Node.js Apps', function() {
 //   this.timeout(REASONABLE_TIMEOUT);
@@ -774,7 +772,6 @@ describe('API Deployment Tests', function() {
 //
 // }); // End Node.js Apps
 
-
 // 20220505-1626
 // This interface (deploying an AppEngine app with no proxy) is not supported.
 
@@ -951,34 +948,18 @@ describe('API Deployment Tests', function() {
 //
 // }); // end hosted target tests
 
-
-describe('Caches', function() {
+describe("Caches", function () {
+  this.timeout(REASONABLE_TIMEOUT);
+  this.slow(2100);
   const CACHE1_NAME = nameGen.cache1(marker),
-        CACHE2_NAME = nameGen.cache2(marker);
-  this.slow(1100);
+    CACHE2_NAME = nameGen.cache2(marker);
 
-  it('Create a Cache Resource', done => {
+  it("Create a Cache Resource", (done) => {
     let opts = baseOpts();
     opts.cache = CACHE1_NAME;
-    apigeetool.createCache(opts,function(err,result) {
+    apigeetool.createCache(opts, function (err, result) {
       if (verbose) {
-        console.log('Create Cache result = %j', result);
-      }
-      if (err) {
-        done(err);
-      }
-      else {
-        done();
-      }
-    });
-  });
-
-  it('Get Cache Resource', (done) => {
-    let opts = baseOpts();
-    opts.cache = CACHE1_NAME;
-    apigeetool.getCache(opts, (err,result) => {
-      if (verbose) {
-        console.log('Get Cache result = %j', result);
+        console.log("Create Cache result = %j", result);
       }
       if (err) {
         done(err);
@@ -988,12 +969,12 @@ describe('Caches', function() {
     });
   });
 
-  it('Clear Cache', (done) => {
+  it("Get Cache Resource", (done) => {
     let opts = baseOpts();
     opts.cache = CACHE1_NAME;
-    apigeetool.clearCache(opts, (err,result) => {
+    apigeetool.getCache(opts, (err, result) => {
       if (verbose) {
-        console.log('Clear Cache result = %j', result);
+        console.log("Get Cache result = %j", result);
       }
       if (err) {
         done(err);
@@ -1003,12 +984,12 @@ describe('Caches', function() {
     });
   });
 
-  it('Delete Cache Resource', (done) => {
+  it("Clear Cache", (done) => {
     let opts = baseOpts();
     opts.cache = CACHE1_NAME;
-    apigeetool.deleteCache(opts, (err,result) => {
+    apigeetool.clearCache(opts, (err, result) => {
       if (verbose) {
-        console.log('Delete Cache result = %j', result);
+        console.log("Clear Cache result = %j", result);
       }
       if (err) {
         done(err);
@@ -1018,27 +999,40 @@ describe('Caches', function() {
     });
   });
 
-  it('Create an Cache Resource with description and expiry in date', done => {
+  it("Delete Cache Resource", (done) => {
+    let opts = baseOpts();
+    opts.cache = CACHE1_NAME;
+    apigeetool.deleteCache(opts, (err, result) => {
+      if (verbose) {
+        console.log("Delete Cache result = %j", result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        done();
+      }
+    });
+  });
+
+  it("Create an Cache Resource with description and expiry in date", (done) => {
     let opts = baseOpts();
     opts.cache = CACHE2_NAME;
-    opts.description = 'sample cache';
-    opts.cacheExpiryByDate = '12-31-2025';
-    apigeetool.createCache(opts,function(err,result) {
+    opts.description = "sample cache";
+    opts.cacheExpiryByDate = "12-31-2025";
+    apigeetool.createCache(opts, function (err, result) {
       if (verbose) {
-        console.log('Create Cache result = %j', result);
+        console.log("Create Cache result = %j", result);
       }
       if (err) {
         done(err);
-      }
-      else {
-        apigeetool.deleteCache(opts,function(delete_err,delete_result) {
+      } else {
+        apigeetool.deleteCache(opts, function (delete_err, delete_result) {
           if (verbose) {
-            console.log('Delete Cache result = %j', delete_result);
+            console.log("Delete Cache result = %j", delete_result);
           }
           if (delete_err) {
             done(delete_err);
-          }
-          else {
+          } else {
             done();
           }
         });
@@ -1046,27 +1040,25 @@ describe('Caches', function() {
     });
   });
 
-  it('Create an Cache Resource with description and expiry in secs', done => {
+  it("Create an Cache Resource with description and expiry in secs", (done) => {
     let opts = baseOpts();
     opts.cache = CACHE2_NAME;
-    opts.description = 'description two';
-    opts.cacheExpiryInSecs = '5000';
-    apigeetool.createCache(opts, function(err,result) {
+    opts.description = "description two";
+    opts.cacheExpiryInSecs = "5000";
+    apigeetool.createCache(opts, function (err, result) {
       if (verbose) {
-        console.log('Create Cache result = %j', result);
+        console.log("Create Cache result = %j", result);
       }
       if (err) {
         done(err);
-      }
-      else {
-        apigeetool.deleteCache(opts,function(delete_err,delete_result) {
+      } else {
+        apigeetool.deleteCache(opts, function (delete_err, delete_result) {
           if (verbose) {
-            console.log('Delete Cache result = %j', delete_result);
+            console.log("Delete Cache result = %j", delete_result);
           }
           if (delete_err) {
             done(delete_err);
-          }
-          else {
+          } else {
             done();
           }
         });
@@ -1074,15 +1066,15 @@ describe('Caches', function() {
     });
   });
 
-  it('Create an Cache Resource with description and expiry in secs, date', done => {
+  it("Create an Cache Resource with description and expiry in secs, date", (done) => {
     let opts = baseOpts();
     opts.cache = CACHE2_NAME;
-    opts.description = 'more description here';
-    opts.cacheExpiryByDate = '31-12-2025';
-    opts.cacheExpiryInSecs = '5000';
-    apigeetool.createCache(opts, function(e,result) {
+    opts.description = "more description here";
+    opts.cacheExpiryByDate = "31-12-2025";
+    opts.cacheExpiryInSecs = "5000";
+    apigeetool.createCache(opts, function (e, result) {
       if (verbose) {
-        console.log('Create Cache result = %j', result);
+        console.log("Create Cache result = %j", result);
       }
       done(e);
       // if (err) {
@@ -1104,88 +1096,69 @@ describe('Caches', function() {
     });
   });
 
-  it('List Cache Resources', (done) => {
+  it("List Cache Resources", (done) => {
     let opts = baseOpts();
-    apigeetool.listCaches(opts, (err,result) => {
+    apigeetool.listCaches(opts, (err, result) => {
       if (verbose) {
-        console.log('List Cache result = %j', result);
+        console.log("List Cache result = %j", result);
       }
       if (err) {
         done(err);
       } else {
         assert(result.length);
         // get just the caches that look like test caches.
-        let testcaches = result.filter(name =>
-                                       name.startsWith('apigeetool-test-cache'));
+        let testcaches = result.filter((name) =>
+          name.startsWith("apigeetool-test-cache")
+        );
         assert(testcaches.length);
         async.series(
-          testcaches
-            .map(name => {
-              let opts = baseOpts();
-              opts.cache = name;
-              return function(done) { apigeetool.deleteCache(opts, done);};
-            }),
-          function(e, results) {
-            if (e) { return done(e);}
+          testcaches.map((name) => {
+            let opts = baseOpts();
+            opts.cache = name;
+            return function (done) {
+              apigeetool.deleteCache(opts, done);
+            };
+          }),
+          function (e, results) {
+            if (e) {
+              return done(e);
+            }
             if (verbose) {
-              console.log('delete Cache result = %j', result);
+              console.log("delete Cache result = %j", result);
             }
             done();
-          });
+          }
+        );
       }
     });
   });
-
-
 }); // end cache tests
 
-
-describe('Target Servers', function() {
+describe("Target Servers", function () {
   this.timeout(REASONABLE_TIMEOUT);
   this.slow(600);
   const TARGET_SERVER_NAME = nameGen.targetServer(marker);
 
-  it('Create Target Server', done => {
+  it("Create Target Server", (done) => {
     let opts = baseOpts();
     opts.environment = config.environment;
     opts.targetServerName = TARGET_SERVER_NAME;
-    opts.targetHost = 'localhost';
+    opts.targetHost = "localhost";
     opts.targetEnabled = true;
     opts.targetPort = 443;
     opts.targetSSL = true;
 
-    apigeetool.createTargetServer(opts, function(err, result) {
+    apigeetool.createTargetServer(opts, function (err, result) {
       if (verbose) {
-        console.log('Create Target Server result = %j', result);
-      }
-      if (err) {
-        done(err);
-      }
-      else {
-        try {
-          assert.equal(result.name,TARGET_SERVER_NAME);
-          assert.equal(result.port,443);
-          assert.equal(result.isEnabled,true);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      }
-    });
-  });
-
-  it('List Target Servers', done => {
-    let opts = baseOpts();
-    opts.environment = config.environment;
-    apigeetool.listTargetServers(opts, function(err, result) {
-      if (verbose) {
-        console.log('List Target Servers result = %j', result);
+        console.log("Create Target Server result = %j", result);
       }
       if (err) {
         done(err);
       } else {
         try {
-          assert.equal(result.includes(TARGET_SERVER_NAME),true);
+          assert.equal(result.name, TARGET_SERVER_NAME);
+          assert.equal(result.port, 443);
+          assert.equal(result.isEnabled, true);
           done();
         } catch (e) {
           done(e);
@@ -1194,21 +1167,41 @@ describe('Target Servers', function() {
     });
   });
 
-  it('Get Target Server', done => {
+  it("List Target Servers", (done) => {
+    let opts = baseOpts();
+    opts.environment = config.environment;
+    apigeetool.listTargetServers(opts, function (err, result) {
+      if (verbose) {
+        console.log("List Target Servers result = %j", result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        try {
+          assert.equal(result.includes(TARGET_SERVER_NAME), true);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }
+    });
+  });
+
+  it("Get Target Server", (done) => {
     let opts = baseOpts();
     opts.environment = config.environment;
     opts.targetServerName = TARGET_SERVER_NAME;
-    apigeetool.getTargetServer(opts, function(err, result) {
+    apigeetool.getTargetServer(opts, function (err, result) {
       if (verbose) {
-        console.log('Get Target Server result = %j', result);
+        console.log("Get Target Server result = %j", result);
       }
       if (err) {
         done(err);
       } else {
         try {
-          assert.equal(result.name,TARGET_SERVER_NAME);
-          assert.equal(result.port,443);
-          assert.equal(result.isEnabled,true);
+          assert.equal(result.name, TARGET_SERVER_NAME);
+          assert.equal(result.port, 443);
+          assert.equal(result.isEnabled, true);
           done();
         } catch (e) {
           done(e);
@@ -1217,22 +1210,22 @@ describe('Target Servers', function() {
     });
   });
 
-  it('Update Target Server', done => {
+  it("Update Target Server", (done) => {
     let opts = baseOpts();
     opts.environment = config.environment;
     opts.targetServerName = TARGET_SERVER_NAME;
     opts.targetEnabled = false;
-    apigeetool.updateTargetServer(opts, function(err, result) {
+    apigeetool.updateTargetServer(opts, function (err, result) {
       if (verbose) {
-        console.log('Get Target Server result = %j', result);
+        console.log("Get Target Server result = %j", result);
       }
       if (err) {
         done(err);
       } else {
         try {
-          assert.equal(result.name,TARGET_SERVER_NAME);
-          assert.equal(result.port,443);
-          assert.equal(result.isEnabled,false);
+          assert.equal(result.name, TARGET_SERVER_NAME);
+          assert.equal(result.port, 443);
+          assert.equal(result.isEnabled, false);
           done();
         } catch (e) {
           done(e);
@@ -1241,19 +1234,19 @@ describe('Target Servers', function() {
     });
   });
 
-  it('Delete Target Server', done => {
+  it("Delete Target Server", (done) => {
     let opts = baseOpts();
     opts.environment = config.environment;
     opts.targetServerName = TARGET_SERVER_NAME;
-    apigeetool.deleteTargetServer(opts, function(err, result) {
+    apigeetool.deleteTargetServer(opts, function (err, result) {
       if (verbose) {
-        console.log('Delete Target Server result = %j', result);
+        console.log("Delete Target Server result = %j", result);
       }
       if (err) {
         done(err);
       } else {
         try {
-          assert.equal(result.name,TARGET_SERVER_NAME);
+          assert.equal(result.name, TARGET_SERVER_NAME);
           done();
         } catch (e) {
           done(e);
@@ -1263,62 +1256,63 @@ describe('Target Servers', function() {
   });
 }); // end target server tests
 
-
-describe('KVM', function() {
+describe("KVM", function () {
   this.slow(1000);
 
-  let kvm_entry_name = 'test-' + faker.random.alphaNumeric(8),
-      kvm_entry_value = faker.random.alphaNumeric(68),
-      updated_entry_value = "NEW VALUE " + faker.random.alphaNumeric(32),
-      KVM1_NAME = nameGen.kvm1(marker),
-      KVM2_NAME = nameGen.kvm2(marker);
+  let kvm_entry_name = "test-" + faker.random.alphaNumeric(8),
+    kvm_entry_value = faker.random.alphaNumeric(68),
+    updated_entry_value = "NEW VALUE " + faker.random.alphaNumeric(32),
+    KVM1_NAME = nameGen.kvm1(marker),
+    KVM2_NAME = nameGen.kvm2(marker);
 
-  it('Create KVM', done => {
+  it("Create KVM", (done) => {
     let opts = baseOpts();
     opts.mapName = KVM1_NAME;
     opts.environment = config.environment;
-    apigeetool.getPromiseSDK()
-      .createKVM(opts)
-      .then(res => {
+    apigeetool
+      .getPromiseSDK()
+      .createKVMmap(opts)
+      .then((res) => {
         if (verbose) {
-          console.log('Create KVM result = %j', res);
+          console.log("Create KVM result = %j", res);
         }
         done();
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         done(e);
       });
   });
 
-  it('Create Encrypted KVM', done => {
+  it("Create Encrypted KVM", (done) => {
     let opts = baseOpts();
     opts.mapName = KVM2_NAME;
     opts.environment = config.environment;
     opts.encrypted = true;
-    apigeetool.getPromiseSDK()
-      .createKVM(opts)
-      .then( res => {
+    apigeetool
+      .getPromiseSDK()
+      .createKVMmap(opts)
+      .then((res) => {
         if (!res.encrypted) {
-          return done(new Error('Map was not encrypted'));
+          return done(new Error("Map was not encrypted"));
         } else if (verbose) {
-          console.log('Create KVM result = %j', res);
+          console.log("Create KVM result = %j", res);
         }
         done();
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         done(e);
       });
   });
 
-  it('Delete Encrypted KVM', done => {
+  it("Delete Encrypted KVM", (done) => {
     let opts = baseOpts();
     opts.mapName = KVM2_NAME;
     opts.environment = config.environment;
-    apigeetool.deleteKVM(opts, function(err,result) {
+    apigeetool.deleteKVMmap(opts, function (err, result) {
       if (verbose) {
-        console.log('Delete Encrypted KVM result = %j', result);
+        console.log("Delete Encrypted KVM result = %j", result);
       }
       if (err) {
         done(err);
@@ -1328,123 +1322,125 @@ describe('KVM', function() {
     });
   });
 
-  it('Add Entry to KVM', done => {
+  it("Add Entry to KVM", (done) => {
     let opts = baseOpts();
     opts.mapName = KVM1_NAME;
     opts.environment = config.environment;
     opts.entryName = kvm_entry_name;
     opts.entryValue = kvm_entry_value;
-    apigeetool.getPromiseSDK()
+    apigeetool
+      .getPromiseSDK()
       .addEntryToKVM(opts)
-      .then(res => {
+      .then((res) => {
         if (verbose) {
-          console.log('Add Entry to KVM result = %j', res);
+          console.log("Add Entry to KVM result = %j", res);
         }
         done();
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         done(e);
       });
   });
 
-  it('Get KVM Entry', function(done) {
+  it("Get KVM Entry", function (done) {
     let opts = baseOpts();
     opts.mapName = KVM1_NAME;
     opts.environment = config.environment;
     opts.entryName = kvm_entry_name;
-    apigeetool.getPromiseSDK()
+    apigeetool
+      .getPromiseSDK()
       .getKVMentry(opts)
-      .then(body => {
+      .then((body) => {
         if (verbose) {
-          console.log('Get KVM Entry result = %j', body);
+          console.log("Get KVM Entry result = %j", body);
         }
         assert.equal(body.value, kvm_entry_value);
         done();
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         done(e);
       });
-
   });
 
-  it('Update KVM Entry', function(done) {
+  it("Update KVM Entry", function (done) {
     let opts = baseOpts();
     opts.mapName = KVM1_NAME;
     opts.environment = config.environment;
     opts.entryName = kvm_entry_name;
     opts.entryValue = updated_entry_value;
     let apigee = apigeetool.getPromiseSDK();
-    apigee.updateKVMentry(opts)
-      .then(body => {
+    apigee
+      .updateKVMentry(opts)
+      .then((body) => {
         if (verbose) {
-          console.log('Update KVM Entry result = %j', body);
+          console.log("Update KVM Entry result = %j", body);
         }
         assert.equal(updated_entry_value, body.value);
         delete opts.entryValue;
-        return apigee.getKVMentry(opts)
-          .then(body => {
-            if (verbose) {
-              console.log('Get KVM Entry result = %j', body);
-            }
-            assert.equal(updated_entry_value, body.value);
-            done();
-          });
+        return apigee.getKVMentry(opts).then((body) => {
+          if (verbose) {
+            console.log("Get KVM Entry result = %j", body);
+          }
+          assert.equal(updated_entry_value, body.value);
+          done();
+        });
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         done(e);
       });
-
   });
 
-  it('Get KVM Map', function(done) {
+  it("Get KVM Map", function (done) {
     let opts = baseOpts();
     opts.mapName = KVM1_NAME;
     opts.environment = config.environment;
-    apigeetool.getPromiseSDK()
+    apigeetool
+      .getPromiseSDK()
       .getKVMmap(opts)
-      .then(function(body){
+      .then(function (body) {
         if (verbose) {
-          console.log('Get KVM Map result = %j', body);
+          console.log("Get KVM Map result = %j", body);
         }
         assert.equal(body.entry.length, 1);
         done();
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         done(e);
       });
   });
 
-  it('Delete KVM Entry', function(done) {
+  it("Delete KVM Entry", function (done) {
     let opts = baseOpts();
     opts.mapName = KVM1_NAME;
     opts.environment = config.environment;
     opts.entryName = kvm_entry_name;
-    apigeetool.getPromiseSDK()
+    apigeetool
+      .getPromiseSDK()
       .deleteKVMentry(opts)
-      .then(function(body){
+      .then(function (body) {
         if (verbose) {
-          console.log('Get KVM Map result = %j', body);
+          console.log("Get KVM Map result = %j", body);
         }
         assert.equal(updated_entry_value, body.value);
         done();
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
         done(e);
       });
   });
 
-  it('Delete KVM', done => {
+  it("Delete KVM", (done) => {
     let opts = baseOpts();
     opts.mapName = KVM1_NAME;
     opts.environment = config.environment;
-    apigeetool.deleteKVM(opts,function(err,result) {
+    apigeetool.deleteKVMmap(opts, function (err, result) {
       if (verbose) {
-        console.log('Delete KVM result = %j', result);
+        console.log("Delete KVM result = %j", result);
       }
       if (err) {
         done(err);
@@ -1455,21 +1451,20 @@ describe('KVM', function() {
   });
 }); // end KVM tests
 
-
-describe('SharedFlows and FlowHooks', function() {
+describe("SharedFlows and FlowHooks", function () {
   this.timeout(REASONABLE_TIMEOUT);
   this.slow(3200);
 
   const SHARED_FLOW_NAME = nameGen.sf(marker);
   let originalPreProxyFh;
 
-  it('Deploy SharedFlow', done => {
+  it("Deploy SharedFlow", (done) => {
     let opts = baseOpts();
     opts.name = SHARED_FLOW_NAME;
-    opts.directory = path.join(__dirname, '../test/fixtures/employees-sf');
+    opts.directory = path.join(__dirname, "../test/fixtures/employees-sf");
     apigeetool.deploySharedflow(opts, function (err, result) {
       if (verbose) {
-        console.log('Deploy result = %j', result);
+        console.log("Deploy result = %j", result);
       }
       if (err) {
         done(err);
@@ -1480,8 +1475,8 @@ describe('SharedFlows and FlowHooks', function() {
           }
           assert.equal(result.name, SHARED_FLOW_NAME);
           assert.equal(result.environment, config.environment);
-          assert.equal(result.state, 'deployed');
-          assert(typeof result.revision === 'number');
+          assert.equal(result.state, "deployed");
+          assert(typeof result.revision === "number");
           done();
         } catch (e) {
           done(e);
@@ -1490,15 +1485,15 @@ describe('SharedFlows and FlowHooks', function() {
     });
   });
 
-  it('listSharedFlowDeployments by SF name', function(done) {
+  it("listSharedFlowDeployments by SF name", function (done) {
     let opts = baseOpts();
     delete opts.environment;
     opts.name = SHARED_FLOW_NAME;
     opts.revision = 1;
 
-    apigeetool.listSharedflowDeployments(opts, function(err, result) {
+    apigeetool.listSharedflowDeployments(opts, function (err, result) {
       if (verbose) {
-        console.log('listSharedFlowDeployments result = %j', result);
+        console.log("listSharedFlowDeployments result = %j", result);
       }
       if (err) {
         done(err);
@@ -1507,8 +1502,8 @@ describe('SharedFlows and FlowHooks', function() {
           result = result.deployments[0];
           assert.equal(result.name, SHARED_FLOW_NAME);
           assert.equal(result.environment, config.environment);
-          assert.equal(result.state, 'deployed');
-          assert(typeof result.revision === 'number');
+          assert.equal(result.state, "deployed");
+          assert(typeof result.revision === "number");
           done();
         } catch (e) {
           done(e);
@@ -1517,14 +1512,14 @@ describe('SharedFlows and FlowHooks', function() {
     });
   });
 
-  it('fetchSharedFlow', function(done) {
+  it("fetchSharedFlow", function (done) {
     let opts = baseOpts();
     opts.name = SHARED_FLOW_NAME;
     opts.revision = 1;
 
-    apigeetool.fetchSharedflow(opts, function(err, result) {
+    apigeetool.fetchSharedflow(opts, function (err, result) {
       if (verbose) {
-        console.log('fetchSharedFlow result: %j', util.format(result));
+        console.log("fetchSharedFlow result: %j", util.format(result));
       }
       if (err) {
         done(err);
@@ -1535,22 +1530,21 @@ describe('SharedFlows and FlowHooks', function() {
       assert(fs.existsSync(result.filename));
       fs.unlinkSync(result.filename);
       done();
-
     });
   });
 
-  it('get original PreProxy Flowhook', function(done) {
+  it("get original PreProxy Flowhook", function (done) {
     let opts = baseOpts();
     opts.flowHookName = "PreProxyFlowHook";
 
-    apigeetool.getFlowHook(opts, function(err, result) {
+    apigeetool.getFlowHook(opts, function (err, result) {
       if (verbose) {
-        console.log('original PreProxy flowhook result = %j', result);
+        console.log("original PreProxy flowhook result = %j", result);
       }
       if (err) {
         done(err);
       } else {
-        if( result.sharedFlow ) {
+        if (result.sharedFlow) {
           originalPreProxyFh = result.sharedFlow;
         }
         done();
@@ -1558,14 +1552,14 @@ describe('SharedFlows and FlowHooks', function() {
     });
   });
 
-  it('attachFlowHook', function(done) {
+  it("attachFlowHook", function (done) {
     let opts = baseOpts();
     opts.flowHookName = "PreProxyFlowHook";
     opts.sharedFlowName = SHARED_FLOW_NAME;
 
-    apigeetool.attachFlowHook(opts, function(err, result) {
+    apigeetool.attachFlowHook(opts, function (err, result) {
       if (verbose) {
-        console.log('attachFlowHook result = %j', result);
+        console.log("attachFlowHook result = %j", result);
       }
       if (err) {
         done(err);
@@ -1575,13 +1569,13 @@ describe('SharedFlows and FlowHooks', function() {
     });
   });
 
-  it('detachFlowHook', function(done) {
+  it("detachFlowHook", function (done) {
     let opts = baseOpts();
     opts.flowHookName = "PreProxyFlowHook";
 
-    apigeetool.detachFlowHook(opts, function(err, result) {
+    apigeetool.detachFlowHook(opts, function (err, result) {
       if (verbose) {
-        console.log('detachFlowHook result = %j', result);
+        console.log("detachFlowHook result = %j", result);
       }
       if (err) {
         done(err);
@@ -1591,16 +1585,16 @@ describe('SharedFlows and FlowHooks', function() {
     });
   });
 
-  it('re-attachFlowHook', function(done) {
-    if( originalPreProxyFh ) {
+  it("re-attachFlowHook", function (done) {
+    if (originalPreProxyFh) {
       let opts = baseOpts();
       opts.flowHookName = "PreProxyFlowHook";
       opts.sharedFlowName = originalPreProxyFh;
 
-      apigeetool.attachFlowHook(opts, function(err, result) {
+      apigeetool.attachFlowHook(opts, function (err, result) {
         if (verbose) {
-          console.log('originalPreProxyFh ' + originalPreProxyFh );
-          console.log('re-attachFlowHook result = %j', result);
+          console.log("originalPreProxyFh " + originalPreProxyFh);
+          console.log("re-attachFlowHook result = %j", result);
         }
         if (err) {
           done(err);
@@ -1613,140 +1607,160 @@ describe('SharedFlows and FlowHooks', function() {
     }
   });
 
-  it('undeploySharedFlow', function(done) {
+  it("undeploySharedFlow", function (done) {
     let opts = baseOpts();
     opts.name = SHARED_FLOW_NAME;
-    apigeetool.undeploySharedflow(opts, function(err, result) {
+    apigeetool.undeploySharedflow(opts, function (err, result) {
       if (err) {
         done(err);
-      } else { // If response is non-200 it throws an Error
+      } else {
+        // If response is non-200 it throws an Error
         done();
       }
     });
   });
 
-  it('deleteSharedFlow', function(done) {
+  it("deleteSharedFlow", function (done) {
     let opts = baseOpts();
     opts.name = SHARED_FLOW_NAME;
     apigeetool.deleteSharedflow(opts, done);
   });
-
 }); // end shared flow tests
 
-
-describe('User Roles and Permissions', function() {
+describe("User Roles and Permissions", function () {
   this.timeout(REASONABLE_TIMEOUT);
   this.slow(1000);
   const ROLE_NAME = nameGen.role(marker);
 
-  it('Create Role', done => {
+  it("Create Role", (done) => {
     let opts = baseOpts();
     opts.roleName = ROLE_NAME;
 
     apigeetool.createRole(opts, function (err, result) {
       if (verbose) {
-        console.log('Create Role result = %j', result);
+        console.log("Create Role result = %j", result);
       }
       if (err) {
         done(err);
-      }
-      else {
+      } else {
         done();
       }
     });
   });
 
-  it('Get Role', done => {
+  it("Get Role", (done) => {
     let opts = baseOpts();
     opts.roleName = ROLE_NAME;
 
     apigeetool.getRole(opts, function (err, result) {
       if (verbose) {
-        console.log('Get Role result = %j', result);
+        console.log("Get Role result = %j", result);
       }
-      if (err) { done(err); } else { done(); }
-    });
-  });
-
-  it('List Roles', done => {
-    let opts = baseOpts();
-
-    apigeetool.listRoles(opts, function (err, result) {
-      if (verbose) {
-        console.log('List Roles result = %j', result);
-      }
-      if (err) { done(err); } else {
-        assert.equal( result.includes(ROLE_NAME), true );
+      if (err) {
+        done(err);
+      } else {
         done();
       }
     });
   });
 
-  it('Set Role Permissions', done => {
+  it("List Roles", (done) => {
+    let opts = baseOpts();
+
+    apigeetool.listRoles(opts, function (err, result) {
+      if (verbose) {
+        console.log("List Roles result = %j", result);
+      }
+      if (err) {
+        done(err);
+      } else {
+        assert.equal(result.includes(ROLE_NAME), true);
+        done();
+      }
+    });
+  });
+
+  it("Set Role Permissions", (done) => {
     let opts = baseOpts();
     opts.roleName = ROLE_NAME;
     opts.permissions = '[{"path":"/userroles","permissions":["get"]}]';
 
     apigeetool.setRolePermissions(opts, function (err, result) {
       if (verbose) {
-        console.log('Set Role Permissions result = %j', result);
+        console.log("Set Role Permissions result = %j", result);
       }
-      if (err) { done(err); } else { done(); }
+      if (err) {
+        done(err);
+      } else {
+        done();
+      }
     });
   });
 
-  it('Get Role Permissions', done => {
+  it("Get Role Permissions", (done) => {
     let opts = baseOpts();
     opts.roleName = ROLE_NAME;
 
     apigeetool.getRolePermissions(opts, function (err, result) {
       if (verbose) {
-        console.log('Get Role Permissions result = %j', result);
+        console.log("Get Role Permissions result = %j", result);
       }
-      if (err) { done(err); } else { done(); }
+      if (err) {
+        done(err);
+      } else {
+        done();
+      }
     });
   });
 
-  it('Assign User to Role', done => {
+  it("Assign User to Role", (done) => {
     let opts = baseOpts();
     opts.roleName = ROLE_NAME;
     opts.email = config.useremail;
 
     apigeetool.assignUserRole(opts, function (err, result) {
       if (verbose) {
-        console.log('Assign User to Role result = %j', result);
+        console.log("Assign User to Role result = %j", result);
       }
-      if (err) { done(err); } else { done(); }
+      if (err) {
+        done(err);
+      } else {
+        done();
+      }
     });
   });
 
-  it('Verify User in Role', done => {
+  it("Verify User in Role", (done) => {
     let opts = baseOpts();
     opts.roleName = ROLE_NAME;
     opts.email = config.useremail;
 
     apigeetool.verifyUserRole(opts, function (err, result) {
       if (verbose) {
-        console.log('Verify User in Role result = %j', result);
+        console.log("Verify User in Role result = %j", result);
       }
-      if (err) { done(err); } else {
-        assert.equal( result.emailId, opts.email);
+      if (err) {
+        done(err);
+      } else {
+        assert.equal(result.emailId, opts.email);
         done();
       }
     });
   });
 
-  it('List Users in a Role', done => {
+  it("List Users in a Role", (done) => {
     let opts = baseOpts();
     opts.roleName = ROLE_NAME;
     opts.email = config.useremail;
 
     apigeetool.listRoleUsers(opts, function (err, result) {
       if (verbose) {
-        console.log('List Users in a Role result = %j', result);
+        console.log("List Users in a Role result = %j", result);
       }
-      if (err) { done(err); } else {
-        assert.equal( result.includes(opts.email), true);
+      if (err) {
+        done(err);
+      } else {
+        assert.equal(result.includes(opts.email), true);
         done();
       }
     });
@@ -1767,32 +1781,39 @@ describe('User Roles and Permissions', function() {
   //   });
   // });
 
-  it('Remove User from Role', done => {
+  it("Remove User from Role", (done) => {
     let opts = baseOpts();
     opts.roleName = ROLE_NAME;
     opts.email = config.useremail;
 
     apigeetool.removeUserRole(opts, function (err, result) {
       if (verbose) {
-        console.log('Remove User from Role result = %j', result);
+        console.log("Remove User from Role result = %j", result);
       }
-      if (err) { done(err); } else { done(); }
+      if (err) {
+        done(err);
+      } else {
+        done();
+      }
     });
   });
 
-  it('Delete Role', done => {
+  it("Delete Role", (done) => {
     let opts = baseOpts();
     opts.roleName = ROLE_NAME;
 
     apigeetool.deleteRole(opts, function (err, result) {
       if (verbose) {
-        console.log('Delete Role result = %j', result);
+        console.log("Delete Role result = %j", result);
       }
-      if (err) { done(err); } else { done(); }
+      if (err) {
+        done(err);
+      } else {
+        done();
+      }
     });
   });
 }); // End User Roles and Permissions
-
 
 function baseOpts() {
   var o = {

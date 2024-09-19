@@ -4,27 +4,31 @@
  */
 module.exports = {
   // Your Apigee organization name
-  organization: '<org>',
+  organization: "<org>",
   // The environment to deploy to for testing -- 'test' is good
-  environment: '<env>',
-  // The user name to authenticate with for the Apigee management API
-  username: '<edgeuser>',
-  // The password for that user name
-  password: '<pass>',
+  environment: "<env>",
 
-  // comment the username and password and uncomment the following to use .netrc
+  // Authentication options, choose (uncomment) ONE:
+  // A. an active OAuth token
+  token: "eyJ...",
+
+  // B. username and password
+  // username: "<edgeuser>",
+  // password: "<pass>",
+
+  // C. use .netrc to specify username and password
   // netrc: true
+
   debug: false,
   verbose: false,
 
   // This USER must exist in the Apigee org before running tests. To test roles etc.
-  useremail: 'someone+tester@google.com',
+  useremail: "someone+tester@google.com"
+
   // not sure we need the password.
-  userpassword: 'Supersecret123'
+  // userpassword: 'Supersecret123'
 
   // Uncomment for the management API URI of your local Apigee environment
   // Leave commented to test using the Apigee cloud.
   //baseuri: 'http://mgmt:8080'
-  // Uncomment if you want to use the Apigee access token instead of your username and password
-  //token: 'your-apigee-access-token'
 };

@@ -1,13 +1,15 @@
 {
   "name": "apigeetool",
-  "version": "0.16.4",
+  "version": "0.16.5",
   "description": "A CLI for Apigee Edge",
   "main": "lib/main.js",
   "bin": {
     "apigeetool": "./lib/cli.js"
   },
   "scripts": {
+    "testcli": "jasmine --config=./test/config/test-cli",
     "test": "jasmine --config=./test/config/test-all",
+    "test-verbose": "jasmine --config=./test/config/test-all --reporter=jasmine-console-reporter",
     "remotetest": "mocha -R spec remotetests"
   },
   "keywords": [
@@ -30,22 +32,27 @@
     "mustache": "^4.2.0",
     "netrc": "^0.1.3",
     "node-unzip-2": "^0.2.7",
-    "read": "^1.0.7",
     "postman-request": "^2.88.1-postman.33",
+    "read": "^1.0.7",
     "tar-fs": "^2.1.1",
     "tmp": "^0.0.27"
   },
   "devDependencies": {
     "connect": "^3.4.0",
-    "express": "^4.13.3",
+    "express": "^4.21.0",
     "faker": "^5.5.3",
     "jasmine": "^3.5.0",
+    "jasmine-console-reporter": "^3.1.0",
     "lodash.find": "^4.6.0",
     "mocha": "^10.0.0"
   },
   "engines": {
-    "node": ">= 12.22.0",
+    "node": ">= 16.13.1",
     "npm": ">= 8.3.0"
+  },
+  "overrides": {
+    "braces": "3.0.3",
+    "path-to-regexp": "0.1.10"
   },
   "repository": {
     "type": "git",

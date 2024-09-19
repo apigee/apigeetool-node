@@ -94,7 +94,7 @@ trusted TLS certificate.
 
 `--asynclimit -a`
 (optional) Limit for the maximum number of operations performed concurrently.
-Currently this only affects file uploads in the `deploynodeapp` command. Defaults to 4.
+Currently this only affects file uploads in the `deployNodeApp` command. Defaults to 4.
 
 `--json  -j`
 (optional) Formats the command's response as a JSON object.
@@ -122,30 +122,30 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [addEntryToKVM](#addEntryToKVM)
 * [assignUserRole](#assignUserRole)
 * [attachFlowHook](#attachFlowHook)
-* [createappkey](#createappkey)
-* [createapp](#createapp)
-* [createcache](#createcache)
-* [createdeveloper](#createdeveloper)
-* [createKVMmap](#createKVMmap)
+* [createAppKey](#createAppKey)
+* [createApp](#createApp)
+* [createCache](#createCache)
+* [createDeveloper](#createDeveloper)
+* [createKVM](#createKVM)
 * [createProduct](#createproduct)
 * [createRole](#createRole)
 * [createTargetServer](#createTargetServer)
-* [deleteapp](#deleteapp)
-* [deletecache](#deletecache)
-* [deletedeveloper](#deletedeveloper)
+* [deleteApp](#deleteApp)
+* [deleteCache](#deleteCache)
+* [deleteDeveloper](#deleteDeveloper)
 * [deleteKVMentry](#deleteKVMentry)
 * [deleteKVMmap](#deleteKVMmap)
-* [deleteproduct](#deleteproduct)
+* [deleteProduct](#deleteProduct)
 * [deleteRole](#deleteRole)
 * [deleteSharedflow](#deleteSharedflow)
 * [deleteTargetServer](#deleteTargetServer)
 * [delete](#delete)
-* [deployhostedtarget](#deployhostedtarget)
-* [deploynodeapp](#deploynodeapp)
-* [deployproxy](#deployproxy)
+* [deployHostedTarget](#deployHostedTarget)
+* [deployNodeApp](#deployNodeApp)
+* [deployProxy](#deployProxy)
 * [deploySharedflow](#deploySharedflow)
-* [detachFlowHook](#detachFlowHook) 
-* [fetchproxy](#fetchproxy)
+* [detachFlowHook](#detachFlowHook)
+* [fetchProxy](#fetchProxy)
 * [fetchSharedflow](#fetchSharedflow)
 * [getFlowHook](#getFlowHook)
 * [getKVMentry](#getKVMentry)
@@ -169,7 +169,7 @@ Currently this only affects file uploads in the `deploynodeapp` command. Default
 * [updateTargetServer](#updateTargetServer)
 * [verifyUserRole](#verifyUserRole)
 
-## <a name="deploynodeapp"></a>deploynodeapp
+## <a name="deployNodeApp"></a>deployNodeApp
 
 Deploys a Node.js app to Apigee Edge as an API proxy. With your Node.js app deployed to Edge, you can take advantage of Edge features like security, quotas, caching, analytics, trace tool, and more.
 
@@ -177,11 +177,11 @@ Deploys a Node.js app to Apigee Edge as an API proxy. With your Node.js app depl
 
 Deploys a Node.js app to Apigee Edge.
 
-    apigeetool deploynodeapp -u sdoe@apigee.com -o sdoe -e test -n 'Test Node App 2' -d . -m app.js -b /node2
+    apigeetool deployNodeApp -u sdoe@apigee.com -o sdoe -e test -n 'Test Node App 2' -d . -m app.js -b /node2
 
 Deploys a Node.js app to both the default (HTTP) and secure (HTTPS) virtual hosts.
 
-    apigeetool deploynodeapp -u sdoe@apigee.com -o sdoe -e test -n 'Test Node App 2' -d . -m app.js -b /node2 -v default,secure
+    apigeetool deployNodeApp -u sdoe@apigee.com -o sdoe -e test -n 'Test Node App 2' -d . -m app.js -b /node2 -v default,secure
 
 #### Required parameters
 
@@ -229,7 +229,7 @@ for organization name, all of which are required.
 (optional) If specified, uploads Node.js modules from your system to Apigee Edge rather than resolving the modules directly on Apigee Edge (the default behavior).
 
 `--virtualhosts  -v`
-(optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deploynodeapp` uses `default,secure`.
+(optional) A comma-separated list of virtual hosts that the deployed app will use. The two most common options are `default` and `secure`. The `default` option is always HTTP and `secure` is always HTTPS. By default, `apigeetool deployNodeApp` uses `default,secure`.
 
 `--bundled-dependencies`
 (optional) If specified, the source code will be uploaded with its `bundledDependencies` as defined in the `package.json`.
@@ -290,7 +290,7 @@ The name of the API proxy. The name of the API proxy must be unique within an or
 `--bundled-dependencies`
 (optional) If specified, the source code will be uploaded with its `bundledDependencies` as defined in the `package.json`.
 
-## <a name="deployproxy"></a>deployproxy
+## <a name="deployProxy"></a>deployProxy
 
 Deploys an API proxy to Apigee Edge. If the proxy is currently deployed, it will be undeployed first, and the newly deployed proxy's revision number is incremented.
 
@@ -298,7 +298,7 @@ Deploys an API proxy to Apigee Edge. If the proxy is currently deployed, it will
 
 Deploys an API proxy called example-proxy to Apigee Edge. Per the `-d` flag, the command is executed in the root directory of the proxy bundle.
 
-    apigeetool deployproxy  -u sdoe@example.com -o sdoe  -e test -n example-proxy -d .
+    apigeetool deployProxy  -u sdoe@example.com -o sdoe  -e test -n example-proxy -d .
 
 #### Required parameters
 
@@ -442,16 +442,16 @@ Fetches a deployed API proxy or Node.js application from Apigee Edge. The
 result will be a ZIP file that contains the contents of the entire
 proxy.
 
-Regardless of whether "deployproxy" or "deploynodeapp" is used to deploy the
-proxy or app, the result of "fetchproxy" will always be a ZIP file that
+Regardless of whether "deployProxy" or "deployNodeApp" is used to deploy the
+proxy or app, the result of "fetchProxy" will always be a ZIP file that
 represents an API proxy. The resulting proxy may be "unzipped" and
-re-deployed using "deployproxy."
+re-deployed using "deployProxy."
 
 #### Example
 
 Fetch the deployed proxy named "example-proxy".
 
-    apigeetool fetchproxy -u sdoe@example.com -o sdoe -n example-proxy -r 1
+    apigeetool fetchProxy -u sdoe@example.com -o sdoe -n example-proxy -r 1
 
 #### Required parameters
 
@@ -988,18 +988,18 @@ for organization name, all of which are required.
 
 ## <a name="Cache Operations"></a>Cache Operations
 
-### <a name="createcache"></a>createcache
+### <a name="createCache"></a>createCache
 
 Creates a Cache with the given name.
 
 #### Example
 Create Cache map named "test-cache"
 
-    apigeetool createcache -u sdoe@example.com -o sdoe -e test -z test-cache 
+    apigeetool createCache -u sdoe@example.com -o sdoe -e test -z test-cache 
     
 Create Cache map named "test-cache" (with description and expiry)
 
-    apigeetool createcache -u sdoe@example.com -o sdoe -e test -z test-cache --description "sample key" --cacheExpiryInSecs 40000    
+    apigeetool createCache -u sdoe@example.com -o sdoe -e test -z test-cache --description "sample key" --cacheExpiryInSecs 40000
 
 #### Required parameters
 
@@ -1481,16 +1481,14 @@ You could use apigeetool as an SDK to orchestrate tasks that you want to perform
             //deploy failed
         });
 
-## <a name="createdeveloper"></a>Create Developer
+## <a name="createDeveloper"></a>Create Developer
 
 Creates a new Developer in Edge
 
-#### Example
+#### Code Example
 
-Create a developer.
-
-        //see above for other required options
-        opts.email = DEVELOPER_EMAIL
+    //see above for other required options
+    opts.email = DEVELOPER_EMAIL
     opts.firstName = 'Test'
     opts.lastName = 'Test1'
     opts.userName = 'runningFromTest123'
@@ -1509,14 +1507,14 @@ Create a developer.
       }) ;
 
 
-## <a name="deletedeveloper"></a>Delete Developer
+## <a name="deleteDeveloper"></a>Delete Developer
 
 Delete a Developer in Edge
 
-#### Example
+#### Code Example
 
-        //see above for other required options
-        opts.email = DEVELOPER_EMAIL
+    //see above for other required options
+    opts.email = DEVELOPER_EMAIL
 
     sdk.deleteDeveloper(opts)
       .then(function(result){
@@ -1529,7 +1527,7 @@ Delete a Developer in Edge
 
 Creates a new API Product in Edge
 
-#### Example
+#### Code Example
 
     opts.productName = APIGEE_PRODUCT_NAME
     opts.productDesc = 'description'
@@ -1546,11 +1544,11 @@ Creates a new API Product in Edge
         //product creation failed
       }) ;
 
-## <a name="deleteproduct"></a>Delete Product
+## <a name="deleteProduct"></a>Delete Product
 
 Delete API Product in Edge
 
-#### Example
+#### Code Example
     opts.productName = APIGEE_PRODUCT_NAME
 
     sdk.deleteProduct(opts)
@@ -1560,11 +1558,11 @@ Delete API Product in Edge
         //delete failed
       }) ;
 
-## <a name="createapp"></a>Create App
+## <a name="createApp"></a>Create App
 
 Create App in Edge
 
-#### Example
+#### Code Example
 
       opts.name = APP_NAME
       opts.apiproducts = APIGEE_PRODUCT_NAME
@@ -1577,11 +1575,11 @@ Create App in Edge
         //create app failed
       }) ;
 
-## <a name="deleteapp"></a>Delete App
+## <a name="deleteApp"></a>Delete App
 
 Delete App in Edge
 
-#### Example
+#### Code Example
 
       opts.email = DEVELOPER_EMAIL
       opts.name = APP_NAME
@@ -1593,11 +1591,11 @@ Delete App in Edge
         //delete app failed
       }) ;
 
-## <a name="createappkey"></a>Create App Key
+## <a name="createAppKey"></a>Create App Key
 
 Create App Key in Edge
 
-#### Example
+#### Code Example
 
     opts.key = APP_KEY;
     opts.secret = APP_SECRET;
@@ -1606,36 +1604,38 @@ Create App Key in Edge
     opts.apiProducts = PRODUCT_NAME;
 
     sdk.createAppKey(opts)
-    .then(function(result){
-      //create key/secret success
-    },function(err){
-      //create key/secret failed
-    }) ;
+      .then(function(result){
+        //create key/secret success
+      },function(err){
+        //create key/secret failed
+      }) ;
 
-## <a name="createcache"></a>Create Cache
+## <a name="createCache"></a>Create Cache
 
 Create Cache in Edge
 
-#### Example
+#### Code Example
+
     opts.cache = CACHE_RESOURCE_NAME;
-    sdk.createcache(opts)
-    .then(function(result){
-        //cache create success
+    sdk.createCache(opts)
+      .then(function(result){
+        //create cache success
       },function(err){
-        //cache create failed
+        //create cache failed
       }) ;
 
-## <a name="deletecache"></a>Delete Cache
+## <a name="deleteCache"></a>Delete Cache
 
 Delete Cache in Edge
 
-#### Example
+#### Code Example
+
     opts.cache = CACHE_RESOURCE_NAME;
-    sdk.deletecache(opts)
-    .then(function(result){
-        //delete create success
+    sdk.deleteCache(opts)
+      .then(function(result){
+        //delete cache success
       },function(err){
-        //delete create failed
+        //delete failed
       }) ;
 
 # <a name="history"></a>Some History
