@@ -41,6 +41,226 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // Run one "it" test using: mocha remotetests --grep "fetchSharedFlow"
 // To see tests use 'grep "  it" remotetest.j'
 
+describe("Pre-test list", function () {
+  let existingTestProxies, existingTestProducts, existingTestApps;
+  /*
+   * In case of multiple test runs, some of which fail, there may be existing proxies
+   * still deployed. In that case, it helps for the tests themselves to be able to
+   * cleanup from prior runs.
+   **/
+  this.timeout(REASONABLE_TIMEOUT);
+  this.slow(2000);
+
+  const sdk = apigeetool.getPromiseSDK();
+
+  it("Lists Proxies", (done) => {
+    let opts = baseOpts();
+    apigeetool.listProxies(opts, (e, result) => {
+      assert(!e);
+      assert(result);
+      assert(result.length);
+      assert(result.length > 2);
+      existingTestProxies = result.filter((name) =>
+        name.startsWith("apigeetool-test-")
+      );
+      done();
+    });
+  });
+
+  it("Lists Products", (done) => {
+    let opts = baseOpts();
+    apigeetool.listProducts(opts, (e, result) => {
+      assert(!e);
+      assert(result);
+      assert(result.length);
+      assert(result.length > 2);
+      existingTestProducts = result.filter((name) =>
+        name.startsWith("apigeetool-test-")
+      );
+      done();
+    });
+  });
+
+  it("Lists and Queries Apps", (done) => {
+    let opts = baseOpts();
+    sdk.listApps(opts).then(async (result) => {
+      assert(result);
+      assert(result.length);
+      assert(result.length > 2);
+
+      const reducer = (promise, item) =>
+        promise.then((a) => {
+          let opts = baseOpts();
+          opts.app = item;
+          return sdk
+            .getApp(opts)
+            .then((result) => {
+              if (verbose) {
+                console.log("getApp result = %j", result);
+              }
+              return result.name && result.name.startsWith("apigeetool-test-")
+                ? [...a, { email: result.developerId, name: result.name }]
+                : a;
+            })
+            .catch((e) => {
+              if (verbose) {
+                console.log("Error getting app:" + e);
+              }
+              return a;
+            });
+        });
+
+      existingTestApps = await result.reduce(reducer, Promise.resolve([]));
+      done();
+    });
+  });
+
+  // Must insure the Apps and API Products are removed, and the proxies are undeployed, before deleting proxies.
+  //
+  // Otherwise:
+  //
+  // Error Deleting proxy:Error: Application
+  // apigeetool-test-proxy-3mtf84vw49tp-1 is referred in apiproducts [....]
+  //
+  // Error Deleting proxy:Error: Can not delete Revision 1 of ApiProxy
+  // apigeetool-test-proxy-kywvau332niw-2 in organization amer-poc10. Undeploy
+  // the ApiProxy and try again.
+
+  it(`deletes the previously existing test apps`, function (done) {
+    if (existingTestApps && existingTestApps.length) {
+      const reducer = (promise, item) =>
+        promise.then((a) => {
+          let opts = baseOpts();
+          opts.email = item.email;
+          opts.name = item.name;
+          opts.debug = true;
+          return sdk
+            .deleteApp(opts)
+            .then((result) => {
+              if (verbose) {
+                console.log("Delete app result = %j", result);
+              }
+              return a;
+            })
+            .catch((e) => {
+              if (verbose) {
+                console.log("Error Deleting app:" + e);
+              }
+              return a;
+            });
+        });
+
+      existingTestApps.reduce(reducer, Promise.resolve([])).then(() => done());
+    } else {
+      done();
+    }
+  });
+
+  it(`deletes the previously existing test products`, function (done) {
+    if (existingTestProducts && existingTestProducts.length) {
+      sleep(3000).then((_) => {
+        const reducer = (promise, item) =>
+          promise.then((a) => {
+            let opts = baseOpts();
+            opts.productName = item;
+
+            return sdk
+              .deleteProduct(opts)
+              .then((result) => {
+                if (verbose) {
+                  console.log("Delete product result = %j", result);
+                }
+                return a;
+              })
+              .catch((e) => {
+                if (verbose) {
+                  console.log("Error Deleting product:" + e);
+                }
+                return a;
+              });
+          });
+
+        existingTestProducts
+          .reduce(reducer, Promise.resolve([]))
+          .then(() => done());
+      });
+    } else {
+      done();
+    }
+  });
+
+  it(`possibly undeploys the previously existing test proxies`, function (done) {
+    if (existingTestProxies && existingTestProxies.length) {
+      const reducer = (promise, item) =>
+        promise.then((a) => {
+          let opts = baseOpts();
+          opts.api = item;
+          delete opts.environment;
+
+          return sdk
+            .listDeployments(opts)
+            .then((result) => {
+              if (verbose) {
+                console.log("list deployments: %j", result);
+              }
+              if (result.deployments && result.deployments.length) {
+                // Assumption: prior runs deployed only to a single environment
+                opts.environment = result.deployments[0].environment;
+                opts.revision = result.deployments[0].revision;
+
+                return sdk.undeploy(opts);
+              } else {
+                return a;
+              }
+            })
+            .catch((e) => {
+              if (verbose) {
+                console.log("Error listing deployments:" + e);
+              }
+              return a;
+            });
+        });
+
+      existingTestProxies
+        .reduce(reducer, Promise.resolve([]))
+        .then(() => done());
+    } else {
+      done();
+    }
+  });
+
+  it(`deletes the previously existing test proxies`, function (done) {
+    if (existingTestProxies && existingTestProxies.length) {
+      const reducer = (promise, item) =>
+        promise.then((a) => {
+          let opts = baseOpts();
+          opts.api = item;
+
+          return sdk
+            .delete(opts)
+            .then((result) => {
+              if (verbose) {
+                console.log("Delete proxy result = %j", result);
+              }
+              return a;
+            })
+            .catch((e) => {
+              if (verbose) {
+                console.log("Error Deleting proxy:" + e);
+              }
+              return a;
+            });
+        });
+
+      existingTestProxies
+        .reduce(reducer, Promise.resolve([]))
+        .then(() => done());
+    } else {
+      done();
+    }
+  });
+});
+
 describe("Product/Dev/App Tests", function () {
   this.timeout(REASONABLE_TIMEOUT);
   this.slow(1500);
@@ -258,13 +478,24 @@ describe("List Tests", function () {
       done();
     });
   });
+
+  it("Lists Products", (done) => {
+    let opts = baseOpts();
+    apigeetool.listProducts(opts, (e, result) => {
+      assert(!e);
+      assert(result);
+      assert(result.length);
+      assert(result.length > 2);
+      done();
+    });
+  });
 });
 
 describe("API Deployment Tests", function () {
   this.timeout(REASONABLE_TIMEOUT);
-  this.slow(8000);
+  this.slow(9000);
   const PROXY_NAME = nameGen.proxy(marker) + "-2";
-  let deployedUri, deployedRevision;
+  let deployedUri, deployedRevision, priorDeployedRevision;
 
   it("Deploy Apigee Proxy", function (done) {
     let opts = baseOpts();
@@ -288,7 +519,7 @@ describe("API Deployment Tests", function () {
           assert(typeof result.revision === "number");
           deployedRevision = result.revision;
           deployedUri = result.uris[0];
-          done();
+          sleep(2000).then(done); // delay a bit before continuing
         } catch (e) {
           done(e);
         }
@@ -315,6 +546,8 @@ describe("API Deployment Tests", function () {
   });
 
   it("List Deployments by proxyname", function (done) {
+    this.timeout(15000);
+    this.slow(8000);
     assert(deployedRevision);
     let opts = baseOpts();
     delete opts.environment;
@@ -330,7 +563,6 @@ describe("API Deployment Tests", function () {
         done(err);
       } else {
         let deployment = result.deployments.find((d) => d.name === PROXY_NAME);
-
         try {
           assert.equal(deployment.name, PROXY_NAME);
           assert.equal(deployment.environment, config.environment);
@@ -389,8 +621,10 @@ describe("API Deployment Tests", function () {
           assert.equal(result.name, PROXY_NAME);
           assert.equal(result.environment, config.environment);
           assert.equal(result.state, "undeployed");
-          sleep(3000).then(done); // delay a bit before continuing
+          priorDeployedRevision = deployedRevision;
           deployedUri = null;
+          deployedRevision = null;
+          sleep(3000).then(done); // delay a bit before continuing
         } catch (e) {
           done(e);
         }
@@ -398,7 +632,64 @@ describe("API Deployment Tests", function () {
     });
   });
 
+  it("Deploy Existing revision", function (done) {
+    this.timeout(25000);
+    this.slow(13000);
+    let opts = baseOpts();
+    opts.api = PROXY_NAME;
+    opts.revision = priorDeployedRevision;
+
+    apigeetool
+      .getPromiseSDK()
+      .deployExistingRevision(opts)
+      .then((result) => {
+        if (Array.isArray(result)) {
+          result = result[0];
+        }
+        assert.equal(result.name, PROXY_NAME);
+        assert.equal(result.environment, config.environment);
+        assert.equal(result.state, "deployed");
+        assert.equal(result.uris.length, 1);
+        assert(typeof result.revision === "number");
+        deployedRevision = result.revision;
+        sleep(7000).then(done); // delay a bit before continuing
+      })
+      .catch((e) => done(e));
+  });
+
+  it("Undeploy Apigee Proxy With Revision - B", function (done) {
+    this.timeout(25000);
+    this.slow(13000);
+    assert(deployedRevision);
+    let opts = baseOpts();
+    opts.api = PROXY_NAME;
+    opts.revision = deployedRevision;
+
+    sleep(6000).then((_) => {
+      apigeetool.undeploy(opts, function (err, result) {
+        if (verbose) {
+          console.log("Undeploy result = %j", result);
+        }
+        if (err) {
+          done(err);
+        } else {
+          try {
+            assert.equal(result.name, PROXY_NAME);
+            assert.equal(result.environment, config.environment);
+            assert.equal(result.state, "undeployed");
+            sleep(3000).then(done); // delay a bit before continuing
+            deployedUri = null;
+          } catch (e) {
+            done(e);
+          }
+        }
+      });
+    });
+  });
+
   it("Deploy Apigee Proxy with basepath prefix", function (done) {
+    this.timeout(25000);
+    this.slow(13000);
     deployedUri = null;
     const PROXY_BASE_PATH = nameGen.basePath(marker); // a random basepath
     let opts = baseOpts();
@@ -422,7 +713,7 @@ describe("API Deployment Tests", function () {
           assert(typeof result.revision === "number");
           deployedRevision = result.revision;
           deployedUri = result.uris[0];
-          done();
+          sleep(3000).then(done);
         } catch (e) {
           done(e);
         }
@@ -504,7 +795,7 @@ describe("API Deployment Tests", function () {
   });
   */
 
-  it("Undeploy Apigee Proxy With Revision - B", function (done) {
+  it("Undeploy Apigee Proxy With Revision - C", function (done) {
     assert(deployedRevision);
     let opts = baseOpts();
     opts.api = PROXY_NAME;
