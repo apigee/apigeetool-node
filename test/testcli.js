@@ -21,6 +21,7 @@ const commandsToTest = [
   "deployProxy",
   "deployNodeApp",
   "deployHostedTarget",
+  "deployExistingRevision",
   "listDeployments",
   "undeploy",
   "fetchProxy",
