@@ -22,7 +22,8 @@ For a similar tool that works with X or hybrid, see [here](https://github.com/sr
 * [What you need to know about apigeetool](#whatyouneed)
 * [Command reference and examples](#reference)
 * [SDK reference and examples](#sdkreference)
-* [Original tool](#original)
+* [Some History](#history)
+* [Running Remote Tests](#remotetests)
 * [Contribution](#contrib)
 
 # <a name="installation"></a>Installation
