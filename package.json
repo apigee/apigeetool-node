@@ -35,7 +35,7 @@
     "postman-request": "^2.88.1-postman.33",
     "read": "^1.0.7",
     "tar-fs": "^2.1.1",
-    "tmp": "^0.0.27"
+    "tmp": "^0.2.7"
   },
   "devDependencies": {
     "connect": "^3.4.0",
