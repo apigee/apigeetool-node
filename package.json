@@ -25,7 +25,6 @@
   "license": "MIT",
   "dependencies": {
     "async": "^3.2.3",
-    "body-parser": "^1.20.0",
     "cli-table": "^0.3.11",
     "fs-extra": "^10.1.0",
     "jszip": "^3.7.1",
@@ -34,16 +33,16 @@
     "node-unzip-2": "^0.2.7",
     "postman-request": "^2.88.1-postman.33",
     "read": "^1.0.7",
-    "tar-fs": "^2.1.1",
+    "tar-fs": "^2.1.4",
     "tmp": "^0.2.7"
   },
   "devDependencies": {
+    "body-parser": "^1.20.3",
     "connect": "^3.4.0",
-    "express": "^4.21.0",
+    "express": "^4.21.2",
     "faker": "^5.5.3",
     "jasmine": "^3.5.0",
     "jasmine-console-reporter": "^3.1.0",
-    "lodash.find": "^4.6.0",
     "mocha": "^10.0.0"
   },
   "engines": {
@@ -52,7 +51,18 @@
   },
   "overrides": {
     "braces": "3.0.3",
-    "path-to-regexp": "0.1.10"
+    "path-to-regexp": "^0.1.13",
+    "brace-expansion": "^1.1.18",
+    "serialize-javascript": "^7.0.5",
+    "picomatch": "^2.3.2",
+    "minimatch": "^5.1.8",
+    "js-yaml": "^4.3.1",
+    "qs": "^6.15.2",
+    "cookie": "^0.7.2",
+    "diff": "^5.2.2",
+    "ajv": "^6.14.0",
+    "uuid": "^11.1.1",
+    "node-emoji": "^2.2.0"
   },
   "repository": {
     "type": "git",
