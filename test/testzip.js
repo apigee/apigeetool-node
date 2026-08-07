@@ -1,6 +1,5 @@
 const assert = require('assert'),
       fs = require('fs'),
-      find = require('lodash.find'),
       ziputils = require('../lib/ziputils');
 
 const LONG_TIMEOUT = 8000;
@@ -36,7 +35,7 @@ describe('ZIP Utilities Test', function() {
       //console.log('%j', files);
 
       // Should contain README.md
-      let readme = find(files, function(f) {
+      let readme = files.find(function(f) {
         return (f.fileName === 'test/fixtures/employeesnode/README.md');
       });
       assert(readme);
@@ -46,13 +45,13 @@ describe('ZIP Utilities Test', function() {
       assert(!readme.directory);
 
       // Should not contain an entry for the toplevel "node_modules" directory
-      let topModules = find(files, function(f) {
+      let topModules = files.find(function(f) {
         return (f.fileName === 'test/fixtures/employeesnode/node_modules');
       });
       assert(!topModules);
 
       // Should contain "node_modules/express"
-      var express = find(files, function(f) {
+      var express = files.find(function(f) {
         return (f.fileName === 'test/fixtures/employeesnode/node_modules/express');
       });
       assert(express);
@@ -74,5 +73,31 @@ describe('ZIP Utilities Test', function() {
     assert(files.find( f => f.fileName.endsWith("package.json")));
     assert(files.find( f => f.fileName.endsWith("node_modules.zip")));
     //console.log('%j', files);
+  });
+
+  it('unzipProxy rejects zip entries attempting Zip Slip path traversal', function(done) {
+    const deploycommon = require('../lib/deploycommon');
+    const tmp = require('tmp');
+    const path = require('path');
+    const jszip = require('jszip');
+
+    tmp.dir(function(err, tempDir) {
+      assert(!err);
+      let maliciousZip = new jszip();
+      maliciousZip.file('../evil.txt', 'malicious payload');
+      maliciousZip.generateAsync({ type: 'nodebuffer' }).then(function(buf) {
+        let zipPath = path.join(tempDir, 'malicious.zip');
+        let extractDir = path.join(tempDir, 'extract');
+        fs.mkdirSync(extractDir);
+        fs.writeFileSync(zipPath, buf);
+
+        deploycommon.unzipProxy({ file: zipPath }, extractDir, '', function(err) {
+          assert(err, 'Expected error when extracting malicious zip');
+          assert(err.message.indexOf('Security error') !== -1, 'Expected security error message');
+          assert(!fs.existsSync(path.join(tempDir, 'evil.txt')), 'Malicious file must not be created');
+          done();
+        });
+      });
+    });
   });
 });
